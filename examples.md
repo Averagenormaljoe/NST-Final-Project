@@ -3,3 +3,5 @@ https://www.geeksforgeeks.org/neural-style-transfer-with-tensorflow/
 https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/tutorials/generative/style_transfer.ipynb
 https://abauville.github.io/blog/deep-learning/pytorch/computer-vision/from%20scratch/2021/07/20/neural-style-transfer.html
 https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/g3doc/examples/style_transfer/overview.ipynb
+https://github.com/pytorch/examples/tree/main/fast_neural_style
+https://colab.research.google.com/github/tensorflow/models/blob/master/research/nst_blogpost/4_Neural_Style_Transfer_with_Eager_Execution.ipynb
