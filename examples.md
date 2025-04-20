@@ -5,3 +5,4 @@ https://abauville.github.io/blog/deep-learning/pytorch/computer-vision/from%20sc
 https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/g3doc/examples/style_transfer/overview.ipynb
 https://github.com/pytorch/examples/tree/main/fast_neural_style
 https://colab.research.google.com/github/tensorflow/models/blob/master/research/nst_blogpost/4_Neural_Style_Transfer_with_Eager_Execution.ipynb
+https://keras.io/examples/generative/adain/
