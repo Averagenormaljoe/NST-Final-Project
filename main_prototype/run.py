@@ -4,7 +4,7 @@ import os
 notebook_path = "book_prototype.ipynb"  
 
 
-command = f"jupyter nbconvert --execute --to notebook --inplace {notebook_path}"
+command = f"python -m jupyter nbconvert --execute --to notebook --inplace {notebook_path}"
 
 
 success = os.system(command)
