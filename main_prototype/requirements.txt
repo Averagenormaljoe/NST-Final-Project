@@ -39,3 +39,5 @@ tensorflow-intel==2.13.0
 tensorflow-io-gcs-filesystem==0.31.0
 tensorflow-metadata==1.16.1
 tf_keras==2.19.0
+tensorflow_probability==0.24.0
+tqdm==4.66.1

@@ -19,6 +19,14 @@ def style_loss(style_img, combination_img,img_height: int, img_width : int):
  return tf.reduce_sum(tf.square(S - C)) / (4.0 * (channels ** 2) * (size ** 2))
 
 
+def compute_style_loss_with_consine_similarity(a, b):
+    a_flat = tf.reshape(a, [a.shape[0], -1])
+    b_flat = tf.reshape(b, [b.shape[0], -1])
+    sim = tf.reduce_mean(1 - tf.keras.losses.cosine_similarity(a_flat, b_flat))
+    return sim
+
+
+
 def high_pass_x_y(image):
   x_var = image[:, :, 1:, :] - image[:, :, :-1, :]
   y_var = image[:, 1:, :, :] - image[:, :-1, :, :]
@@ -30,3 +38,12 @@ def total_variation_loss(x,img_height: int, img_width : int):
     with get_device():
         a,b = high_pass_x_y(x)
         return tf.reduce_sum(tf.abs(a)) + tf.reduce_sum(tf.abs(b))
+
+def ssim_loss(y_true, y_pred):
+
+    ssim_value = tf.image.ssim(y_true, y_pred, max_val=255.0)
+    return 1 - tf.reduce_mean(ssim_value)
+
+def psnr_loss(y_true, y_pred):
+    psnr_value = tf.image.psnr(y_true, y_pred, max_val=255.0)
+    return 1 - tf.reduce_mean(psnr_value)
