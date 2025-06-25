@@ -1,4 +1,6 @@
 import tensorflow as tf
+import tensorflow_probability as tfp
+
 def get_optimizer(name: str, learning_rate: float):
     if name == 'adam':
         return keras.optimizers.Adam(learning_rate=learning_rate, beta_1=0.99, epsilon=1e-1)
