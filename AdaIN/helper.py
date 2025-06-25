@@ -33,18 +33,8 @@ def extract_image_from_voc(element):
     image = tf.image.resize(image, IMAGE_SIZE)
     return image
 
-def retrieve_style_image(images_path: str):
-    style_images = os.listdir(images_path)
-    style_images = [os.path.join(images_path, path) for path in style_images]
-    return style_images
 
-# Get the image file paths for the style images.
-def get_style_images(on_kaggle : bool = True):
-    if on_kaggle:
-        style_images = retrieve_style_image("/kaggle/input/best-artworks-of-all-time/resized/resized")
-        return style_images
-    else:
-        style_images = retrieve_style_image("/content/artwork/resized")
-        return style_images
-    
+def create_dir(folder_path: str):
+     if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
     
