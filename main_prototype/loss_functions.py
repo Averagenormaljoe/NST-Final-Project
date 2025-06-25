@@ -36,11 +36,18 @@ def compute_style_loss_with_consine_similarity(a, b):
 
 
 
-def high_pass_x_y(image):
-  x_var = image[:, :, 1:, :] - image[:, :, :-1, :]
-  y_var = image[:, 1:, :, :] - image[:, :-1, :, :]
-
-  return x_var, y_var
+def high_pass_x_y(image, img_height: int = 224, img_width: int = 224,use_image_size: bool = True):
+    if use_image_size:
+        x = tf.square(
+        image[:, : img_height - 1, : img_width - 1, :] - image[:, 1:, : img_width - 1, :]
+        )
+        y = tf.square(
+        image[:, : img_height - 1, : img_width - 1, :] - x[:, : img_height - 1, 1:, :]
+        )
+    else:
+        x = image[:, :, 1:, :] - image[:, :, :-1, :]
+        y = image[:, 1:, :, :] - image[:, :-1, :, :]         
+    return x, y
 
 def total_variation_loss_l1(x):
         a,b = high_pass_x_y(x)
