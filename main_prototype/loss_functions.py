@@ -4,12 +4,21 @@ from device_helper import get_device
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
+def mean_style_loss(style_img, combination_img):
+    style_mean = tf.reduce_mean(style_img, axis=[1, 2])
+    combination_mean = tf.reduce_mean(combination_img, axis=[1, 2])
+    return tf.reduce_mean(tf.square(style_mean - combination_mean))
+
+
 
 def gram_matrix(x):
  x = tf.transpose(x, (2, 0, 1))
  features = tf.reshape(x, (tf.shape(x)[0], -1))
  gram = tf.matmul(features, tf.transpose(features))
  return gram
+
+def equal_blends(gram_matrices):
+    return sum(gram_matrices) / len(gram_matrices)
 
 def style_loss(style_img, combination_img,img_height: int, img_width : int):
  S = gram_matrix(style_img)
