@@ -1,5 +1,6 @@
 import tensorflow as tf
 import keras
+from device_helper import get_device
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
@@ -18,13 +19,14 @@ def style_loss(style_img, combination_img,img_height: int, img_width : int):
  return tf.reduce_sum(tf.square(S - C)) / (4.0 * (channels ** 2) * (size ** 2))
 
 
+def high_pass_x_y(image):
+  x_var = image[:, :, 1:, :] - image[:, :, :-1, :]
+  y_var = image[:, 1:, :, :] - image[:, :-1, :, :]
+
+  return x_var, y_var
+
 def total_variation_loss(x,img_height: int, img_width : int):
     
-    with tf.device("/GPU:0"):
-        a = tf.square(
-        x[:, : img_height - 1, : img_width - 1, :] - x[:, 1:, : img_width - 1, :]
-        )
-        b = tf.square(
-        x[:, : img_height - 1, : img_width - 1, :] - x[:, : img_height - 1, 1:, :]
-        )
-        return tf.reduce_sum(tf.pow(a + b, 1.25))
+    with get_device():
+        a,b = high_pass_x_y(x)
+        return tf.reduce_sum(tf.abs(a)) + tf.reduce_sum(tf.abs(b))
