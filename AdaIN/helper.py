@@ -46,3 +46,5 @@ def get_style_images(on_kaggle : bool = True):
     else:
         style_images = retrieve_style_image("/content/artwork/resized")
         return style_images
+    
+    
