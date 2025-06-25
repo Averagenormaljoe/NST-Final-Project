@@ -33,12 +33,18 @@ def high_pass_x_y(image):
 
   return x_var, y_var
 
-def total_variation_loss(x,img_height: int, img_width : int):
-    
-    with get_device():
+def total_variation_loss_l1(x):
         a,b = high_pass_x_y(x)
         return tf.reduce_sum(tf.abs(a)) + tf.reduce_sum(tf.abs(b))
 
+def total_variation_loss_l2(x):
+    a,b = high_pass_x_y(x)
+    return tf.reduce_sum(tf.pow(a + b, 1.25))
+def total_variation_loss(x,use_l2: bool = False):
+    if use_l2:
+        return total_variation_loss_l2(x)
+    else:
+        return total_variation_loss_l1(x)
 def ssim_loss(y_true, y_pred):
 
     ssim_value = tf.image.ssim(y_true, y_pred, max_val=255.0)
