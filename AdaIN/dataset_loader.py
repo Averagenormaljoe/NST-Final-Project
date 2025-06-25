@@ -19,29 +19,7 @@ def load_train_dataset(dataset_use: str,train_style, batch_size : int,num_parall
     train_content_ds = tfds.load(dataset_use, split='train').map(extract_image_from_voc).repeat()
     return train_style_ds, train_content_ds
 
-def create_dataset_dir(dataset_dir = 'coco'):
-    if not os.path.exists(dataset_dir):
-        os.makedirs(dataset_dir)
-    return dataset_dir
 
-def load_train_dataset_coco(batch_size: int, num_parallel_calls: int):
-    dataset_dir = create_dataset_dir('coco')
-    coco_url = 'http://images.cocodataset.org/zips/train2014.zip'
-    if os.path.exists('coco.zip'):
-        print("Skipping download as Coco dataset already exists.")
-    else:
-        untar_data(coco_url, 'coco.zip', dataset_dir)
-    train_style_ds = (
-        tf.data.Dataset.list_files(os.path.join('coco/train2014', '*.jpg'))
-        .map(decode_and_resize, num_parallel_calls=num_parallel_calls)
-        .repeat()
-    )
-    train_content_ds = (
-        tf.data.Dataset.list_files(os.path.join('coco/train2014', '*.jpg'))
-        .map(decode_and_resize, num_parallel_calls=num_parallel_calls)
-        .repeat()
-    )
-    return train_style_ds, train_content_ds    
 
 
 def load_val_test_datasets(dataset_use: str, val_style, test_style, batch_size: int,num_parallel_calls : int):
