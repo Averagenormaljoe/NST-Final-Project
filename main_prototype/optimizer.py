@@ -1,3 +1,4 @@
+import tensorflow as tf
 def get_optimizer(name: str, learning_rate: float):
     if name == 'adam':
         return keras.optimizers.Adam(learning_rate=learning_rate, beta_1=0.99, epsilon=1e-1)
@@ -15,6 +16,8 @@ def get_optimizer(name: str, learning_rate: float):
         return tf.keras.optimizers.RAdam(learning_rate=learning_rate)
     elif name == 'lbfgs':
         return tfp.optimizer.lbfgs_minimize
+    elif name == 'ftrl':
+        return tf.keras.optimizers.Ftrl(learning_rate=learning_rate)
         
     else:
         raise ValueError(f"Unsupported optimizer: {name}")
