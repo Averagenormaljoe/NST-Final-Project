@@ -1,0 +1,10 @@
+{
+  "name": "Gatys Container",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "python.pythonPath": "/usr/local/bin/python3"
+  }
+}
