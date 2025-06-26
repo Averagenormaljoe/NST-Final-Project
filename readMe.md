@@ -20,9 +20,19 @@ The Johnson model is based on the [Johnson et al. paper](https://arxiv.org/abs/1
 
 ## Huang et al. Model
 
-The Huang model is based on the paper.
+The Huang model is based on the [Huang et al. paper](https://arxiv.org/abs/1703.06868).
 
-## Streamlit website
+## Streamlit Website
+
+This uses the models created in the project and supplied them to an user interface for users to interact with. This is setup using the Streamlit library Currently, the code for this is stored on
+another repository called: [https://stylemotion-app.streamlit.app/]("https://github.com/Averagenormaljoe/NST-Streamlit-website").
+
+You can visit the website, which is running from this link:
+
+[https://stylemotion-app.streamlit.app/](https://stylemotion-app.streamlit.app/).
+
+Note if the project is asleep due to inactivity, press the 'Yes, get this app back up!' button to
+restart it.
 
 ## Model locations
 
@@ -32,9 +42,7 @@ The gatys model is stored in the 'main_protoype/' directory
 
 The Huang model is stored in the 'Huang/' directory.
 
-The Johnson al et model is stroed in the ''
-
-This uses the models created in the project and supplied them to an user interface for users to interact with. Currently, this is stored on another repository called: "https://github.com/Averagenormaljoe/NST-Streamlit-website".
+The Johnson al et model is stroed in the 'forward_feed/' directory.
 
 ## Model Results
 
