@@ -12,7 +12,7 @@ The StyleMotion model is based on the [ReCoNet paper](https://arxiv.org/abs/1807
 
 ### Gatys et al. Model
 
-The Gatys model is based on the [Gatys et al. paper](https://arxiv.org/abs/1508.06576).
+The Gatys model is based on the [Gatys et al. paper](https://arxiv.org/abs/1508.06576). This uses a different optimizer to original project (using ADAM rather than SGD).
 
 ### Johnson et al. Model
 
