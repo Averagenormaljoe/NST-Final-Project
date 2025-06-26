@@ -1,5 +1,6 @@
 import cv2
 from typing import Union
+from matplotlib.pylab import f
 import numpy as np
 import tensorflow as tf
 def get_cam_details(cam):
@@ -23,7 +24,7 @@ def load_the_video(video_path : str):
 
 ImageType = Union[np.ndarray, tf.Tensor]
 
-def frame_to_image(image : ImageType) -> tf.Tensor:
+def image_read(image : ImageType) -> tf.Tensor:
   max_dim=512
   image= tf.convert_to_tensor(image, dtype = tf.float32)
   image= image/255.0
@@ -35,3 +36,16 @@ def frame_to_image(image : ImageType) -> tf.Tensor:
   new_image = new_image[tf.newaxis, :]
   
   return new_image
+
+def get_cam(video_path):
+    if video_path is not None:
+        cam = cv2.VideoCapture(0) 
+    else:
+        cam = cv2.VideoCapture(video_path)
+    frame_width, frame_height, fps = get_cam_details(cam)
+    return cam, frame_width, frame_height, fps
+
+def prepare_video_writer(output_path: str, frame_width: int, frame_height: int, fps: int,file_format : str = 'mp4v'):
+    fourcc = cv2.VideoWriter_fourcc(*file_format)
+    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+    return out
