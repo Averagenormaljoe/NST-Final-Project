@@ -1,7 +1,7 @@
 import cv2
 from typing import Union
-from matplotlib.pylab import f
 import numpy as np
+import time
 import tensorflow as tf
 def get_cam_details(cam):
     frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -55,3 +55,8 @@ def release_video_writer(cam,out):
         cam.release()
         out.release()
         cv2.destroyAllWindows()
+        
+def video_end(start_time: float):
+    end_time = time.time()
+    processing_duration = end_time - start_time
+    print(f"Processing completed in {processing_duration:.2f} seconds.")
