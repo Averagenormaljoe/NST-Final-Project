@@ -32,9 +32,3 @@ def extract_image_from_voc(element):
     image = tf.image.convert_image_dtype(image, dtype="float32")
     image = tf.image.resize(image, IMAGE_SIZE)
     return image
-
-
-def create_dir(folder_path: str):
-     if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-    
