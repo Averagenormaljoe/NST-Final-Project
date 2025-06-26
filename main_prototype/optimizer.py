@@ -20,6 +20,13 @@ def get_optimizer(name: str, learning_rate: float):
         return tfp.optimizer.lbfgs_minimize
     elif name == 'ftrl':
         return tf.keras.optimizers.Ftrl(learning_rate=learning_rate)
-        
+    elif name == "lion":
+        optimizer = tf.keras.optimizers.Lion(
+        learning_rate=1e-4, 
+        beta_1=0.9,
+        beta_2=0.99,
+        weight_decay=1e-2   
+        )
+        return optimizer   
     else:
         raise ValueError(f"Unsupported optimizer: {name}")
