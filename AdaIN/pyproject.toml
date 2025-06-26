@@ -10,7 +10,7 @@ authors = [
   { name="Average Joe" }
 ]
 readme = "README.md"
-requires-python = "3.11"
+requires-python = ">=3.10"
 dependencies = [
  
     "torch>=1.7.0",
