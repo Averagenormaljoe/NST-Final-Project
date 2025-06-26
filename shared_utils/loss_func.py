@@ -8,5 +8,7 @@ def get_loss_fn(loss_type="mse"):
         return keras.losses.MeanAbsoluteError()
     elif loss_type == "huber":
         return keras.losses.Huber()
+    elif loss_type == "cosine":
+        return keras.losses.CosineSimilarity()
     else:
         raise ValueError(f"Unknown loss type: {loss_type}")
