@@ -37,8 +37,8 @@ def image_read(image : ImageType) -> tf.Tensor:
   
   return new_image
 
-def get_cam(video_path):
-    if video_path is not None:
+def get_cam(camera_mode = True):
+    if camera_mode == True:
         cam = cv2.VideoCapture(0) 
     else:
         cam = cv2.VideoCapture(video_path)
@@ -48,4 +48,10 @@ def get_cam(video_path):
 def prepare_video_writer(output_path: str, frame_width: int, frame_height: int, fps: int,file_format : str = 'mp4v'):
     fourcc = cv2.VideoWriter_fourcc(*file_format)
     out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
-    return out
+    return 
+
+def release_video_writer(cam,out):
+    if out is not None:
+        cam.release()
+        out.release()
+        cv2.destroyAllWindows()
