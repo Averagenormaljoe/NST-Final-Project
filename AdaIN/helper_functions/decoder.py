@@ -40,7 +40,7 @@ def get_normalization_decoder():
                 kernel_size=3,
                 strides=1,
                 padding="same",
-                activation="tanh"  # Final layer – no BatchNorm here
+                activation="tanh" 
             ),
         ]
     )
