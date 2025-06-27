@@ -4,7 +4,7 @@ def get_mean_std(x, epsilon=1e-5):
 
     # Compute the mean and standard deviation of a tensor.
     mean, variance = tf.nn.moments(x, axes=axes, keepdims=True)
-    standard_deviation = tf.sqrt(variance + epsilon)
+    standard_deviation = tf.math.sqrt(tf.maximum(variance, 0.0) + epsilon)
     return mean, standard_deviation
 
 
