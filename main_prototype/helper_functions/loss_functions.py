@@ -61,11 +61,11 @@ def total_variation_loss(x,use_l2: bool = False):
         return total_variation_loss_l2(x)
     else:
         return total_variation_loss_l1(x)
-def ssim_loss(y_true, y_pred):
+def ssim_loss(x,y,nom_range: int = 1):
 
-    ssim_value = tf.image.ssim(y_true, y_pred, max_val=255.0)
+    ssim_value = tf.image.ssim(x,y, max_val=nom_range)
     return 1 - tf.reduce_mean(ssim_value)
 
-def psnr_loss(y_true, y_pred):
-    psnr_value = tf.image.psnr(y_true, y_pred, max_val=255.0)
+def psnr_loss(x,y,nom_range: int = 1):
+    psnr_value = tf.image.psnr(x,y, max_val=nom_range)
     return 1 - tf.reduce_mean(psnr_value)
