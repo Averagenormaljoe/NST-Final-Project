@@ -1,6 +1,5 @@
 import tensorflow as tf
 import keras
-from device_helper import get_device
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
@@ -28,10 +27,11 @@ def style_loss(style_img, combination_img,img_height: int, img_width : int):
  return tf.reduce_sum(tf.square(S - C)) / (4.0 * (channels ** 2) * (size ** 2))
 
 
-def compute_style_loss_with_consine_similarity(a, b):
-    a_flat = tf.reshape(a, [a.shape[0], -1])
-    b_flat = tf.reshape(b, [b.shape[0], -1])
-    sim = tf.reduce_mean(1 - tf.keras.losses.cosine_similarity(a_flat, b_flat))
+def compute_style_loss_with_consine_similarity(x, y):
+    x_flat = tf.reshape(x, [x.shape[0], -1])
+    y_flat = tf.reshape(y, [y.shape[0], -1])
+    cos = tf.keras.losses.cosine_similarity(x_flat, y_flat)
+    sim = tf.reduce_mean(1 - cos)
     return sim
 
 
