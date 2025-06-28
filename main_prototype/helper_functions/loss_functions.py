@@ -62,7 +62,6 @@ def total_variation_loss(x,use_l2: bool = False):
     else:
         return total_variation_loss_l1(x)
 def ssim_loss(x,y,nom_range: int = 1):
-
     ssim_value = tf.image.ssim(x,y, max_val=nom_range)
     return 1 - tf.reduce_mean(ssim_value)
 

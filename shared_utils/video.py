@@ -37,7 +37,7 @@ def image_read(image : ImageType) -> tf.Tensor:
   
   return new_image
 
-def get_cam(camera_mode = True):
+def get_cam(video_path: str,camera_mode = True):
     if camera_mode == True:
         cam = cv2.VideoCapture(0) 
     else:
