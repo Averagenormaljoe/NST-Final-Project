@@ -29,8 +29,6 @@ def get_gpu_power_usage():
     except:
         pass
 
-
-
 def process_command(command):
     output = subprocess.check_output(command)
     return int(output.decode('utf-8').strip())
