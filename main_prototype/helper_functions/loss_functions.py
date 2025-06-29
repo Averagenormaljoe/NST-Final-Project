@@ -19,13 +19,13 @@ def gram_matrix(x):
 def equal_blends(gram_matrices):
     return sum(gram_matrices) / len(gram_matrices)
 
-def style_loss(style_img, combination_img,img_height: int, img_width : int):
+def style_loss(style_img, combination_img,img_width : int,img_height: int):
  S = gram_matrix(style_img)
  C = gram_matrix(combination_img)
  channels = 3
  size = img_height * img_width
  diff_squared = tf.square(S - C)
- return tf.reduce_sum() / (4.0 * (channels ** 2) * (size ** 2))
+ return tf.reduce_sum(diff_squared) / (4.0 * (channels ** 2) * (size ** 2))
 
 
 def compute_style_loss_with_consine_similarity(x, y):
@@ -37,7 +37,7 @@ def compute_style_loss_with_consine_similarity(x, y):
 
 
 
-def high_pass_x_y(image, img_height: int = 224, img_width: int = 224,use_image_size: bool = True):
+def high_pass_x_y(image, img_width: int = 224,img_height: int = 224,use_image_size: bool = True):
     if use_image_size:
         x = tf.square(
         image[:, : img_height - 1, : img_width - 1, :] - image[:, 1:, : img_width - 1, :]

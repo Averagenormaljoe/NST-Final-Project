@@ -48,7 +48,7 @@ def get_cam(video_path: str,camera_mode = True):
 def prepare_video_writer(output_path: str, frame_width: int, frame_height: int, fps: int,file_format : str = 'mp4v'):
     fourcc = cv2.VideoWriter_fourcc(*file_format)
     out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
-    return 
+    return out
 
 def release_video_writer(cam,out):
     if out is not None:
