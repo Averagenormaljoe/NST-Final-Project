@@ -4,6 +4,10 @@ import keras
 def preprocess_image(image_path : str, img_width: int,img_height: int):
     img = keras.utils.load_img(
     image_path, target_size=(img_height, img_width))
+    img = convert_image(img)
+    return img
+
+def convert_image(img):
     img = keras.utils.img_to_array(img)
     img = np.expand_dims(img, axis=0)
     img = keras.applications.vgg19.preprocess_input(img)
