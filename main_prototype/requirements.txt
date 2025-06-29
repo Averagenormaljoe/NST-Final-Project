@@ -29,7 +29,6 @@ notebook==7.2.1
 notebook_shim==0.2.4
 numpy==2.0.0
 opencv-contrib-python==4.5.5.62
-opencv-contrib-python-headless==4.11.0.86
 pandas==2.2.3
 Pillow==10.0.0
 seaborn==0.13.0

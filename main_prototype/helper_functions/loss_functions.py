@@ -24,7 +24,8 @@ def style_loss(style_img, combination_img,img_height: int, img_width : int):
  C = gram_matrix(combination_img)
  channels = 3
  size = img_height * img_width
- return tf.reduce_sum(tf.square(S - C)) / (4.0 * (channels ** 2) * (size ** 2))
+ diff_squared = tf.square(S - C)
+ return tf.reduce_sum() / (4.0 * (channels ** 2) * (size ** 2))
 
 
 def compute_style_loss_with_consine_similarity(x, y):
