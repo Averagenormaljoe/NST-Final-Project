@@ -37,17 +37,9 @@ def compute_style_loss_with_consine_similarity(x, y):
 
 
 
-def high_pass_x_y(image, img_width: int = 224,img_height: int = 224,use_image_size: bool = True):
-    if use_image_size:
-        x = tf.square(
-        image[:, : img_height, : img_width, :] - image[:, 1:, : img_width, :]
-        )
-        y = tf.square(
-        image[:, : img_height , : img_width, :] - x[:, : img_height, 1:, :]
-        )
-    else:
-        x = image[:, :, 1:, :] - image[:, :, :-1, :]
-        y = image[:, 1:, :, :] - image[:, :-1, :, :]         
+def high_pass_x_y(image):
+    x = image[:, :, 1:, :] - image[:, :, :-1, :]
+    y = image[:, 1:, :, :] - image[:, :-1, :, :]         
     return x, y
 
 def total_variation_loss_l1(a,b):
@@ -55,8 +47,8 @@ def total_variation_loss_l1(a,b):
 
 def total_variation_loss_l2(a,b):
     return tf.reduce_sum(tf.pow(a + b, 1.25))
-def total_variation_loss(x,img_width : int,img_height : int,use_l2: bool = False,use_image_size: bool = True):
-    a,b = high_pass_x_y(x,img_width,img_height,use_image_size)
+def total_variation_loss(x,use_l2: bool = False):
+    a,b = high_pass_x_y(x)
     if use_l2:
         return total_variation_loss_l2(a,b)
     else:
