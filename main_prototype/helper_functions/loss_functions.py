@@ -40,28 +40,27 @@ def compute_style_loss_with_consine_similarity(x, y):
 def high_pass_x_y(image, img_width: int = 224,img_height: int = 224,use_image_size: bool = True):
     if use_image_size:
         x = tf.square(
-        image[:, : img_height - 1, : img_width - 1, :] - image[:, 1:, : img_width - 1, :]
+        image[:, : img_height, : img_width, :] - image[:, 1:, : img_width, :]
         )
         y = tf.square(
-        image[:, : img_height - 1, : img_width - 1, :] - x[:, : img_height - 1, 1:, :]
+        image[:, : img_height , : img_width, :] - x[:, : img_height, 1:, :]
         )
     else:
         x = image[:, :, 1:, :] - image[:, :, :-1, :]
         y = image[:, 1:, :, :] - image[:, :-1, :, :]         
     return x, y
 
-def total_variation_loss_l1(x):
-        a,b = high_pass_x_y(x)
+def total_variation_loss_l1(a,b):
         return tf.reduce_sum(tf.abs(a)) + tf.reduce_sum(tf.abs(b))
 
-def total_variation_loss_l2(x):
-    a,b = high_pass_x_y(x)
+def total_variation_loss_l2(a,b):
     return tf.reduce_sum(tf.pow(a + b, 1.25))
-def total_variation_loss(x,use_l2: bool = False):
+def total_variation_loss(x,img_width : int,img_height : int,use_l2: bool = False,use_image_size: bool = True):
+    a,b = high_pass_x_y(x,img_width,img_height,use_image_size)
     if use_l2:
-        return total_variation_loss_l2(x)
+        return total_variation_loss_l2(a,b)
     else:
-        return total_variation_loss_l1(x)
+        return total_variation_loss_l1(a,b)
 def ssim_loss(x,y,nom_range: int = 1):
     ssim_value = tf.image.ssim(x,y, max_val=nom_range)
     return 1 - tf.reduce_mean(ssim_value)
