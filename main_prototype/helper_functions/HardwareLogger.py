@@ -1,4 +1,6 @@
-from psutil import disk_usage
+import time
+import psutil
+from shared_utils.device import get_gpu_usage
 class HardwareLogger:
     def __init__(self,verbose : int = 0):
         self.verbose = verbose
@@ -16,7 +18,7 @@ class HardwareLogger:
             self.append("gpu",gpu)
         ram = psutil.virtual_memory().percent
         cpu = psutil.cpu_percent(interval=1)
-        disk = disk_usage('/').percent
+        disk = psutil.disk_usage('/').percent
             
         # append hardware usage statistics
         self.append("ram",ram)
