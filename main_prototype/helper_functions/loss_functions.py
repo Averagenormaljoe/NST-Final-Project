@@ -35,24 +35,39 @@ def compute_style_loss_with_consine_similarity(x, y):
     sim = tf.reduce_mean(1 - cos)
     return sim
 
+def extract_image_info(x,img_width,img_height):
+    a = tf.square(
+    x[:, : img_height - 1, : img_width - 1, :] - x[:, 1:, : img_width - 1, :]
+    )
+    b = tf.square(
+        x[:, : img_height - 1, : img_width - 1, :] - x[:, : img_height - 1, 1:, :]
+    )
+    return a,b
 
-
-def high_pass_x_y(image):
-    x = image[:, :, 1:, :] - image[:, :, :-1, :]
-    y = image[:, 1:, :, :] - image[:, :-1, :, :]         
+def high_pass_x_y(image, size = None):
+    if size:
+        x,y = extract_image_info(image,size[0],size[1])
+    else :
+        x = image[:, :, 1:, :] - image[:, :, :-1, :]
+        y = image[:, 1:, :, :] - image[:, :-1, :, :]         
     return x, y
 
+def total_variation_loss(x,use="gatys" ,size = None,):
+    a,b = high_pass_x_y(x, size = None)
+    if use == "gatys":
+        return total_variation_loss_gatys(a,b)
+    elif use == "l1":
+        return total_variation_loss_l1(a,b)
+    elif use == "l2":
+        return total_variation_loss_l2(a,b)
+    
+def total_variation_loss_gatys(a,b):
+    return tf.reduce_sum(tf.pow(a + b, 1.25))
 def total_variation_loss_l1(a,b):
         return tf.reduce_sum(tf.abs(a)) + tf.reduce_sum(tf.abs(b))
 
 def total_variation_loss_l2(a,b):
-    return tf.reduce_sum(tf.pow(a + b, 1.25))
-def total_variation_loss(x,use_l2: bool = False):
-    a,b = high_pass_x_y(x)
-    if use_l2:
-        return total_variation_loss_l2(a,b)
-    else:
-        return total_variation_loss_l1(a,b)
+    return tf.reduce_sum(tf.square(a)) + tf.reduce_sum(tf.square(b))
 def ssim_loss(x,y,nom_range: int = 1):
     ssim_value = tf.image.ssim(x,y, max_val=nom_range)
     return 1 - tf.reduce_mean(ssim_value)
