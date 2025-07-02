@@ -3,7 +3,8 @@ from math import comb
 import tensorflow as tf
 import keras
 from pytorch_msssim import ms_ssim
-
+from torch_fidelity import calculate_metrics
+import lpips
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
@@ -82,3 +83,21 @@ def psnr_loss(x,y,nom_range: int = 1):
 
 def ms_ssim_loss(base_image, combination_image):
     return 1 - ms_ssim(base_image,combination_image, data_range=1.0)  # Assuming normalized images
+def get_fid_loss(base_image, combination_image):
+    fid_loss = calculate_metrics(
+                input1=base_image.numpy(),
+                input2=combination_image.numpy(),
+                cuda=True,
+                verbose=False
+            )['frechet_inception_distance']
+    return fid_loss
+
+def get_lpips_loss(base_image, combination_image, loss_net='alex'):
+    loss_fn = lpips.LPIPS(net=loss_net) 
+    distance = loss_fn(base_image, combination_image)
+    return tf.reduce_mean(distance)
+def get_artfid_loss(base_image, combination_image):
+    fid_loss = get_fid_loss(base_image, combination_image)
+    distance = get_lpips_loss(base_image, combination_image)
+    artfid_value = (distance + 1) * (fid_loss + 1)
+    return artfid_value
