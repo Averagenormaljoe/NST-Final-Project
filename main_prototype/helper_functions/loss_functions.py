@@ -58,7 +58,7 @@ def high_pass_x_y(image, size = None):
     return x, y
 
 def total_variation_loss(x,use="gatys" ,size = None,):
-    a,b = high_pass_x_y(x, size = None)
+    a,b = high_pass_x_y(x, size)
     if use == "gatys":
         return total_variation_loss_gatys(a,b)
     elif use == "l1":
