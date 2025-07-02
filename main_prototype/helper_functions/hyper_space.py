@@ -1,3 +1,4 @@
+from itertools import product
 list_of_optimizers = ["adam", "sgd", "rmsprop", "adagrad", "adamax"]
 list_of_loss_networks = ["vgg19", "vgg16", "mobilenet", "resnet50", "inception_v3"]
 enable_clip = [True, False]
@@ -46,3 +47,5 @@ def get_hyperparameters():
         "weight_decays": list_of_weight_decays,
         "lpips_loss_nets": lpips_loss_nets
     }
+def grid_search_hyperparameters():
+    hyperparameters = get_hyperparameters()
