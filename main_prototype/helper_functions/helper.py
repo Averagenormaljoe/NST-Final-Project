@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import keras
+from skimage.exposure import match_histograms
 def preprocess_image(image_path : str, img_width: int,img_height: int):
     img = keras.utils.load_img(
     image_path, target_size=(img_height, img_width))
@@ -21,3 +22,7 @@ def deprocess_image(img,img_width : int,img_height : int):
     img = img[:, :, ::-1]
     img = np.clip(img, 0, 255).astype("uint8")
     return img
+
+def match_style_color_to_base(image, style):
+    matched = match_histograms(style, image, channel_axis=-1)
+    return matched
