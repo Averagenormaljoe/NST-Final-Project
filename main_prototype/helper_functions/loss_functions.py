@@ -101,3 +101,19 @@ def get_artfid_loss(base_image, combination_image):
     distance = get_lpips_loss(base_image, combination_image)
     artfid_value = (distance + 1) * (fid_loss + 1)
     return artfid_value
+def get_ISC_loss(base_image, combination_image):
+    isc_loss = calculate_metrics(
+                input1=base_image.numpy(),
+                input2=combination_image.numpy(),
+                cuda=True,
+                verbose=False
+            )['inception_score_mean']
+    return 1 - isc_loss
+def get_kernel_inception_distance(base_image, combination_image):
+    kernel_loss = calculate_metrics(
+                input1=base_image.numpy(),
+                input2=combination_image.numpy(),
+                cuda=True,
+                verbose=False
+            )['kernel_inception_distance_mean']
+    return 1 - kernel_loss
