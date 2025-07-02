@@ -8,9 +8,11 @@ import lpips
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
+
 def mean_style_loss(style_img, combination_img):
-    style_mean = tf.reduce_mean(style_img, axis=[1, 2])
-    combination_mean = tf.reduce_mean(combination_img, axis=[1, 2])
+    axes = [1, 2]
+    style_mean = tf.reduce_mean(style_img, axis=axes)
+    combination_mean = tf.reduce_mean(combination_img, axis=axes)
     return tf.reduce_mean(tf.square(style_mean - combination_mean))
 
 
@@ -101,7 +103,7 @@ def get_artfid_loss(base_image, combination_image):
     distance = get_lpips_loss(base_image, combination_image)
     artfid_value = (distance + 1) * (fid_loss + 1)
     return artfid_value
-def get_ISC_loss(base_image, combination_image):
+def get_isc_loss(base_image, combination_image):
     isc_loss = calculate_metrics(
                 input1=base_image.numpy(),
                 input2=combination_image.numpy(),
