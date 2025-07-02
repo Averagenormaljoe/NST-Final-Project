@@ -20,3 +20,29 @@ list_of_decay_steps = [100, 200, 300]
 list_of_decay_rates = [0.96, 0.98, 0.99]
 list_of_weight_decays = [1e-4, 1e-5, 1e-6]
 lpips_loss_nets = ["alex", "vgg", "squeeze"]
+
+def get_hyperparameters():
+    return {
+        "optimizers": list_of_optimizers,
+        "loss_networks": list_of_loss_networks,
+        "enable_clip": enable_clip,
+        "use_l2": use_l2,
+        "image_sizes": list_of_image_sizes,
+        "content_weights": list_of_content_weights,
+        "style_weights": list_of_style_weights,
+        "total_variation_weights": list_of_total_variation_weights,
+        "ssim_weights": list_of_ssim_weights,
+        "psnr_weights": list_of_psnr_weights,
+        "lpips_weights": list_of_lpips_weights,
+        "learning_rates": list_of_learning_rates,
+        "iterations": list_of_iterations,
+        "check_steps": list_of_check_steps,
+        "noise_strengths": list_of_noise_strengths,
+        "improvement_thresholds": list_of_improvement_thresholds,
+        "beta_1s": list_of_beta_1s,
+        "epsilons": list_of_epsilons,
+        "decay_steps": list_of_decay_steps,
+        "decay_rates": list_of_decay_rates,
+        "weight_decays": list_of_weight_decays,
+        "lpips_loss_nets": lpips_loss_nets
+    }
