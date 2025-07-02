@@ -93,6 +93,9 @@ def get_fid_loss(base_image, combination_image):
                 verbose=False
             )['frechet_inception_distance']
     return fid_loss
+def temporal_loss(base_image, combination_image):
+    return base_image - combination_image
+    
 
 def get_lpips_loss(base_image, combination_image, loss_net='alex'):
     loss_fn = lpips.LPIPS(net=loss_net) 
