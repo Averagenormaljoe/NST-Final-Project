@@ -1,5 +1,9 @@
+from email.mime import base
+from math import comb
 import tensorflow as tf
 import keras
+from pytorch_msssim import ms_ssim
+
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
@@ -75,3 +79,6 @@ def ssim_loss(x,y,nom_range: int = 1):
 def psnr_loss(x,y,nom_range: int = 1):
     psnr_value = tf.image.psnr(x,y, max_val=nom_range)
     return 1 - tf.reduce_mean(psnr_value)
+
+def ms_ssim_loss(base_image, combination_image):
+    return 1 - ms_ssim(base_image,combination_image, data_range=1.0)  # Assuming normalized images
