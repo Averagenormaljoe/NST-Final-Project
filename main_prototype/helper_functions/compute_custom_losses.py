@@ -17,21 +17,32 @@ def compute_custom_losses(base_image,combination_image,custom_losses = True, los
             lpips_weight = weights.get("lpips", 1.0)
             lpips_loss = get_lpips_loss(base_image, combination_image)
             loss += lpips_loss * lpips_weight
-        if "fid" in includes:
-            fid_weight = weights.get("fid", 1.0)
-            fid_loss = get_fid_loss(base_image, combination_image)
-            loss += fid_loss * fid_weight
-        if "artfid" in includes:
-            artfid_weight = weights.get("artfid", 1.0)
-            artfid_loss = get_artfid_loss(base_image, combination_image)
-            loss += artfid_loss * artfid_weight
-        if "isc" in includes:
-            is_weight = weights.get("isc", 1.0)
-            is_loss = get_isc_loss(base_image, combination_image)
-            loss += is_loss * is_weight
-        if "kid" in includes:
-            kernel_weight = weights.get("kid", 1.0)
-            kernel_loss = get_kernel_inception_distance(base_image, combination_image)
-            loss += kernel_loss * kernel_weight
+        loss += artfid_and_fid_losses(base_image, combination_image, includes, weights)
+        loss += isc_and_kid_losses(base_image, combination_image, includes, weights)
+       
         return loss
     return 0.0
+
+def artfid_and_fid_losses(base_image, combination_image, includes, weights: dict = {}) -> float:
+    loss = 0.0
+    if "artfid" in includes:
+        artfid_weight = weights.get("artfid", 1.0)
+        artfid_loss = get_artfid_loss(base_image, combination_image)
+        loss += artfid_loss * artfid_weight
+    if "fid" in includes:
+        fid_weight = weights.get("fid", 1.0)
+        fid_loss = get_fid_loss(base_image, combination_image)
+        loss += fid_loss * fid_weight
+    return loss
+
+def isc_and_kid_losses(base_image, combination_image, includes, weights: dict = {}) -> float:
+    loss = 0.0
+    if "isc" in includes:
+        isc_weight = weights.get("isc", 1.0)
+        isc_loss = get_isc_loss(base_image, combination_image)
+        loss += isc_loss * isc_weight
+    if "kid" in includes:
+        kid_weight = weights.get("kid", 1.0)
+        kid_loss = get_kernel_inception_distance(base_image, combination_image)
+        loss += kid_loss * kid_weight
+    return loss
