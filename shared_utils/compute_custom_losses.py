@@ -1,7 +1,6 @@
 from shared_utils.losses import get_isc_loss, get_fid_loss, get_kernel_inception_distance, get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss
 def compute_custom_losses(base_image,combination_image,custom_losses = True, loss_net = "alex", includes : list[str] = ["ssim", "psnr", "lpips"],weights : dict = {}) -> float:
     if includes is None or len(includes) == 0:
-        print("The 'includes' list variable is empty, thus no extra losses will be computed.")
         return 0.0
     if custom_losses:    
         loss = 0.0
