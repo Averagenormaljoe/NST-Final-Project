@@ -1,7 +1,7 @@
 import tensorflow as tf
 AUTOTUNE = tf.data.AUTOTUNE
+from helper_functions.helper import decode_and_resize,extract_image_from_voc
 import tensorflow_datasets as tfds
-from helper import decode_and_resize,extract_image_from_voc
 # Defining the global variables.
 BATCH_SIZE = 64
 
@@ -67,3 +67,4 @@ def get_train_ds(train_style_ds, train_content_ds, batch_size,autotune):
         .batch(batch_size)
         .prefetch(autotune)
     )
+    return train_ds

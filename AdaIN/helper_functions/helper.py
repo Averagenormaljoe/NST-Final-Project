@@ -1,6 +1,4 @@
-
 import tensorflow as tf
-import os
 IMAGE_SIZE = (224, 224)
 def decode_and_resize(image_path):
     """Decodes and resizes an image from the image file path.
