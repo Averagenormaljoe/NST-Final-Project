@@ -1,19 +1,18 @@
 import tensorflow as tf
-
 from torch_fidelity import calculate_metrics
 import lpips
 from pytorch_msssim import ms_ssim
 
-def ssim_loss(x,y,nom_range: int = 1):
-    ssim_value = tf.image.ssim(x,y, max_val=nom_range)
+def ssim_loss(x,y,val_range: float = 1):
+    ssim_value = tf.image.ssim(x,y, max_val=val_range)
     return 1 - tf.reduce_mean(ssim_value)
 
-def psnr_loss(x,y,nom_range: int = 1):
-    psnr_value = tf.image.psnr(x,y, max_val=nom_range)
+def psnr_loss(x,y,val_range: float = 1):
+    psnr_value = tf.image.psnr(x,y, max_val=val_range)
     return 1 - tf.reduce_mean(psnr_value)
 
-def ms_ssim_loss(base_image, combination_image):
-    return 1 - ms_ssim(base_image,combination_image, data_range=1.0)  # Assuming normalized images
+def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
+    return 1 - ms_ssim(base_image,combination_image, data_range=vars)  # Assuming normalized images
 def get_fid_loss(base_image, combination_image):
     fid_loss = calculate_metrics(
                 input1=base_image.numpy(),
@@ -24,7 +23,6 @@ def get_fid_loss(base_image, combination_image):
     return fid_loss
 def temporal_loss(base_image, combination_image):
     return base_image - combination_image
-    
 
 def get_lpips_loss(base_image, combination_image, loss_net='alex'):
     loss_fn = lpips.LPIPS(net=loss_net) 

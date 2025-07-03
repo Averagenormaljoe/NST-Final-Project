@@ -1,6 +1,4 @@
 import tensorflow as tf
-
-
 def get_device(GPU_in_use: int = 0, CPU_in_use: int = 0):
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:

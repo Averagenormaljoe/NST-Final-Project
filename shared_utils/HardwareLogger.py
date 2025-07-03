@@ -1,5 +1,6 @@
 import time
 import psutil
+import tensorflow as tf
 from shared_utils.device import get_gpu_usage
 class HardwareLogger:
     def __init__(self,verbose : int = 0):
@@ -24,6 +25,9 @@ class HardwareLogger:
         self.append("ram",ram)
         self.append("disk",disk)
         self.append("cpu",cpu)
+        
+        if self.verbose >= 1:
+            print(f"CPU: {cpu}%, GPU: {gpu}%, RAM Usage: {ram}%")
     def log_loss(self,loss,i):
         self.append("loss",loss)
         self.append("iterations",i)
@@ -41,8 +45,8 @@ class HardwareLogger:
         self.append("cpu time",cpu_time)
         self.append("wall time",wall_time)
         if self.verbose > 0:
-            print("CPU times in seconds: {:.2f}".format(cpu_time))
-            print("Wall time in seconds: {:.2f}".format(wall_time))
+            print(f"CPU times in seconds: {cpu_time:.2f}")
+            print(f"Wall time in seconds: {wall_time:.2f}")
     
     def log_end_check(self):
         cpu_time, wall_time = self.record_time_diff()
@@ -60,6 +64,30 @@ class HardwareLogger:
         if self.verbose > 0:
             print(f"Total wall time: {end_total_wall_time} seconds")
             print(f"Total CPU time: {end_total_time_cpu} seconds")
+            
     def get_log(self):
         return self.log_data
         
+class TFHardwareLogger(HardwareLogger):
+    
+    def __init__(self, verbose: int = 0):
+        super().__init__(verbose)
+        self.start_time = None
+        self.end_time = None
+        self.total_duration = 0
+ 
+    def train_end(self):
+        self.end_time = tf.timestamp()
+        if self.start_time is not None and self.end_time is not None:
+            train_duration = self.end_time - self.start_time
+            self.append("train duration",train_duration)
+            if self.verbose > 0:
+                print(f"Training duration: {train_duration:.2f} seconds")
+            self.total_duration += train_duration
+    def train_start(self):
+        self.reset_tf()
+        self.log_hardware()
+        
+    def reset_tf(self):
+        self.start_time = tf.timestamp()
+        self.end_time = None
