@@ -1,11 +1,7 @@
-
-
-import os
 import tensorflow as tf
 AUTOTUNE = tf.data.AUTOTUNE
 import tensorflow_datasets as tfds
-from fastai.data.external import untar_data
-from helper import get_style_images, decode_and_resize,extract_image_from_voc
+from helper import decode_and_resize,extract_image_from_voc
 # Defining the global variables.
 BATCH_SIZE = 64
 
@@ -58,13 +54,16 @@ def load_val_test_datasets(dataset_use: str, val_style, test_style, batch_size: 
     )
     
 
+ 
+
+
+    return val_ds, test_ds
+
+def get_train_ds(train_style_ds, train_content_ds, batch_size,autotune):
     # Zipping the style and content datasets.
     train_ds = (
         tf.data.Dataset.zip((train_style_ds, train_content_ds))
-        .shuffle(BATCH_SIZE * 2)
-        .batch(BATCH_SIZE)
-        .prefetch(AUTOTUNE)
+        .shuffle(batch_size * 2)
+        .batch(batch_size)
+        .prefetch(autotune)
     )
-
-
-    return val_ds, test_ds, train_ds
