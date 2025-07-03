@@ -67,6 +67,8 @@ class HardwareLogger:
             
     def get_log(self):
         return self.log_data
+    def get_name_log(self,key):
+        return self.log_data.get(key, [])
         
 class TFHardwareLogger(HardwareLogger):
     
