@@ -1,6 +1,4 @@
 import subprocess
-
-import comm
 def get_gpu_usage():
     try:
         command = ['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits']
