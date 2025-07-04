@@ -21,8 +21,7 @@ def get_fid_loss(base_image, combination_image):
                 verbose=False
             )['frechet_inception_distance']
     return fid_loss
-def temporal_loss(base_image, combination_image):
-    return base_image - combination_image
+
 
 def get_lpips_loss(base_image, combination_image, loss_net='alex'):
     loss_fn = lpips.LPIPS(net=loss_net) 
@@ -49,3 +48,12 @@ def get_kernel_inception_distance(base_image, combination_image):
                 verbose=False
             )['kernel_inception_distance_mean']
     return 1 - kernel_loss
+
+
+def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None):
+    diff = curr_stylized_frame - prev_stylized_frame
+    l2_diff = tf.square(diff)
+    if mask is not None:
+        l2_diff *= mask
+    mse = tf.reduce_mean(l2_diff)
+    return mse
