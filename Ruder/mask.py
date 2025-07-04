@@ -1,8 +1,33 @@
 from ctypes import cast
 import cv2
+from requests import get
 import tensorflow as tf
 import tensorflow_hub as hub
 import np
+import urllib
+import keras_hub
+def generate_mask(img,segmenter):
+  
+    mask = segmenter.predict(img)
+    return mask
+def start_process(img):
+    segmenter = get_segmenter()
+    mask = generate_mask(img, segmenter)
+
+    
+   
+def process_mask(mask, img):
+    mask = tf.image.resize(mask, (img.shape[0], img.shape[1]))
+    mask = tf.cast(mask, tf.float32)
+    mask = tf.expand_dims(mask, axis=-1)
+    mask = tf.image.grayscale_to_rgb(mask)
+    return mask          
+    
+def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
+    segmenter = keras_hub.models.DeepLabV3ImageSegmenter.from_preset(
+        url,  num_classes=2
+        )
+    return segmenter
 
 def optimal_flow(prev_img, next_img,prepared_flow , type='farneback', save_flow=False):
     if type == 'deepflow':
@@ -32,3 +57,9 @@ def warp_flow(img, flow,reverse=False):
     cast_flow[:,:,1] += np.arange(h)[:,np.newaxis]
     res = cv2.remap(img, cast_flow, None, cv2.INTER_LINEAR)
     return res
+
+def get_deeplab():
+
+    url, filename = ("https://github.com/pytorch/hub/raw/master/images/deeplab1.png", "deeplab1.png")
+    try: urllib.URLopener().retrieve(url, filename)
+    except: urllib.request.urlretrieve(url, filename)
