@@ -72,3 +72,11 @@ def total_variation_loss_l1(a,b):
 
 def total_variation_loss_l2(a,b):
     return tf.reduce_sum(tf.square(a)) + tf.reduce_sum(tf.square(b))
+
+def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None):
+    diff = curr_stylized_frame - prev_stylized_frame
+    l2_diff = tf.square(diff)
+    if mask is not None:
+        l2_diff *= mask
+    mse = tf.reduce_mean(l2_diff)
+    return mse
