@@ -13,6 +13,7 @@ def generate_mask(img,segmenter):
 def start_process(img):
     segmenter = get_segmenter()
     mask = generate_mask(img, segmenter)
+    
 
     
    

@@ -4,6 +4,9 @@
 
 StyleMotion is a real-time neural style transfer model that supports real-time, multi-neural style transfer, image-based and video-based style transfer. It can process videos up tp 900\*900 resolution.
 
+Neural style transfer is a process where two images: content and style image are supplied
+and the style of the second image is applied the the content image, generating a new image.
+
 ## Models
 
 ### AdaIN Model (StyleMotion)
@@ -13,7 +16,7 @@ The StyleMotion model is based on the [ReCoNet paper](https://arxiv.org/abs/1807
 ### Gatys et al. Model
 
 The Gatys model is based on the [Gatys et al. paper](https://arxiv.org/abs/1508.06576). This uses a different optimizer to original project (using ADAM rather than SGD).
-This model also supports neural
+This model also supports a simple version of multi-neural style transfer.
 
 ### Johnson et al. Model
 
@@ -37,13 +40,24 @@ restart it.
 
 ## Model locations
 
-AdaIN is stored in the 'AdaIN/' directory.
+AdaIN is stored in the 'AdaIN/' directory and its training it handle in the 'StyleMotion_adain.ipynb'.
 
-The gatys model is stored in the 'main_protoype/' directory
+The gatys model is stored in the 'main_protoype/' directory and its training it handle in the 'prototype.ipynb' file
 
 The Huang model is stored in the 'Huang/' directory.
 
-The Johnson al et model is stroed in the 'forward_feed/' directory.
+The Johnson al et model is stored in the 'forward_feed/' directory.
+
+## Code
+
+The 'shared_utils' directory is used to hold code that each of the models will used such as loss functions.
+
+## Steps for running the code
+
+1. Go into the respective directory for each model.
+2. Create a virtual environment in.
+3. Use pip install -r requirements.txt to download the dependencies required.
+4. Go to the notebook.
 
 ## Model Results
 
