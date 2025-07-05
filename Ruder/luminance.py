@@ -8,9 +8,10 @@ def get_xyz(img):
 
     xyz_float32 = tfio.experimental.color.rgb_to_xyz(img_float32)
 
-    # convert back uint8
+    # convert back to uint8
     xyz = tf.cast(xyz_float32 * 255.0, tf.uint8)
     return xyz
 def get_luminance(r,g,b):
     luminance = (0.2126*r + 0.7152*g + 0.0722*b)
     return luminance
+
