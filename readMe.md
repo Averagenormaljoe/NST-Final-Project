@@ -40,17 +40,23 @@ restart it.
 
 ## Model locations
 
-AdaIN is stored in the 'AdaIN/' directory and its training it handle in the 'StyleMotion_adain.ipynb'.
+AdaIN is stored in the 'AdaIN/' directory and its training is handle in the 'stylemotion_adain.ipynb'.
 
-The gatys model is stored in the 'main_protoype/' directory and its training it handle in the 'prototype.ipynb' file
+The gatys model is stored in the 'main_protoype/' directory and its training is handle in the 'prototype.ipynb' file
 
-The Huang model is stored in the 'Huang/' directory.
+The Huang model is stored in the 'Huang/' directory and its training is handle in the 'training.py' file.
 
-The Johnson al et model is stored in the 'forward_feed/' directory.
+The Johnson al et model is stored in the 'forward_feed/' directory and its training is handle in the 'training.py' file.
 
 ## Code
 
+### shared utils
+
 The 'shared_utils' directory is used to hold code that each of the models will used such as loss functions.
+
+#### files
+
+'device.py' holds code for getting hardware metrics such as 'RAM', 'CPU' and 'GPU' from the model.
 
 ## Steps for running the code
 
