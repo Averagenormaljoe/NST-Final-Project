@@ -2,6 +2,7 @@ from ctypes import cast
 import cv2
 from requests import get
 import tensorflow as tf
+from shared_utils.losses import temporal_loss
 import tensorflow_hub as hub
 import np
 import urllib
@@ -58,6 +59,12 @@ def warp_flow(img, flow,reverse=False):
     cast_flow[:,:,1] += np.arange(h)[:,np.newaxis]
     res = cv2.remap(img, cast_flow, None, cv2.INTER_LINEAR)
     return res
+
+def temporal_warping_error(prev_stylized_frame, curr_stylized_frame, flow, mask=None):
+    warped_prev = warp_flow(prev_stylized_frame, flow)
+    twe = temporal_loss(warped_prev, curr_stylized_frame, mask=mask)
+    return twe
+
 
 def get_deeplab():
 

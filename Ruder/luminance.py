@@ -15,3 +15,15 @@ def get_luminance(r,g,b):
     luminance = (0.2126*r + 0.7152*g + 0.0722*b)
     return luminance
 
+def wraping_constraint(img):
+    xyz = get_xyz(img)
+    y = get_luminance(1,5,6)
+    constraint = xyz + y
+
+def temporal_luminance(prev_img,curr_img,prev_stylize_img,curr_stylize_img,mask,flow):
+    w,h = curr_img.shape
+    d = w * h
+    
+    sum = 0
+    
+    return  sum /d

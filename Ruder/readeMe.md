@@ -8,3 +8,5 @@ https://stackoverflow.com/questions/21430938/rgb-to-xyz-in-scikit-image
 https://www.tensorflow.org/io/tutorials/colorspace
 https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color
 https://www.w3.org/WAI/GL/wiki/Relative_luminance#:~:text=Definition%20as%20Stated%20in%20WCAG%202.,-x&text=Note%201%3A%20For%20the%20sRGB,%2B0.055)%2F1.055)%20%5E%202.4
+
+Github models:

@@ -1,10 +1,14 @@
 from email.mime import base
 from math import comb
+import cv2
+from numpy import square
 import tensorflow as tf
 import keras
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
+def color_loss(base_img, combination_img):
+    return tf.reduce_mean(tf.square(combination_img - base_img))
 
 def mean_style_loss(style_img, combination_img):
     axes = [1, 2]
@@ -72,3 +76,6 @@ def total_variation_loss_l1(a,b):
 
 def total_variation_loss_l2(a,b):
     return tf.reduce_sum(tf.square(a)) + tf.reduce_sum(tf.square(b))
+
+
+    
