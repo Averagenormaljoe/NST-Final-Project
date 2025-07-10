@@ -26,3 +26,4 @@ def deprocess_image(img,img_width : int,img_height : int):
 def match_style_color_to_base(image, style):
     matched = match_histograms(style, image, channel_axis=-1)
     return matched
+

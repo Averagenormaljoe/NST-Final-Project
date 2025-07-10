@@ -57,6 +57,9 @@ class HardwareLogger:
         self.start_time_cpu = time.process_time()
         self.start_time_wall = time.time()
     def on_training_end(self):
+        self.ending_log()
+       
+    def ending_log(self):
         end_time_wall = time.time()
         end_time_cpu = time.process_time()
         end_total_wall_time = end_time_wall - self.total_wall_time
@@ -64,6 +67,7 @@ class HardwareLogger:
         if self.verbose > 0:
             print(f"Total wall time: {end_total_wall_time} seconds")
             print(f"Total CPU time: {end_total_time_cpu} seconds")
+        
             
     def get_log(self):
         return self.log_data
