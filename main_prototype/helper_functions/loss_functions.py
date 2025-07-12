@@ -7,7 +7,7 @@ import keras
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
-def color_loss(base_img, combination_img):
+def mse_loss(base_img, combination_img):
     return tf.reduce_mean(tf.square(combination_img - base_img))
 
 def mean_style_loss(style_img, combination_img):
