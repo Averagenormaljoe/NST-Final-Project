@@ -58,7 +58,8 @@ def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None):
         l2_diff *= mask
     D = float(prev_stylized_frame.size)
     mse = (1. / D) *  tf.reduce_mean(l2_diff)
-    return mse
+    tl = tf.cast(mse, tf.float32)
+    return tl
 
 
 
