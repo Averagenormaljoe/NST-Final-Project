@@ -71,6 +71,13 @@ def temporal_warping_error(prev_stylized_frame, curr_stylized_frame, flow, mask=
     twe = temporal_loss(warped_prev, curr_stylized_frame, mask=mask)
     return twe
 
+def long_term_temporal_loss(curr_stylized_frame, flow, mask=None,previous_stylized_frames=[]):    
+    loss = tf.zeros(shape=())
+    for prev_frame in previous_stylized_frames:
+
+        twe = temporal_warping_error(prev_frame, curr_stylized_frame, flow, mask=mask)
+        loss += twe
+    return loss
 
 def get_deeplab():
 
