@@ -42,6 +42,7 @@ def optimal_flow(prev_img, next_img,prepared_flow , type='farneback', save_flow=
     elif type == 'dis':
         dis = cv2.optflow.createOptFlow_DIS()
         flow = dis.calc(prev_img,next_img, None)
+
     
                 
     if save_flow:
@@ -60,6 +61,11 @@ def warp_flow(img, flow,reverse=False):
     res = cv2.remap(img, cast_flow, None, cv2.INTER_LINEAR)
     return res
 
+def feature_map_temporal_loss(prev_feature_map, curr_feature_map,flow, mask=None):
+    optimal_flow = warp_flow(prev_feature_map,flow) 
+    tl = temporal_loss(optimal_flow, curr_feature_map, mask=mask)
+    return tl
+
 def temporal_warping_error(prev_stylized_frame, curr_stylized_frame, flow, mask=None):
     warped_prev = warp_flow(prev_stylized_frame, flow)
     twe = temporal_loss(warped_prev, curr_stylized_frame, mask=mask)
@@ -71,3 +77,4 @@ def get_deeplab():
     url, filename = ("https://github.com/pytorch/hub/raw/master/images/deeplab1.png", "deeplab1.png")
     try: urllib.URLopener().retrieve(url, filename)
     except: urllib.request.urlretrieve(url, filename)
+

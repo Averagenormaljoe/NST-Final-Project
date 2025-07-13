@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from torch import T
 from torch_fidelity import calculate_metrics
 import lpips
 from pytorch_msssim import ms_ssim
@@ -51,17 +52,33 @@ def get_kernel_inception_distance(base_image, combination_image):
     return 1 - kernel_loss
 
 
-def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None):
-    diff = curr_stylized_frame - prev_stylized_frame
-    l2_diff = tf.square(diff)
+def square_or_l2(x, square: bool = True):
+    if square:
+        return tf.square(x)
+    else:
+        return tf.nn.l2_loss(x)
+
+
+
+
+
+def apply_mask(loss, mask=None):
     if mask is not None:
-        l2_diff *= mask
-    D = float(prev_stylized_frame.size)
-    mse = (1. / D) *  tf.reduce_mean(l2_diff)
+        loss *= mask
+    return loss
+
+def apply_mask_and_sum(img,loss, mask=None):
+    mask_loss = apply_mask(loss, mask)
+    D = float(img.size)
+    mse = (1. / D) *  tf.reduce_sum(mask_loss)
     tl = tf.cast(mse, tf.float32)
     return tl
 
-
+def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None, c = None):
+    diff = curr_stylized_frame - prev_stylized_frame
+    l2_diff = square_or_l2(diff,True)
+    tl = apply_mask_and_sum(prev_stylized_frame, l2_diff, mask)
+    return tl
 
 def temporal_loss_l2(x, w, c):
   c = c[np.newaxis,:,:,:]
