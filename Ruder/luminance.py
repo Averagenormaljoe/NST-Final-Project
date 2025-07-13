@@ -1,5 +1,6 @@
 from typing import final
 import numpy as np
+from sympy import im
 import tensorflow as tf
 from Ruder.mask import warp_flow
 from shared_utils.losses import  square_and_sum
@@ -20,17 +21,21 @@ def get_luminance(r,g,b):
 
 def wraping_constraint(img):
     xyz = get_xyz(img)
-    
-    y = get_luminance(1,5,6)
-    constraint = xyz + y
+    r,g,b = 1,2,3
+    x,y,z = 1,2,3
+
+
+    luminance = get_luminance(r,g,b)
+    y_with_luminance = y + luminance 
+    return x, y_with_luminance, z
 
 def temporal_relative_luminance_f1(prev_img,curr_img,prev_stylize_img,curr_stylize_img,mask,flow):
     prev_warped_stylize_img = warp_flow(prev_stylize_img, flow)
     prev_warped_img = warp_flow(prev_img, flow)
-    img_channels = curr_img.shape[-1]
-    r,g,b = img_channels
+    r,g,b = 1,2,3
+    img_channels = [r,g,b]
     y = get_luminance(r,g,b)
-    sum = 0
+    sum = tf.zeros(shape=())
     for c in img_channels:
         stylize_diff = curr_stylize_img -  prev_warped_stylize_img
         color_stylize_diff = stylize_diff * c
