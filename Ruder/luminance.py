@@ -2,6 +2,7 @@ from typing import final
 import numpy as np
 from sympy import im
 import tensorflow as tf
+from tqdm import trange
 from Ruder.mask import warp_flow
 from shared_utils.losses import  square_and_sum
 from skimage.color import rgb2xyz
@@ -48,3 +49,4 @@ def temporal_relative_luminance_f1(prev_img,curr_img,prev_stylize_img,curr_styli
         sum += square_and_sum(prev_img, final_diff, mask)
     mean = tf.reduce_mean(sum)
     return  mean
+

@@ -17,12 +17,23 @@ def mean_style_loss(style_img, combination_img):
     return tf.reduce_mean(tf.square(style_mean - combination_mean))
 
 
+import tensorflow as tf
+
+def covariance_matrix(features):
+    mean = tf.reduce_mean(features, axis=0, keepdims=True)
+    x_centered = features - mean
+    n = tf.cast(tf.shape(x_centered)[0] - 1, tf.float32)
+    mx = tf.matmul(tf.transpose(x_centered), x_centered)
+    cov_matrix = mx / n
+    return cov_matrix
 
 def gram_matrix(x):
  x = tf.transpose(x, (2, 0, 1))
  features = tf.reshape(x, (tf.shape(x)[0], -1))
  gram = tf.matmul(features, tf.transpose(features))
  return gram
+
+    
 
 def equal_blends(gram_matrices):
     return sum(gram_matrices) / len(gram_matrices)
