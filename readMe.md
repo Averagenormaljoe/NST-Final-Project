@@ -3,6 +3,7 @@
 ## Overview
 
 StyleMotion is a real-time neural style transfer model that supports real-time, multi-neural style transfer, image-based and video-based style transfer. It can process videos up tp 900\*900 resolution.
+This model is complemented with three other models for comparison purposes.
 
 Neural style transfer is a process where two images: content and style image are supplied
 and the style of the second image is applied the the content image, generating a new image.
@@ -11,7 +12,7 @@ and the style of the second image is applied the the content image, generating a
 
 ### AdaIN Model (StyleMotion)
 
-The StyleMotion model is based on the [ReCoNet paper](https://arxiv.org/abs/1807.01197) and the [AdaIN paper](https://arxiv.org/abs/1703.06868).
+The StyleMotion model is based on the [ReCoNet paper](https://arxiv.org/abs/1807.01197) and the [AdaIN paper](https://arxiv.org/abs/1703.06868). This supports video and multi-neural style transfer.
 
 ### Gatys et al. Model
 
@@ -24,7 +25,7 @@ The Johnson model is based on the [Johnson et al. paper](https://arxiv.org/abs/1
 
 ## Huang et al. Model
 
-The Huang model is based on the [Huang et al. paper](https://arxiv.org/abs/1703.06868).
+The Huang model is based on the [Huang et al. paper](https://arxiv.org/abs/1703.06868). This model also adapt the luminance constraint from the ReCoNet paper
 
 ## Streamlit Website
 
@@ -44,7 +45,7 @@ AdaIN is stored in the 'AdaIN/' directory and its training is handle in the 'sty
 
 The gatys model is stored in the 'main_protoype/' directory and its training is handle in the 'prototype.ipynb' file
 
-The Huang model is stored in the 'Huang/' directory and its training is handle in the 'training.py' file.
+The Huang model is stored in the 'Huang/' directory and its training is handle in the 'training.py' file. This also store methods such as the luminance constraint proposed by the ReCoNet paper.
 
 The Johnson al et model is stored in the 'forward_feed/' directory and its training is handle in the 'training.py' file.
 
@@ -56,21 +57,59 @@ The 'shared_utils' directory is used to hold code that each of the models will u
 
 #### files
 
-'device.py' holds code for getting hardware metrics such as 'RAM', 'CPU' and 'GPU' from the model.
+The 'device.py' file holds code for getting hardware metrics such as 'RAM', 'CPU' and 'GPU' from the model.
+
+The 'gatys_network.py' file holds code to return the network used by the Gatys model.
 
 ## Steps for running the code
 
+### Prerequisites
+
+Note this application was primarily tested in Windows, meaning that MacOS and Linux operations may work differently.
+
+1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
+2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.
+3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
+
+### Instructions
+
 1. Go into the respective directory for each model.
-2. Create a virtual environment in.
-3. Use pip install -r requirements.txt to download the dependencies required.
-4. Go to the notebook.
+2. Create a virtual environment in by running 'python -m venv venv' or 'virtualenv venv' in the terminal
+3. activate the environment with:
+
+venv\Scripts\activate (Windows) or source venv\Scripts\activate (MacOS and Linux).
+
+source venv/Scripts/activate (Win&Bash).
+
+4. Use pip install -r requirements.txt to download the dependencies required.
+5. Go to the notebook. For main_prototype, it is the 'prototype.ipynb' file.
+6. Select the 'run all' command at the top of the notebook
+7. To deactivate the environment run:
+
+'deactivate'
 
 ## Model Results
 
 ### AdaIN Model (StyleMotion)
 
+#### Portfolio
+
+#### Table
+
 ### Gatys et al. Model
+
+#### Portfolio
+
+#### Table
 
 ### Johnson et al. Model
 
-## Huang et al. Model
+#### Portfolio
+
+#### Table
+
+### Huang et al. Model
+
+#### Portfolio
+
+#### Table
