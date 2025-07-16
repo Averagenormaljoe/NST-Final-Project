@@ -83,7 +83,7 @@ class TFHardwareLogger(HardwareLogger):
         self.total_duration = 0
  
     def train_end(self):
-        self.end_time = tf.timestamp().numpy()
+        self.end_time = time.time()
         if self.start_time is not None and self.end_time is not None:
             train_duration = self.end_time - self.start_time
             self.append("train duration",train_duration)
@@ -95,5 +95,5 @@ class TFHardwareLogger(HardwareLogger):
         self.log_hardware()
         
     def reset_tf(self):
-        self.start_time = tf.timestamp().numpy()
+        self.start_time = time.time()
         self.end_time = None
