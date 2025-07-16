@@ -53,13 +53,15 @@ The Johnson al et model is stored in the 'forward_feed/' directory and its train
 
 ### StyleMotion (AdaIN)
 
+The main StyleMotion prototype. Code is adapted from tensorflow website [2].
+
 ### Ruber
 
 'main.ipynb' file is the main entry point notebook for the folder.
 
 ### main_prototype (Gatys)
 
-'prototype.ipynb' file is the main entry point notebook for the folder.
+    'prototype.ipynb' file is the main entry point notebook for the folder. Code is adapted from Chollet F book [1].
 
 ### forward_feed (Johnson)
 
@@ -127,3 +129,8 @@ source venv/Scripts/activate (Win&Bash).
 #### Portfolio
 
 #### Table
+
+## References
+
+1. F. Chollet. 2018. Deep Learning with Python. Manning Publications.
+2. A. R. Gosthipaty and R. Raha. 2021. Neural style transfer with AdaIN. Keras Documentation. Retrieved June 16, 2025 from https://keras.io/examples/generative/adain
