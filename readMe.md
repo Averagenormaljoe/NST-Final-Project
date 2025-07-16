@@ -51,19 +51,23 @@ The Johnson al et model is stored in the 'forward_feed/' directory and its train
 
 ## Code
 
-### StyleMotion (AdaIN)
+## General code
+
+'setup.py' exists for compatibility purposes for the pyproject.toml file in each directory of the project.
+
+### StyleMotion (AdaIN) - "AdaIN" directory
 
 The main StyleMotion prototype. Code is adapted from tensorflow website [2].
 
-### Ruber
+### Ruber - "Ruber" directory
 
 'main.ipynb' file is the main entry point notebook for the folder.
 
-### main_prototype (Gatys)
+### main_prototype (Gatys) - "main_prototype" directory
 
-    'prototype.ipynb' file is the main entry point notebook for the folder. Code is adapted from Chollet F book [1].
+'prototype.ipynb' file is the main entry point notebook for the folder. Code is adapted from Chollet F book [1].
 
-### forward_feed (Johnson)
+### forward_feed (Johnson) - "forward_feed" directory
 
 'main.ipynb' file is the main entry point notebook for the folder.
 
@@ -86,16 +90,18 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
 2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.
 3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
+4. Running this in an IDE (VScode or PyCharm) or JupyterLabs is the recommended option for running these notebooks.
 
 ### Instructions
 
-1. Go into the respective directory for each model.
-2. Create a virtual environment in by running 'python -m venv venv' or 'virtualenv venv' in the terminal
+1. Go into the respective directory for each model. Use the 'cd [directory_name]' command for to navigate to the directory  
+   in the terminal.
+2. Create a virtual environment in by running 'python -m venv venv' or 'virtualenv venv' in the terminal.
 3. activate the environment with:
 
-venv\Scripts\activate (Windows) or source venv\Scripts\activate (MacOS and Linux).
+'venv\Scripts\activate' (Windows) or 'source venv\Scripts\activate' (MacOS and Linux).
 
-source venv/Scripts/activate (Win&Bash).
+'source venv/Scripts/activate' (Win&Bash).
 
 4. Use pip install -r requirements.txt to download the dependencies required.
 5. Go to the notebook. For main_prototype, it is the 'prototype.ipynb' file.
