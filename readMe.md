@@ -3,7 +3,7 @@
 ## Overview
 
 StyleMotion is a real-time neural style transfer model that supports real-time, multi-neural style transfer, image-based and video-based style transfer. It can process videos up tp 900\*900 resolution.
-This model is complemented with three other models for comparison purposes.
+This model is complemented with three other models for comparison purposes (Gatys, Johnson and Huang).
 
 Neural style transfer is a process where two images: content and style image are supplied
 and the style of the second image is applied the the content image, generating a new image.
@@ -50,6 +50,20 @@ The Huang model is stored in the 'Huang/' directory and its training is handle i
 The Johnson al et model is stored in the 'forward_feed/' directory and its training is handle in the 'training.py' file.
 
 ## Code
+
+### StyleMotion (AdaIN)
+
+### Ruber
+
+'main.ipynb' file is the main entry point notebook for the folder.
+
+### main_prototype (Gatys)
+
+'prototype.ipynb' file is the main entry point notebook for the folder.
+
+### forward_feed (Johnson)
+
+'main.ipynb' file is the main entry point notebook for the folder.
 
 ### shared utils
 
