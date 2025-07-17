@@ -22,6 +22,8 @@
       - [files](#files)
   - [Steps for running the code](#steps-for-running-the-code)
     - [Prerequisites](#prerequisites)
+      - [Installations](#installations)
+      - [Cloning the repository](#cloning-the-repository)
     - [Instructions](#instructions)
   - [Model Results](#model-results)
     - [AdaIN Model (StyleMotion)](#adain-model-stylemotion-1)
@@ -129,12 +131,19 @@ The 'gatys_network.py' file holds code to return the network used by the Gatys m
 
 ### Prerequisites
 
+#### Installations
+
 Note this application was primarily tested in Windows, meaning that MacOS and Linux operations may work differently.
 
 1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
 2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.
 3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
 4. Running this in an IDE (VScode or PyCharm) or JupyterLabs is the recommended option for running these notebooks.
+
+#### Cloning the repository
+
+1. `git clone https://github.com/Averagenormaljoe/Neural-Style-Transfer`
+2. `cd Neural-Style-Transfer`
 
 ### Instructions
 
