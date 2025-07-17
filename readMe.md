@@ -193,6 +193,8 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 Adding Ruber and Johnson model to the project.
 
+Creating tests for the .py files using pytest.
+
 ### Google Colab
 
 For easier usage, use the Google Colab examples of the notebooks, which require minimal setup prior to using them.
