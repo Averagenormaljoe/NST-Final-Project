@@ -136,6 +136,10 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 #### Table
 
+## To-Do
+
+Adding Ruber and Johnson model to the project.
+
 ## References
 
 1. F. Chollet. 2018. Deep Learning with Python. Manning Publications.

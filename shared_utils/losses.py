@@ -74,10 +74,15 @@ def apply_mask_and_sum(img,loss, mask=None):
     tl = tf.cast(mse, tf.float32)
     return tl
 
-def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None, c = None):
+def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None):
     diff = curr_stylized_frame - prev_stylized_frame
     l2_diff = square_or_l2(diff,True)
     tl = apply_mask_and_sum(prev_stylized_frame, l2_diff, mask)
+    return tl
+
+def square_and_sum(img,diff, mask=None):
+    l2_diff = square_or_l2(diff,True)
+    tl = apply_mask_and_sum(img, l2_diff, mask)
     return tl
 
 def temporal_loss_l2(x, w, c):
