@@ -1,4 +1,48 @@
-# StyleMotion - A Model with a Interactive User Interface for Filmmakers
+# StyleMotion - A Model with a Interactive User Interface for
+
+## Table of contents
+
+- [StyleMotion - A Model with a Interactive User Interface for](#stylemotion---a-model-with-a-interactive-user-interface-for)
+  - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Models](#models)
+    - [AdaIN Model (StyleMotion)](#adain-model-stylemotion)
+    - [Gatys et al. Model](#gatys-et-al-model)
+    - [Johnson et al. Model](#johnson-et-al-model)
+  - [Huang et al. Model](#huang-et-al-model)
+  - [Streamlit Website](#streamlit-website)
+  - [Model locations](#model-locations)
+  - [Code](#code)
+  - [General code](#general-code)
+    - [StyleMotion (AdaIN) - "AdaIN" directory](#stylemotion-adain---adain-directory)
+    - [Ruber - "Ruber" directory](#ruber---ruber-directory)
+    - [main_prototype (Gatys) - "main_prototype" directory](#main_prototype-gatys---main_prototype-directory)
+    - [forward_feed (Johnson) - "forward_feed" directory](#forward_feed-johnson---forward_feed-directory)
+    - [shared utils](#shared-utils)
+      - [files](#files)
+  - [Steps for running the code](#steps-for-running-the-code)
+    - [Prerequisites](#prerequisites)
+    - [Instructions](#instructions)
+  - [Model Results](#model-results)
+    - [AdaIN Model (StyleMotion)](#adain-model-stylemotion-1)
+      - [Portfolio](#portfolio)
+      - [Table](#table)
+    - [Gatys et al. Model](#gatys-et-al-model-1)
+      - [Portfolio](#portfolio-1)
+      - [Table](#table-1)
+    - [Johnson et al. Model](#johnson-et-al-model-1)
+      - [Portfolio](#portfolio-2)
+      - [Table](#table-2)
+    - [Huang et al. Model](#huang-et-al-model-1)
+      - [Portfolio](#portfolio-3)
+      - [Table](#table-3)
+  - [To-Do](#to-do)
+    - [Google Colab](#google-colab)
+    - [AdaIN Model (StyleMotion)](#adain-model-stylemotion-2)
+    - [Gatys et al. Model](#gatys-et-al-model-2)
+    - [Johnson et al. Model](#johnson-et-al-model-2)
+    - [Huang et al. Model](#huang-et-al-model-2)
+  - [References](#references)
 
 ## Overview
 
@@ -139,6 +183,18 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 ## To-Do
 
 Adding Ruber and Johnson model to the project.
+
+### Google Colab
+
+For easier usage, use the Google Colab examples of the notebooks, which require minimal setup prior to using them.
+
+### AdaIN Model (StyleMotion)
+
+### Gatys et al. Model
+
+### Johnson et al. Model
+
+### Huang et al. Model
 
 ## References
 
