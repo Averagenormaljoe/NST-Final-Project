@@ -13,7 +13,7 @@ def get_style_images(on_kaggle : bool = True):
         style_images = retrieve_style_image("/content/artwork/resized")
         return style_images
 
-def split_style_images(on_kaggle):
+def split_style_images(on_kaggle : bool):
     style_images = get_style_images(on_kaggle)
     total_style_images = len(style_images)
     train_style = style_images[: int(0.8 * total_style_images)]

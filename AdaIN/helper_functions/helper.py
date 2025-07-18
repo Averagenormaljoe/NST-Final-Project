@@ -10,7 +10,7 @@ def decode_and_resize(image_path):
         A resized image.
     """
     image = tf.io.read_file(image_path)
-    channels = 3
+    channels : int = 3
     image = tf.image.decode_jpeg(image, channels=channels)
     image = tf.image.convert_image_dtype(image, dtype="float32")
     image = tf.image.resize(image, IMAGE_SIZE)

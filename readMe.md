@@ -44,6 +44,9 @@
     - [Gatys et al. Model](#gatys-et-al-model-2)
     - [Johnson et al. Model](#johnson-et-al-model-2)
     - [Huang et al. Model](#huang-et-al-model-2)
+  - [Speed](#speed)
+  - [Issues](#issues)
+  - [Requirements](#requirements)
   - [References](#references)
 
 ## Overview
@@ -101,6 +104,8 @@ The Johnson al et model is stored in the 'forward_feed/' directory and its train
 
 'setup.py' exists for compatibility purposes for the pyproject.toml file in each directory of the project.
 
+The 'Tests' folder in each directory are used to test the '.py' files using pytest.
+
 ### StyleMotion (AdaIN) - "AdaIN" directory
 
 The main StyleMotion prototype. Code is adapted from tensorflow website [2].
@@ -137,6 +142,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
 2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.
+   'pip' can also be upgrade with the 'pip install --upgrade pip' command.
 3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
 4. Running this in an IDE (VScode or PyCharm) or JupyterLabs is the recommended option for running these notebooks.
 
@@ -199,6 +205,8 @@ Creating tests for the .py files using pytest.
 
 For easier usage, use the Google Colab examples of the notebooks, which require minimal setup prior to using them.
 
+Note, it is recommended to use a GPU and select Python 3 as the runtime. It can run on CPU but is significantly slower.
+
 ### AdaIN Model (StyleMotion)
 
 ### Gatys et al. Model
@@ -206,6 +214,15 @@ For easier usage, use the Google Colab examples of the notebooks, which require 
 ### Johnson et al. Model
 
 ### Huang et al. Model
+
+## Speed
+
+## Issues
+
+## Requirements
+
+CUDA (GPU) -- Recommended
+CUDNN (GPU) -- Recommended
 
 ## References
 
