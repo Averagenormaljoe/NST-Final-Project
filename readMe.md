@@ -148,8 +148,9 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 #### Cloning the repository
 
-1. `git clone https://github.com/Averagenormaljoe/Neural-Style-Transfer`
-2. `cd Neural-Style-Transfer`
+1. Verify that git is installed with `git --version`. If not, then install it from [https://git-scm.com/](https://git-scm.com/) website.
+2. `git clone https://github.com/Averagenormaljoe/Neural-Style-Transfer`
+3. `cd Neural-Style-Transfer`
 
 ### Instructions
 
