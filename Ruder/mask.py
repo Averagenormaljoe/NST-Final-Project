@@ -1,7 +1,9 @@
 from ctypes import cast
+from time import time
 import cv2
 from requests import get
 import tensorflow as tf
+from tqdm import trange
 from shared_utils.losses import temporal_loss
 import tensorflow_hub as hub
 import np
@@ -78,6 +80,17 @@ def long_term_temporal_loss(curr_stylized_frame, flow, mask=None,previous_styliz
         twe = temporal_warping_error(prev_frame, curr_stylized_frame, flow, mask=mask)
         loss += twe
     return loss
+
+
+def multi_pass(n_pass,):
+    tick = time()
+    pass_time = []
+    for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
+        pass
+      
+    tock = time()
+    print(f"Multi-pass process ({tock - tick:.2f}) seconds")
+    
 
 def get_deeplab():
 

@@ -116,7 +116,8 @@ The main StyleMotion prototype. Code is adapted from tensorflow website [2].
 
 ### main_prototype (Gatys) - "main_prototype" directory
 
-'prototype.ipynb' file is the main entry point notebook for the folder. Code is adapted from Chollet F book [1].
+'prototype.ipynb' file is the main entry point notebook for the folder. Code is adapted from Chollet F book [1]. When this file finish, running  
+it outputs the created images into the 'images' directory, which it will create if it does not exist.
 
 ### forward_feed (Johnson) - "forward_feed" directory
 
@@ -201,6 +202,8 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 Adding Ruber and Johnson model to the project.
 
 Creating tests for the .py files using pytest.
+
+Implement the project in tensorflow.
 
 ### Google Colab
 
