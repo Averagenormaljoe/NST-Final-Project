@@ -4,6 +4,7 @@ import cv2
 from requests import get
 import tensorflow as tf
 from tqdm import trange
+from Ruder import wrap
 from shared_utils.losses import temporal_loss
 import tensorflow_hub as hub
 import np
@@ -82,12 +83,28 @@ def long_term_temporal_loss(curr_stylized_frame, flow, mask=None,previous_styliz
     return loss
 
 
-def multi_pass(n_pass,):
+def multi_pass(n_pass,frames,flow):
     tick = time()
     pass_time = []
+        
+
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
-        pass
-      
+        direction = "f" if j % 2 == 0 else "b"
+        if direction == "f":
+            for i in trange(0, frames, desc=f"Processing frames in pass {j+1} ({direction})"):
+                if i == 0:
+                    init_img = get_content_noise(frames[i])
+                else:
+                    wrap_img = warp_flow(init_img, flow)
+                    init_img = wrap_img + frames[i]
+                
+                y =   * init_img
+        else:
+            if direction == "backward":
+                for i in trange(0, frames, desc=f"Processing frames in pass {j+1}"):
+                    if i == frames:
+                        init_img = get_content_noise(frames[i])
+        
     tock = time()
     print(f"Multi-pass process ({tock - tick:.2f}) seconds")
     

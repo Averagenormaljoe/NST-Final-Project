@@ -47,6 +47,7 @@
   - [Speed](#speed)
   - [Issues](#issues)
   - [Requirements](#requirements)
+  - [Youtube Link](#youtube-link)
   - [References](#references)
 
 ## Overview
@@ -227,6 +228,8 @@ Note, it is recommended to use a GPU and select Python 3 as the runtime. It can 
 
 CUDA (GPU) -- Recommended
 CUDNN (GPU) -- Recommended
+
+## Youtube Link
 
 ## References
 
