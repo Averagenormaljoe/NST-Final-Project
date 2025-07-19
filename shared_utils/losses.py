@@ -3,7 +3,7 @@ import tensorflow as tf
 from torch import T
 from torch_fidelity import calculate_metrics
 import lpips
-from pytorch_msssim import ms_ssim
+
 
 def ssim_loss(x,y,val_range: float = 1):
     ssim_value = tf.image.ssim(x,y, max_val=val_range)
@@ -14,7 +14,8 @@ def psnr_loss(x,y,val_range: float = 1):
     return 1 - tf.reduce_mean(psnr_value)
 
 def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
-    return 1 - ms_ssim(base_image,combination_image, data_range=vars)  # Assuming normalized images
+    mm_ssim = tf.image.ssim_multiscale(base_image,combination_image, max_val=val_range)  
+    return 1 - tf.reduce_mean(mm_ssim)
 def get_fid_loss(base_image, combination_image):
     fid_loss = calculate_metrics(
                 input1=base_image.numpy(),
