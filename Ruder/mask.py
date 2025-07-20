@@ -1,7 +1,5 @@
-from ctypes import cast
 from time import time
 import cv2
-from requests import get
 import tensorflow as tf
 from tqdm import trange
 from Ruder import wrap

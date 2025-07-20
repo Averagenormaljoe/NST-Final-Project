@@ -1,9 +1,6 @@
-from email.mime import base
 from math import comb
-import cv2
 from numpy import square
 import tensorflow as tf
-import keras
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 

@@ -66,7 +66,7 @@ The StyleMotion model is based on the [ReCoNet paper](https://arxiv.org/abs/1807
 
 ### Gatys et al. Model
 
-The Gatys model is based on the [Gatys et al. paper](https://arxiv.org/abs/1508.06576). This uses a different optimizer to original project (using ADAM rather than SGD).
+The Gatys model is based on the [Gatys et al. paper](https://doi.org/10.1109/CVPR.2016.265). This uses a different optimizer to original project (using ADAM rather than SGD).
 This model also supports a simple version of multi-neural style transfer.
 
 ### Johnson et al. Model
