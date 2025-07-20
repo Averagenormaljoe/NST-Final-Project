@@ -226,6 +226,8 @@ Note, it is recommended to use a GPU and select Python 3 as the runtime. It can 
 
 ## Requirements
 
+It is recommended to run this application on a GPU instead of a CPU, as it is significantly faster.
+
 CUDA (GPU) -- Recommended
 CUDNN (GPU) -- Recommended
 

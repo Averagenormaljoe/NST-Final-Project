@@ -7,7 +7,6 @@ def load_mask(mask_path, shape):
     width, height, _ = shape
     mask = imresize(mask, (width, height), interp='bicubic').astype('float32')
 
-
     mask[mask <= 127] = 0
     mask[mask > 128] = 255
 
@@ -16,13 +15,3 @@ def load_mask(mask_path, shape):
 
     return mask
 
-
-def mask_content(content, generated, mask):
-    width, height, channels = generated.shape
-
-    for i in range(width):
-        for j in range(height):
-            if mask[i, j] == 0.:
-                generated[i, j, :] = content[i, j, :]
-
-    return generated
