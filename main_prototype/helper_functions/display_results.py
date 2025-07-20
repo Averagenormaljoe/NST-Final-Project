@@ -31,7 +31,8 @@ def display_use_NST_img(image_paths,config):
     plt.show()
     optimizer = config.get('optimizer', '')
     loss_network = config.get('ln', '')
-    plt.text(0.5, -0.1, f"Optimizer: {optimizer}, Loss Network: {loss_network}", ha='center', fontsize=12)
+    lr = config.get('lr', '')
+    plt.text(0.5, -0.1, f"Optimizer: {optimizer}, Loss Network: {loss_network}, Learning Rate: {lr}", ha='center', fontsize=12)
 
 
 def display_NST_results(generated_images, best_image, iterations, losses, image_path,config = {}):
