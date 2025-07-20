@@ -1,11 +1,9 @@
-import re
 import tf2onnx
 import onnx
 import coremltools
 import tensorflowjs as tfjs
 import tensorflow as tf
-import os
-from helper import create_dir
+from shared_utils.helper import create_dir
 def convert_to_onnx(model,image_size=(224, 224),name="StyleMotion"):
     signature =  (tf.TensorSpec((None, *image_size, 3), tf.float32, name="input"),)
     folder_path : str = "onnx"
