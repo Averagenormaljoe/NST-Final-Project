@@ -1,5 +1,3 @@
-from math import comb
-from numpy import square
 import tensorflow as tf
 def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
