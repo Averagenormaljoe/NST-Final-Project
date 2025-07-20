@@ -11,7 +11,7 @@ def display_image(img):
     plt.imshow(img)
     plt.axis("off")
 
-def display_use_NST_img(image_paths):   
+def display_use_NST_img(image_paths,config):   
     content_path, style_path = image_paths
 
     content_img = open_file(content_path)
@@ -29,10 +29,13 @@ def display_use_NST_img(image_paths):
     plt.title("Style image")
     plt.tight_layout()
     plt.show()
+    optimizer = config.get('optimizer', '')
+    loss_network = config.get('ln', '')
+    plt.text(0.5, -0.1, f"Optimizer: {optimizer}, Loss Network: {loss_network}", ha='center', fontsize=12)
 
 
-def display_NST_results(generated_images, best_image, iterations, losses, image_path):
-    display_use_NST_img(image_path)
+def display_NST_results(generated_images, best_image, iterations, losses, image_path,config = {}):
+    display_use_NST_img(image_path,config)
     plt.figure(figsize=(12, 12))
     start_index = 0
     num = len(generated_images)
