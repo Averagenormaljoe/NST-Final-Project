@@ -68,7 +68,8 @@ class HardwareLogger:
             print(f"Total wall time: {end_total_wall_time} seconds")
             print(f"Total CPU time: {end_total_time_cpu} seconds")
         
-            
+    def clear_log(self):
+        self.log_data.clear()
     def get_log(self):
         return self.log_data
     def get_name_log(self,key):

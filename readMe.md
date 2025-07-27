@@ -165,7 +165,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 'source venv/Scripts/activate' (Win&Bash).
 
-4. Use pip install -r requirements.txt to download the dependencies required.
+4. Use 'pip install -r requirements.txt' to download the dependencies required.
 5. Go to the notebook. For main_prototype, it is the 'prototype.ipynb' file.
 6. Select the 'run all' command at the top of the notebook
 7. To deactivate the environment run:
@@ -230,6 +230,18 @@ It is recommended to run this application on a GPU instead of a CPU, as it is si
 
 CUDA (GPU) -- Recommended
 CUDNN (GPU) -- Recommended
+
+## Mimimum Compute Setup
+
+Minimum GPU: NVIDIA GTX 1060 or equivalent (6GB VRAM).
+
+Minimum CPU: Intel i3 with 8GB memory or equivalent (8GB, 2 to 4 cores).
+
+## Recommended compute Setup
+
+Recommended GPU: NVIDIA RTX 3060/3070 or higher (12GB+ VRAM).
+
+Recommended CPU: Intel i3 with 8GB memory or equivalent (Efficient cores: 2.5 GHz, Performance cores: 3.4 GHz, 12 to 20 cores).
 
 ## Youtube Link
 
