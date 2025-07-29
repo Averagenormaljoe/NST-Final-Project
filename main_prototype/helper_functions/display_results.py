@@ -36,7 +36,7 @@ def display_use_NST_img(fig : Figure,image_paths,config):
     ax_meta.text(0.5, -0.1, f"Optimizer: {optimizer}, Loss Network: {loss_network}, Learning Rate: {lr}", ha='center', fontsize=12)
 
 
-def display_NST_results(generated_images, best_image, iterations, losses, image_paths,config = {}, img_range = (0, 10)):
+def display_NST_results(generated_images, best_image, iterations, losses, image_paths,config = {}, img_range = range(0, 10)):
 
     save_dir = "evaluation_images"
     os.makedirs(save_dir, exist_ok=True)
