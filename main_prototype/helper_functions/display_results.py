@@ -41,11 +41,13 @@ def display_NST_results(generated_images, best_image, iterations, losses, image_
     start_index = 0
     num = len(generated_images)
     plot_start = 1
-    for i in range(num):
-        plt.subplot(4, 3, i + plot_start)
-        display_image(generated_images[i + start_index])
-        plt.title(f"Loss: {losses[i + start_index]:.2f}, Iterations: {iterations[i + start_index]}", fontsize=10)
-    plt.show()
+    include = config.get('include_pics', True)
+    if include:
+        for i in range(num):
+            plt.subplot(4, 3, i + plot_start)
+            display_image(generated_images[i + start_index])
+            plt.title(f"Loss: {losses[i + start_index]:.2f}, Iterations: {iterations[i + start_index]}", fontsize=10)
+        plt.show()
 
 
     plt.figure(figsize=(8, 8))
