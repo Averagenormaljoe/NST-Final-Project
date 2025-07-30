@@ -33,7 +33,8 @@ class HardwareLogger:
         self.append("iterations",i)
         if self.verbose > 0:
             print(f"Iteration {i}: loss={loss:.2f}")
-
+    def log_metrics(self, metrics_list):
+        self.append("metrics", metrics_list)
     def record_time_diff(self):
         end_time_cpu = time.process_time()  
         end_time_wall = time.time()  
