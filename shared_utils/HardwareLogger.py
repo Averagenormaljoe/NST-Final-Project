@@ -2,6 +2,7 @@ import time
 import psutil
 import tensorflow as tf
 from shared_utils.device import get_gpu_usage
+import pandas as pd
 class HardwareLogger:
     def __init__(self,verbose : int = 0):
         self.verbose = verbose
@@ -12,7 +13,11 @@ class HardwareLogger:
         self.log_data = {}
     def append(self,key,item):
         self.log_data.setdefault(key, []).append(item)
-    
+    def log_image_paths(self, content_name: str, style_name: str):
+        self.append("content_name", content_name)
+        self.append("style_name", style_name)
+        if self.verbose > 0:
+            print(f"Content Image: {content_name}, Style Image: {style_name}")
     def log_hardware(self):
         gpu = get_gpu_usage()
         if gpu is not None:
@@ -75,6 +80,9 @@ class HardwareLogger:
         return self.log_data
     def get_name_log(self,key):
         return self.log_data.get(key, [])
+    def return_data_as_table(self):
+        df = pd.DataFrame(data=self.log_data)
+        return df
         
 class TFHardwareLogger(HardwareLogger):
     
