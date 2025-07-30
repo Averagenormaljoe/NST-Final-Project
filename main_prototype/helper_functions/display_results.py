@@ -61,7 +61,6 @@ def display_NST_results(generated_images, best_image, iterations, losses, image_
     style_name : str  = os.path.splitext(os.path.basename(style_path))[0]
     fig = plt.figure(figsize=(16, 18))
     fig = display_use_NST_img(fig,image_file_paths,config)
-    start_index = 0
     plot_start = 4
     include = config.get('include_pics', True)
     img_range = range(start_index, start_index + 10)
