@@ -29,6 +29,7 @@ def display_NST_img(fig : Figure, img, name = "img",index = 1) -> Figure:
     ax = fig.add_subplot(5, 3, index)
     ax = display_image(ax,img)
     ax.set_title(name)
+    ax.axis('off')
     return fig
 
 def display_use_NST_img(fig : Figure,image_file_paths,config) -> Figure:   
@@ -44,7 +45,7 @@ def display_use_NST_img(fig : Figure,image_file_paths,config) -> Figure:
     
 
     return fig
-def display_loss_img(fig : Figure):
+def display_loss_img(fig : Figure, generated_images, losses : list[float],i : int, iterations : list[int],plot_start : int, start_index : int = 0):
     ax = fig.add_subplot(5, 3, i + plot_start)
     display_image(ax,generated_images[i + start_index])
     ax.set_title(f"Loss: {losses[i + start_index]:.2f}, Iterations: {iterations[i + start_index]}", fontsize=10)
@@ -66,10 +67,7 @@ def display_NST_results(generated_images, best_image, iterations, losses, image_
     img_range = range(start_index, start_index + 10)
     if include:
         for i in img_range:
-            ax = fig.add_subplot(5, 3, i + plot_start)
-            display_image(ax,generated_images[i + start_index])
-            ax.set_title(f"Loss: {losses[i + start_index]:.2f}, Iterations: {iterations[i + start_index]}", fontsize=10)
-            ax.axis('off')
+            display_loss_img(fig, generated_images, losses, i, iterations, plot_start, start_index)
     show_best = config.get('show_best', True)
     if show_best:
         ax_best = fig.add_subplot(5, 3, 3)
