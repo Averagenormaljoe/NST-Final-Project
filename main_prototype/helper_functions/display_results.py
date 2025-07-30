@@ -77,7 +77,9 @@ def display_NST_results(generated_images, best_image, iterations, losses, image_
     if show_best:
         ax_best = fig.add_subplot(5, 3, 3)
         ax_best = display_image(ax_best,best_image.get_image())
-        ax_best.set_title(f"Best Image\nLoss: {best_image.get_cost():.2f}, Iter: {best_image.get_iterations()}")
+        show_loss = config.get('show_loss', True)
+        if show_loss:
+            ax_best.set_title(f"Best Image\nLoss: {best_image.get_cost():.2f}, Iter: {best_image.get_iterations()}")
         ax_best.axis('off')
         show_name = config.get('show_name', False)
         if show_name:
