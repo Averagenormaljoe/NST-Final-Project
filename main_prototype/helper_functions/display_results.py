@@ -4,7 +4,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 import numpy as np
 import matplotlib.pyplot as plt
-def open_file(style_path):
+def open_file(style_path : str):
    
     img = Image.open(style_path)
     img = np.array(img)
@@ -15,7 +15,7 @@ def display_image(ax : Axes,img):
     ax.axis('off')
     return ax
 
-def display_meta_plt(fig : Figure,config) -> Figure:
+def display_meta_plt(fig : Figure,config : dict) -> Figure:
     optimizer = config.get('optimizer', '')
     loss_network = config.get('ln', '')
     lr = config.get('lr', '')
@@ -25,23 +25,28 @@ def display_meta_plt(fig : Figure,config) -> Figure:
     ax_meta.text(0.5, -0.1, f"Optimizer: {optimizer}, Loss Network: {loss_network}, Learning Rate: {lr}", ha='center', fontsize=12)
     return fig
 
-def display_NST_img(fig : Figure, img, name = "img",index = 1) -> Figure:
+def display_NST_img(fig : Figure, img, name = "img",index : int = 1) -> Figure:
     ax = fig.add_subplot(5, 3, index)
     ax = display_image(ax,img)
     ax.set_title(name)
     ax.axis('off')
     return fig
 
-def display_use_NST_img(fig : Figure,image_file_paths,config) -> Figure:   
+def display_use_NST_img(fig : Figure,image_file_paths : tuple[str,str],config : dict) -> Figure:   
     content_path, style_path = image_file_paths
     content_img = open_file(content_path)
     style_img = open_file(style_path)
-    # content 
-    fig = display_NST_img(fig, content_img, name="Content Image",index=1)
-    # style
-    fig = display_NST_img(fig, style_img, name="Style Image",index=2)
+    
+    show_combine = config.get('show_combine', True)
+    if show_combine:
+        # content 
+        fig = display_NST_img(fig, content_img, name="Content Image",index=1)
+        # style
+        fig = display_NST_img(fig, style_img, name="Style Image",index=2)
+    show_meta = config.get('show_meta', True)
     # meta
-    fig = display_meta_plt(fig,config)
+    if show_meta:
+        fig = display_meta_plt(fig,config)
     
 
     return fig
@@ -51,10 +56,10 @@ def display_loss_img(fig : Figure, generated_images, losses : list[float],i : in
     ax.set_title(f"Loss: {losses[i + start_index]:.2f}, Iterations: {iterations[i + start_index]}", fontsize=10)
     ax.axis('off')
 
-def display_NST_results(generated_images, best_image, iterations, losses, image_file_paths,start_index = 0,config = {}):
-
-    save_dir = "evaluation_images"
-    os.makedirs(save_dir, exist_ok=True)
+def display_NST_results(generated_images, best_image, iterations, losses, image_file_paths : tuple[str,str],start_index : int = 0,config : dict = {}):
+    if len(generated_images) == 0:
+        print("No generated images to display.")
+        return
     
     content_path, style_path = image_file_paths
     content_name : str  = os.path.splitext(os.path.basename(content_path))[0]
@@ -62,7 +67,8 @@ def display_NST_results(generated_images, best_image, iterations, losses, image_
     fig = plt.figure(figsize=(16, 18))
     fig = display_use_NST_img(fig,image_file_paths,config)
     plot_start = 4
-    include = config.get('include_pics', True)
+    include = config.get('include_pics', False)
+    final_index = start_index + 10 if start_index + 10 < len(generated_images) else len(generated_images)
     img_range = range(start_index, start_index + 10)
     if include:
         for i in img_range:
@@ -90,12 +96,12 @@ def show_plt(fig : Figure):
     plt.show(fig)
     plt.close(fig)
 
-def save_fig(fig : Figure,image_file_paths,prefix=""):
+def save_fig(fig : Figure,image_file_paths : tuple[str,str],prefix : str ="",save_dir : str = "SGD_compare_images_all"):
+    
     if image_file_paths is None:
         return
     if image_file_paths is None or len(image_file_paths) < 2:
         return
-    save_dir = "evaluation_images"
     os.makedirs(save_dir, exist_ok=True)
 
     content_path, style_path = image_file_paths
