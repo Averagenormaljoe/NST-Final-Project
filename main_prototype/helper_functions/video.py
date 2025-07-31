@@ -1,25 +1,20 @@
 
 import os
-def video_style_transfer(config):
-    """Implements neural style transfer on a video using a style image, applying provided configuration."""
+
+import cv2
+
+def write_frames(config):
+
     if config.get('file_dir') is not None:
         file_dir = config.get('file_dir')
         content_video_path = os.path.join(file_dir, config.get('content_filename'))
-        style_path = os.path.join(file_dir, config.get('style_filename'))
         output_dir = config.get('output_dir') if config.get('output_dir') is not None else file_dir
     else:
         output_dir = config.get('output_dir')
         content_video_path = config.get('content_filepath')
-        style_path = config.get('style_path')
     
-    output_size = config.get('output_frame_size')
-    if output_size is not None:
-        if len(output_size) > 1: 
-            output_size = tuple(output_size)
-        else:
-            output_size = output_size[0]
-    
-    verbose = not config.get('quiet')
+  
+    verbose = config.get('verbose', False)
 
     if not os.path.exists(os.path.join(output_dir, "content_frames")):
         os.makedirs(os.path.join(output_dir, "content_frames"))
@@ -30,8 +25,8 @@ def video_style_transfer(config):
     cap = cv2.VideoCapture(content_video_path)
     # retrieve metadata from content video
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     content_fps = cap.get(cv2.CAP_PROP_FPS)
     
     if total_frames == 0:
@@ -48,12 +43,25 @@ def video_style_transfer(config):
             return
 
     cap.release()
-
     if verbose:
         print("Frames successfully extracted from content video.")
         print()
         print("Performing image style transfer for each frame...")
+    
+    return total_frames, h, w, content_fps
 
+def video_style_transfer(config,paths,video_details):
+    verbose = config.get('verbose', False)
+    
+    output_size = config.get('output_frame_size')
+    if output_size is not None:
+        if len(output_size) > 1: 
+            output_size = tuple(output_size)
+        else:
+            output_size = output_size[0]
+    
+    total_frames,h,w, content_fps = video_details
+    content_video_path,style_path,output_dir = paths
     if not os.path.exists(os.path.join(output_dir, "transferred_frames")):
         os.makedirs(os.path.join(output_dir, "transferred_frames"))
 
@@ -75,13 +83,19 @@ def video_style_transfer(config):
         print()
         print("Synthesizing video from transferred frames...")
     
-    content_video_name, _ = get_image_name_ext(content_video_path)
-    style_img_name, _ = get_image_name_ext(style_path)
+
+
+
+def save_output_video(config, paths, video_details):
+    verbose = config.get('verbose', False)
+    total_frames,h,w, content_fps = video_details
+    content_video_path,style_path,output_dir = paths
+    content_video_name = os.path.splitext(os.path.basename(content_video_path))[0]
+    style_img_name = os.path.splitext(os.path.basename(style_path))[0]
     output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.mp4")
 
     output_frame_height, output_frame_width, _ = cv2.imread(os.path.join(output_dir, "transferred_frames", "transferred_frame-00000001.jpg")).shape
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
-    # synthesize video using transferred content frames
     cv2_fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_writer = cv2.VideoWriter(output_video_path, cv2_fourcc, output_fps, (output_frame_width, output_frame_height), True)
 
