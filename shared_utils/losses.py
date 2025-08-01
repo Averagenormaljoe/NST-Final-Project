@@ -27,8 +27,12 @@ def get_fid_loss(base_image, combination_image):
 
 
 def get_lpips_loss(base_image, combination_image, loss_net='alex'):
+    
+    perm = [0, 3, 1, 2]
+    base_image_transpose = tf.transpose(base_image, perm=perm)
+    combination_image_transpose = tf.transpose(combination_image, perm=perm)
     loss_fn = lpips.LPIPS(net=loss_net) 
-    distance = loss_fn(base_image, combination_image)
+    distance = loss_fn(base_image_transpose, combination_image_transpose)
     return tf.reduce_mean(distance)
 def get_artfid_loss(base_image, combination_image):
     fid_loss = get_fid_loss(base_image, combination_image)
