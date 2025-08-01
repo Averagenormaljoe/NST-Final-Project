@@ -13,6 +13,7 @@ class ConfigManager:
         self.chosen_optimizer = config.get("optimizer", "adam")
         self.lr = config.get("lr", 1.0)
         self.w, self.h = config.get("size", (400, 400))
+        self.output_path = config.get("output_path", None)
         self.hardware_logger = HardwareLogger()
     def update_settings(self, config: dict):
         self.verbose = config.get("verbose", 0)
