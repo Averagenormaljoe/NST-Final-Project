@@ -3,7 +3,7 @@ import os
 
 import cv2
 from requests import get
-
+from shared_utils.file_nav import get_base_name
 def get_video_paths(config):
     
     if config.get('file_dir') is not None:
@@ -60,9 +60,6 @@ def write_frames(config):
         print("Performing image style transfer for each frame...")
     
     return total_frames, h, w, content_fps
-
-def get_base_name(file_path):
-    return os.path.splitext(os.path.basename(file_path))[0]
 
 
 def save_output_video(config, video_details):
