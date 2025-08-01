@@ -73,3 +73,6 @@ dependencies = [
 [project.scripts]
 # Uncomment and define if you want to expose CLI commands
 # your-command = "your_module:main"
+
+[tool.setuptools]
+packages = { find = { include = ["style", "video", "helper_functions"] } }

@@ -1,6 +1,5 @@
 import numpy as np
 import tensorflow as tf
-from torch import T
 from torch_fidelity import calculate_metrics
 import lpips
 
