@@ -1,8 +1,8 @@
 # This is the same as the decoder but with normalization layers added. This is said to hurt the performance of the model,
 # which is why it is not used in the final model but we would like to test it for hyperparameter purposes.
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+import keras
+from keras import layers
 def get_normalization_decoder():
     config = {"kernel_size": 3, "strides": 1, "padding": "same", "activation": "relu"}
     decoder = keras.Sequential(

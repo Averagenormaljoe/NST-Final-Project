@@ -19,7 +19,7 @@ def load_train_dataset(dataset_use: str,train_style, batch_size : int,num_parall
     return train_style_ds, train_content_ds
 
 
-def save_train_dataset(dataset_path,dataset_use: str, train_style,, should_save: bool = True):
+def save_train_dataset(dataset_path,dataset_use: str, train_style, should_save: bool = True):
     if os.path.exists(dataset_path):
         train_style_ds = tf.data.Dataset.load(f"{dataset_path}/train_style_ds")
         train_content_ds = tf.data.Dataset.load(f"{dataset_path}/train_content_ds")

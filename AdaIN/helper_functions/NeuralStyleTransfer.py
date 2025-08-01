@@ -3,6 +3,7 @@ from shared_utils.losses import ssim_loss, psnr_loss,get_lpips_loss
 from shared_utils.HardwareLogger import TFHardwareLogger
 import keras
 import tensorflow as tf
+from video_utils.mask import temporal_warping_error
 from helper_functions.ada_in import ada_in, get_mean_std
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
@@ -82,8 +83,8 @@ class NeuralStyleTransfer(tf.keras.Model):
         gradients = tape.gradient(total_loss, trainable_vars)
         self.apply_optimizer(gradients, trainable_vars)
         return gradients
-    def calculate_temporal_loss(self, content_image, reconstructed_image):
-        temporal_loss = 0
+    def calculate_temporal_loss(self, prev_stylized_frame, curr_stylized_frame,flow, mask=None):
+        temporal_loss = temporal_warping_error(prev_stylized_frame, curr_stylized_frame, flow,mask)
         return temporal_loss
     def compute_loop_loss_style(self, mean_inp, mean_out, std_inp, std_out):
         loss_style = self.loss_fn(mean_inp, mean_out) + self.loss_fn(std_inp, std_out)

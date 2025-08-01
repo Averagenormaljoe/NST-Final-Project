@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 from torch_fidelity import calculate_metrics
 import lpips
-
+import torch
 
 def ssim_loss(x,y,val_range: float = 1):
     ssim_value = tf.image.ssim(x,y, max_val=val_range)
@@ -25,14 +25,32 @@ def get_fid_loss(base_image, combination_image):
     return fid_loss
 
 
+
 def get_lpips_loss(base_image, combination_image, loss_net='alex'):
-    
-    perm = [0, 3, 1, 2]
-    base_image_transpose = tf.transpose(base_image, perm=perm)
-    combination_image_transpose = tf.transpose(combination_image, perm=perm)
+
+   
+    base_image_np = base_image.numpy()
+    combination_image_np = combination_image.numpy()
+    perm = (0, 3, 1, 2)
+    base_image_np_transpose = np.transpose(base_image_np, perm)
+    combination_image_np_transpose = np.transpose(combination_image_np, perm)
+
+    base_image_pt = torch.from_numpy(base_image_np_transpose)
+    combination_image_pt = torch.from_numpy(combination_image_np_transpose)
+
+
+
     loss_fn = lpips.LPIPS(net=loss_net) 
-    distance = loss_fn(base_image_transpose, combination_image_transpose)
-    return tf.reduce_mean(distance)
+
+
+    distance_pt = loss_fn(base_image_pt, combination_image_pt)
+
+    distance_np = distance_pt.detach().cpu().numpy()
+    distance_tf = tf.convert_to_tensor(distance_np)
+    return tf.reduce_mean(distance_tf)
+
+
+
 def get_artfid_loss(base_image, combination_image):
     fid_loss = get_fid_loss(base_image, combination_image)
     distance = get_lpips_loss(base_image, combination_image)
