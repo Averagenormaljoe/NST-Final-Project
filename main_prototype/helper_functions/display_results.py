@@ -4,6 +4,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 import numpy as np
 import matplotlib.pyplot as plt
+from shared_utils.file_nav import get_base_name
 def open_file(style_path : str):
    
     img = Image.open(style_path)
@@ -62,8 +63,8 @@ def display_NST_results(generated_images, best_image, iterations, losses, image_
         return
     
     content_path, style_path = image_file_paths
-    content_name : str  = os.path.splitext(os.path.basename(content_path))[0]
-    style_name : str  = os.path.splitext(os.path.basename(style_path))[0]
+    content_name : str  = get_base_name(content_path)
+    style_name : str  = get_base_name(style_path)
     fig = plt.figure(figsize=(16, 18))
     fig = display_use_NST_img(fig,image_file_paths,config)
     plot_start = 4
