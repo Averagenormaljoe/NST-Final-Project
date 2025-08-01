@@ -4,6 +4,7 @@ import os
 import cv2
 from requests import get
 from shared_utils.file_nav import get_base_name
+from tqdm import trange
 def get_video_paths(config):
     
     if config.get('file_dir') is not None:
@@ -45,7 +46,7 @@ def write_frames(config):
         return
 
     # extract frames from content video
-    for i in range(total_frames):
+    for i in trange(total_frames, desc="Extracting frames from content video", disable=not verbose):
         ret, frame = cap.read()
         if ret:
             cv2.imwrite(os.path.join(output_dir, frames_dir, f"frame-{i+1:08d}.jpg"), frame)
@@ -75,7 +76,7 @@ def save_output_video(config, video_details):
     cv2_fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_writer = cv2.VideoWriter(output_video_path, cv2_fourcc, output_fps, (output_frame_width, output_frame_height), True)
 
-    for i in range(total_frames):
+    for i in trange(total_frames, desc="Combining the stylized frames of the video together", disable=not verbose):
         frame = cv2.imread(os.path.join(output_dir, "transferred_frames", f"transferred_frame-{i+1:08d}.jpg"))
         if frame is not None:
             video_writer.write(frame)
@@ -102,7 +103,7 @@ def video_style_transfer(config,video_details,loop_manager):
         os.makedirs(os.path.join(output_dir, "transferred_frames"))
 
     # perform image style transfer with each content frame and style image
-    for i in range(total_frames):
+    for i in trange(total_frames, desc="Performing style transfer for each frame", disable=not verbose):
         content_frame_path = os.path.join(output_dir, "content_frames", f"frame-{i+1:08d}.jpg")
         output_frame_path = os.path.join(output_dir, "transferred_frames", f"transferred_frame-{i+1:08d}.jpg")
         config['output_path'] = output_frame_path
