@@ -10,7 +10,7 @@ class ConfigManager:
         self.preserve_color = config.get("preserve_color", False)
         self.noise = config.get("noise", False)
         self.clip = config.get("clip", False)
-        self.chosen_optimizer = config.get("optimizer", "adam")
+        self.string_optimizer = config.get("optimizer", "adam")
         self.lr = config.get("lr", 1.0)
         self.w, self.h = config.get("size", (400, 400))
         self.output_path = config.get("output_path", None)
