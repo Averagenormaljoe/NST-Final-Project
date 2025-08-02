@@ -1,7 +1,7 @@
 
 import tensorflow as tf
 from tqdm import trange
-from Ruder.mask import warp_flow
+from video_utils.mask import warp_flow
 from shared_utils.losses import  square_and_sum
 import tensorflow_io as tfio
 def get_xyz(img):
