@@ -14,7 +14,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.loss_net = loss_net
         self.style_weight = style_weight
         self.is_log = False
-        self.include_custom_metrics = False
+        self.include_custom_metrics = True
         self.hardwareLogger = TFHardwareLogger()
     def train_start(self):
         if self.is_log:
@@ -48,7 +48,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         if self.include_custom_metrics:
             psnr = psnr_loss(content, reconstructed_image, val_range=1.0)
             ssim = ssim_loss(content, reconstructed_image, val_range=1.0)
-            lpips = get_lpips_loss(content, reconstructed_image, loss_net="vgg19")
+            lpips = 0
             return psnr, ssim, lpips
         return 0,0,0
 

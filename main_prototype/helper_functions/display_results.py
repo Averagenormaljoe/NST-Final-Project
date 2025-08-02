@@ -75,7 +75,7 @@ def display_NST_results(generated_images, best_image, iterations, losses, image_
         for i in img_range:
             display_loss_img(fig, generated_images, losses, i, iterations, plot_start, start_index)
     show_best = config.get('show_best', True)
-    if show_best:
+    if show_best and best_image is not None:
         ax_best = fig.add_subplot(5, 3, 3)
         ax_best = display_image(ax_best,best_image.get_image())
         show_loss = config.get('show_loss', True)
