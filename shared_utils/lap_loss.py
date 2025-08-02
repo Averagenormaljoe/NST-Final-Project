@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+import keras
 def lap_loss(base_img, stylized_img):
 
     base_lap_tf = apply_lap_process(base_img)
     stylized_lap_tf = apply_lap_process(stylized_img)
 
 
-    loss_fn = tf.keras.losses.MeanSquaredError()
+    loss_fn = keras.losses.MeanSquaredError()
     return loss_fn(base_lap_tf, stylized_lap_tf)
 
 def apply_lap_process(img):
