@@ -10,17 +10,17 @@ def compute_custom_losses(base_image,combination_image,custom_losses = True, los
             ssim_weight = weights.get("ssim", 1.0)
             ssim_loss_value = ssim_loss(combination_image, base_image)
             loss += ssim_loss_value * ssim_weight
-            losses_dict["ssim"] = ssim_loss_value
+            losses_dict["ssim"] =  float(ssim_loss_value)
         if "psnr" in includes:
             psnr_weight = weights.get("psnr", 1.0)
             psnr_loss_value = psnr_loss(combination_image, base_image)
             loss += psnr_loss_value * psnr_weight
-            losses_dict["psnr"] = psnr_loss_value
+            losses_dict["psnr"] =  float(psnr_loss_value)
         if "lpips" in includes:
             lpips_weight = weights.get("lpips", 1.0)
             lpips_loss = get_lpips_loss(base_image, combination_image)
             loss += lpips_loss * lpips_weight
-            losses_dict["lpips"] = lpips_loss
+            losses_dict["lpips"] =  float(lpips_loss)
         fid_losses, fid_metrics = artfid_and_fid_losses(base_image, combination_image, includes, weights)
         loss += fid_losses
         losses_dict.update(fid_metrics)
@@ -37,12 +37,12 @@ def artfid_and_fid_losses(base_image, combination_image, includes, weights: dict
         artfid_weight = weights.get("artfid", 1.0)
         artfid_loss = get_artfid_loss(base_image, combination_image)
         loss += artfid_loss * artfid_weight
-        losses_dict["artfid"] = artfid_loss
+        losses_dict["artfid"] =  float(artfid_loss)
     if "fid" in includes:
         fid_weight = weights.get("fid", 1.0)
         fid_loss = get_fid_loss(base_image, combination_image)
         loss += fid_loss * fid_weight
-        losses_dict["fid"] = fid_loss
+        losses_dict["fid"] =  float(fid_loss)
     return loss, losses_dict
 
 def isc_and_kid_losses(base_image, combination_image, includes, weights: dict = {}) -> tuple[float, dict]:
@@ -52,10 +52,10 @@ def isc_and_kid_losses(base_image, combination_image, includes, weights: dict = 
         isc_weight = weights.get("isc", 1.0)
         isc_loss = get_isc_loss(base_image, combination_image)
         loss += isc_loss * isc_weight
-        losses_dict["isc"] = isc_loss
+        losses_dict["isc"] =  float(isc_loss)
     if "kid" in includes:
         kid_weight = weights.get("kid", 1.0)
         kid_loss = get_kernel_inception_distance(base_image, combination_image)
         loss += kid_loss * kid_weight
-        losses_dict["kid"] = kid_loss
+        losses_dict["kid"] =  float(kid_loss)
     return loss, losses_dict

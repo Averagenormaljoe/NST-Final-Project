@@ -20,6 +20,7 @@ def deprocess_image(img,img_width : int,img_height : int):
     img[:, :, 1] += 116.779
     img[:, :, 2] += 123.68
     img = img[:, :, ::-1]
+    img = np.nan_to_num(img, nan=0.0)
     img = np.clip(img, 0, 255).astype("uint8")
     return img
 
