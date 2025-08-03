@@ -1,6 +1,6 @@
 from shared_utils import losses
 from shared_utils.losses import get_fidelity, get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss
-def compute_custom_losses(base_image,combination_image, loss_net = "alex", includes : list[str] = ["ssim", "psnr", "lpips"],weights : dict = {}) ->  dict:
+def compute_custom_losses(base_image,combination_image, loss_net = "alex", includes : list[str] = ["ssim", "psnr", "lpips"]) ->  dict:
     losses_dict = {}
     if includes is None or len(includes) == 0:
         return losses_dict
@@ -17,7 +17,6 @@ def compute_custom_losses(base_image,combination_image, loss_net = "alex", inclu
         artfid_loss = get_artfid_loss(base_image, combination_image)
         losses_dict["artfid"] =  float(artfid_loss)
     fidelity_metrics = get_fidelity_losses(base_image, combination_image, includes)
-
     losses_dict.update(fidelity_metrics)
     return losses_dict 
 

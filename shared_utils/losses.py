@@ -1,3 +1,5 @@
+import shutil
+from matplotlib.pylab import f
 import numpy as np
 import tensorflow as tf
 from torch_fidelity import calculate_metrics
@@ -6,10 +8,16 @@ import torch
 from PIL import Image
 import os
 
-def save_tmp_img(image, prefix):
-    path = f"/tmp/{prefix}_img.png"
-    Image.fromarray(image.astype("uint8")).save(path)
-    return path
+
+def save_tmp_img(image, folder, prefix="tmp"):
+    dir_path = f"/{prefix}/{folder}"
+    if os.path.exists(dir_path):
+        shutil.rmtree(dir_path)
+    os.makedirs(dir_path, exist_ok=True)
+    img_path = os.path.join(dir_path, "img_0.png")
+    numpy_image = image.squeeze().astype("uint8")
+    Image.fromarray(numpy_image.astype("uint8")).save(img_path)
+    return dir_path
 
 
 def ssim_loss(x,y,val_range: float = 1):
@@ -49,6 +57,8 @@ def get_lpips_loss(base_image, combination_image, loss_net='alex'):
     return tf.reduce_mean(distance_tf)
 
 
+
+
 def get_fidelity(base_image, combination_image,includes = ["fid", "isc", "kid"]) -> dict:
     metrics = {
         "fid": "fid" in includes,
@@ -61,6 +71,7 @@ def get_fidelity(base_image, combination_image,includes = ["fid", "isc", "kid"])
                 input1=base_tmp,
                 input2=combination_tmp,
                 cuda=True,
+                kid_subset_size=1,
                 fid=metrics["fid"],
                 isc=metrics["isc"],
                  kid=metrics["kid"])
@@ -82,22 +93,6 @@ def get_artfid_loss(base_image, combination_image):
     distance = get_lpips_loss(base_image, combination_image)
     artfid_value = (distance + 1) * (fid_loss + 1)
     return artfid_value
-def get_isc_loss(base_image, combination_image):
-    isc_loss = calculate_metrics(
-                input1=base_image.numpy(),
-                input2=combination_image.numpy(),
-                cuda=True,
-                verbose=False
-            )['inception_score_mean']
-    return 1 - isc_loss
-def get_kernel_inception_distance(base_image, combination_image):
-    kernel_loss = calculate_metrics(
-                input1=base_image.numpy(),
-                input2=combination_image.numpy(),
-                cuda=True,
-                verbose=False
-            )['kernel_inception_distance_mean']
-    return 1 - kernel_loss
 
 
 def square_or_l2(x, square: bool = True):
