@@ -1,0 +1,16 @@
+[project]
+name = "video_utils"
+version = "0.1.0"
+dependencies = [
+    "opencv-python",
+    "numpy",
+    "tensorflow",
+    "tensorflow-hub",
+    "keras",
+    "tqdm",
+    "urllib3",
+]
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
