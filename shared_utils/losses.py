@@ -77,8 +77,8 @@ def get_fidelity(base_image, combination_image,includes = ["fid", "isc", "kid"])
                  kid=metrics["kid"])
     output = {}
     collect_result = {"fid" : "frechet_inception_distance",
-                      "isc" : "inception_score",
-                      "kid" : "kernel_inception_distance"}
+                      "isc" : "inception_score_mean",
+                      "kid" : "kernel_inception_distance_mean"}
     for k, v in collect_result.items():
         if metrics[k]:
             output[k] = results[v]
