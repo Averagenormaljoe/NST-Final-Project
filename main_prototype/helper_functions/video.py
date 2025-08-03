@@ -123,6 +123,9 @@ def video_style_transfer(config,video_details,loop_manager):
         print("Synthesizing video from transferred frames...")
     return video_details
     
+    
+    
+    
 def execute_video_style_transfer(config, loop_manager):
     verbose = config.get('verbose', False)
     if verbose:
