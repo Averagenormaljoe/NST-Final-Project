@@ -2,10 +2,10 @@ from time import time
 import cv2
 import tensorflow as tf
 from tqdm import trange
-from Ruder import wrap
+from video_utils import wrap
 from shared_utils.losses import temporal_loss
 import tensorflow_hub as hub
-import np
+import numpy as np
 import urllib
 import keras_hub
 def generate_mask(img,segmenter):
