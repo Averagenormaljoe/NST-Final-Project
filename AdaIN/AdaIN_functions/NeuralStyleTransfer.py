@@ -4,7 +4,7 @@ from shared_utils.HardwareLogger import TFHardwareLogger
 import keras
 import tensorflow as tf
 from video_utils.mask import temporal_warping_error
-from helper_functions.ada_in import ada_in, get_mean_std
+from AdaIN_functions.ada_in import ada_in, get_mean_std
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
     def __init__(self, encoder, decoder, loss_net, style_weight, **kwargs):

@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 AUTOTUNE = tf.data.AUTOTUNE
-from helper_functions.helper import decode_and_resize,extract_image_from_voc
+from AdaIN_functions.helper import decode_and_resize,extract_image_from_voc
 import tensorflow_datasets as tfds
 # Defining the global variables.
 BATCH_SIZE = 64
