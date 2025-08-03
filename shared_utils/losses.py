@@ -1,4 +1,3 @@
-from matplotlib.pylab import f
 import numpy as np
 import tensorflow as tf
 from torch_fidelity import calculate_metrics
@@ -16,32 +15,15 @@ def psnr_loss(x,y,val_range: float = 1):
 def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
     mm_ssim = tf.image.ssim_multiscale(base_image,combination_image, max_val=val_range)  
     return 1 - tf.reduce_mean(mm_ssim)
-def get_fidelity_losses(base_image, combination_image,includes = {}):
-    metrics = {
-        "fid": "fid" in includes,
-        "isc": "isc" in includes,
-        "kid": "kid" in includes,
-        "prc": "prc" in includes,
-    }
-  
-    results = calculate_metrics(
+def get_fid_loss(base_image, combination_image):
+    fid_loss = calculate_metrics(
                 input1=base_image.numpy(),
                 input2=combination_image.numpy(),
                 cuda=True,
-                  fid=metrics["fid"],
-                  isc=metrics["isc"],
-                  kid=metrics["kid"],
-                  prc=metrics["prc"],
-            )
-    output = {}
-    if metrics["fid"]:
-        output["fid"] = results["frechet_inception_distance"]
-    if metrics["isc"]:
-        output["isc"] = results["inception_score"]
-    if metrics["kid"]:
-        output["kid"] = results["kernel_inception_distance"]
-
-    return output
+                verbose=False,
+                fid=True
+            )['frechet_inception_distance']
+    return fid_loss
 
 
 
@@ -68,22 +50,31 @@ def get_lpips_loss(base_image, combination_image, loss_net='alex'):
     distance_tf = tf.convert_to_tensor(distance_np)
     return tf.reduce_mean(distance_tf)
 
-def get_fid_loss(base_image, combination_image):
-    fid_loss = calculate_metrics(
-                input1=base_image.numpy(),
-                input2=combination_image.numpy(),
-                cuda=True,
-                fid=True,
-                verbose=False
-            )['frechet_inception_distance']
-    return fid_loss
+
 
 def get_artfid_loss(base_image, combination_image):
     fid_loss = get_fid_loss(base_image, combination_image)
     distance = get_lpips_loss(base_image, combination_image)
     artfid_value = (distance + 1) * (fid_loss + 1)
     return artfid_value
-
+def get_isc_loss(base_image, combination_image):
+    isc_loss = calculate_metrics(
+                input1=base_image.numpy(),
+                input2=combination_image.numpy(),
+                cuda=True,
+                verbose=False,
+                isc=True
+            )['inception_score_mean']
+    return 1 - isc_loss
+def get_kernel_inception_distance(base_image, combination_image):
+    kernel_loss = calculate_metrics(
+                input1=base_image.numpy(),
+                input2=combination_image.numpy(),
+                cuda=True,
+                verbose=False
+                kid=True
+            )['kernel_inception_distance_mean']
+    return 1 - kernel_loss
 
 
 def square_or_l2(x, square: bool = True):

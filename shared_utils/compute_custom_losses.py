@@ -1,5 +1,5 @@
 from shared_utils import losses
-from shared_utils.losses import get_fidelity_losses, get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss
+from shared_utils.losses import get_isc_loss, get_fid_loss, get_kernel_inception_distance, get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss
 def compute_custom_losses(base_image,combination_image,custom_losses = True, loss_net = "alex", includes : list[str] = ["ssim", "psnr", "lpips"],weights : dict = {}) -> tuple[float, dict]:
     losses_dict = {}
     if includes is None or len(includes) == 0:
@@ -30,13 +30,12 @@ def compute_custom_losses(base_image,combination_image,custom_losses = True, los
         return loss, losses_dict
     return 0.0, losses_dict 
 
-def fidelity_losses(base_image, combination_image, includes, weights: dict = {}) -> tuple[float, dict]:
+def artfid_and_fid_losses(base_image, combination_image, includes, weights: dict = {}) -> tuple[float, dict]:
     loss = 0.0
     losses_dict = {}
-    get_fidelity_losses = get_fidelity_losses(base_image, combination_image, includes)
     if "artfid" in includes:
         artfid_weight = weights.get("artfid", 1.0)
-        artfid_loss = output[]
+        artfid_loss = get_artfid_loss(base_image, combination_image)
         loss += artfid_loss * artfid_weight
         losses_dict["artfid"] =  float(artfid_loss)
     if "fid" in includes:
@@ -44,6 +43,11 @@ def fidelity_losses(base_image, combination_image, includes, weights: dict = {})
         fid_loss = get_fid_loss(base_image, combination_image)
         loss += fid_loss * fid_weight
         losses_dict["fid"] =  float(fid_loss)
+    return loss, losses_dict
+
+def isc_and_kid_losses(base_image, combination_image, includes, weights: dict = {}) -> tuple[float, dict]:
+    loss = 0.0
+    losses_dict = {}
     if "isc" in includes:
         isc_weight = weights.get("isc", 1.0)
         isc_loss = get_isc_loss(base_image, combination_image)
