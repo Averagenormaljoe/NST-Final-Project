@@ -7,9 +7,10 @@ def save_metadata(metadata, file_name):
         json.dump(metadata, f,sort_keys=True, indent=4)
 
 def prepare_metadata(config, file_paths):
+    content_image, style_image = file_paths
     metadata = {
-        "content_image": get_base_name(file_paths[0]),
-        "style_image": get_base_name(file_paths[1]),
+        "content_image": get_base_name(content_image),
+        "style_image": get_base_name(style_image),
         "optimizer": config.get('optimizer', 'adam'),
         "preserve_color": config.get('preserve_color', False),
         "noise": config.get('noise', False),

@@ -63,7 +63,7 @@ def get_isc_loss(base_image, combination_image):
                 cuda=True,
                 verbose=False
             )['inception_score_mean']
-    return 1 - isc_loss
+    return isc_loss
 def get_kernel_inception_distance(base_image, combination_image):
     kernel_loss = calculate_metrics(
                 input1=base_image.numpy(),
@@ -71,7 +71,7 @@ def get_kernel_inception_distance(base_image, combination_image):
                 cuda=True,
                 verbose=False
             )['kernel_inception_distance_mean']
-    return 1 - kernel_loss
+    return  kernel_loss
 
 
 def square_or_l2(x, square: bool = True):
