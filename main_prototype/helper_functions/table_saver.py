@@ -24,6 +24,8 @@ def save_data_logs(image_data_logs, image_paths,folder = "csv_hardware"):
         output_path = os.path.join(folder, name)
         df.to_csv(f"{output_path}.csv", index=False)
         avg = get_avg_metrics(df)
+        total_time_dict = get_total_time(df)
+        avg.update(total_time_dict)
         config = {
             "content_name": content_name,
             "style_name": style_name
@@ -45,6 +47,14 @@ def get_avg_metrics(df):
             avg_value = df[metric].mean()
             avg[f"avg_{metric}"] = avg_value
     return avg
+def get_total_time(df):
+    times = ["cpu time", "gpu time"]
+    time_dict = {}
+    for time in times:
+        if time in df.columns:
+            total_time = df[time].sum()
+            time_dict[f"total_{time}"] = total_time
+    return time_dict
         
     
 def plot_losses(df):
