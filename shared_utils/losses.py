@@ -59,12 +59,16 @@ def get_lpips_loss(base_image, combination_image, loss_net='alex'):
 
 
 
-def get_fidelity(base_image, combination_image,includes = ["fid", "isc", "kid"]) -> dict:
+def get_fidelity(base_image, combination_image,includes = []) -> dict:
+    if includes is None:
+        return {}
     metrics = {
         "fid": "fid" in includes,
         "isc": "isc" in includes,
         "kid": "kid" in includes,
     }
+    if not any(metrics.values()):
+        return {}
     base_tmp = save_tmp_img(base_image.numpy(), "base")
     combination_tmp = save_tmp_img(combination_image.numpy(), "combination")
     results = calculate_metrics(

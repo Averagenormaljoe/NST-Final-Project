@@ -6,15 +6,11 @@ from requests import get
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
 def get_video_paths(config):
-    
-    if config.get('file_dir') is not None:
-        file_dir = config.get('file_dir')
-        content_video_path = os.path.join(file_dir, config.get('content_filename'))
-        output_dir = config.get('output_dir') if config.get('output_dir') is not None else file_dir
-    else:
-        output_dir = config.get('output_dir')
-        content_video_path = config.get('content_filepath')
-    style_path = config.get('style_filepath')
+
+    output_dir = config.get('output_dir')
+    os.makedirs(output_dir, exist_ok=True)
+    content_video_path = config.get('content_path')
+    style_path = config.get('style_path')
     return content_video_path, style_path, output_dir
 
 def get_video_details(cap):
@@ -40,13 +36,13 @@ def write_frames(config):
     cap = cv2.VideoCapture(content_video_path)
     # retrieve metadata from content video
     total_frames, h, w, content_fps = get_video_details(cap)
-    
+    frames_limit = config.get('frames_limit', total_frames)
     if total_frames == 0:
         print(f"ERROR: could not retrieve frames from content video at path: '{content_video_path}'.")
         return
 
     # extract frames from content video
-    for i in trange(total_frames, desc="Extracting frames from content video", disable=not verbose):
+    for i in trange(frames_limit, desc="Extracting frames from content video", disable=not verbose):
         ret, frame = cap.read()
         if ret:
             cv2.imwrite(os.path.join(output_dir, frames_dir, f"frame-{i+1:08d}.jpg"), frame)
@@ -70,7 +66,7 @@ def save_output_video(config, video_details):
     content_video_name = get_base_name(content_video_path)
     style_img_name = get_base_name(style_path)
     output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.mp4")
-
+    
     output_frame_height, output_frame_width, _ = cv2.imread(os.path.join(output_dir, "transferred_frames", "transferred_frame-00000001.jpg")).shape
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
     cv2_fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -99,13 +95,18 @@ def video_style_transfer(config,video_details,loop_manager):
     config['size'] = output_size
     total_frames,h,w, content_fps = video_details
     content_video_path, style_path, output_dir = get_video_paths(config)
-    if not os.path.exists(os.path.join(output_dir, "transferred_frames")):
-        os.makedirs(os.path.join(output_dir, "transferred_frames"))
+    
+    content_frames_dir = os.path.join(output_dir, "content_frames")
+    transferred_frames_dir = os.path.join(output_dir, "transferred_frames")
+    if not os.path.exists(transferred_frames_dir):
+        os.makedirs(transferred_frames_dir )
+    if not os.path.exists(content_frames_dir):
+        os.makedirs(content_frames_dir)
 
     # perform image style transfer with each content frame and style image
     for i in trange(total_frames, desc="Performing style transfer for each frame", disable=not verbose):
-        content_frame_path = os.path.join(output_dir, "content_frames", f"frame-{i+1:08d}.jpg")
-        output_frame_path = os.path.join(output_dir, "transferred_frames", f"transferred_frame-{i+1:08d}.jpg")
+        content_frame_path = os.path.join(content_frames_dir, f"frame-{i+1:08d}.jpg")
+        output_frame_path = os.path.join(transferred_frames_dir, f"transferred_frame-{i+1:08d}.jpg")
         config['output_path'] = output_frame_path
         results = loop_manager.training_loop(content_frame_path, style_path, config=config)
     
@@ -133,10 +134,12 @@ def execute_video_style_transfer(config, loop_manager):
     
     video_details = write_frames(config)
     if video_details is None:
+        print("Failed to write frames. Exiting...")
         return
     
     video_details = video_style_transfer(config, video_details, loop_manager)
     if video_details is None:
+        print("Video style transfer failed. Exiting...")
         return
     
     save_output_video(config, video_details)
