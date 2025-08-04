@@ -32,6 +32,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.total_loss_tracker = keras.metrics.Mean(name="total_loss")
         self.psnr_tracker = keras.metrics.Mean(name="psnr")
         self.ssim_tracker = keras.metrics.Mean(name="ssim")
+        self.ms_ssim_tracker = keras.metrics.Mean(name="ms_ssim")
         self.lpips_tracker = keras.metrics.Mean(name="lpips")
         self.tv_loss_tracker = keras.metrics.Mean(name="tv_loss")
     def reconstruct_image(self, style, content):
@@ -61,6 +62,7 @@ class NeuralStyleTransfer(tf.keras.Model):
             "psnr": self.psnr_tracker.result(),
             "ssim": self.ssim_tracker.result(),
             "lpips" : self.lpips_tracker.result(),
+            "ms_ssim": self.ms_ssim_tracker.result()
 
         }
 
@@ -185,19 +187,8 @@ class NeuralStyleTransfer(tf.keras.Model):
         t = ada_in(style=style_encoded, content=content_encoded)
         reconstructed_image = self.decoder(t)
         return reconstructed_image
-    def multi_NST(self, inputs):
-        
-        style_imgs = inputs[0]
-        content = inputs[1]
-        style_encoded_features = [self.encoder(s) for s in style_imgs]
-        content_encoded = self.encoder(content)
-        
-        style_outputs = [ada_in(style=s, content=content_encoded) for s in style_encoded_features]
-        stack = tf.stack(style_outputs)
-        t = tf.reduce_mean(stack, axis=0)
-        reconstructed_image = self.decoder(t)
-        return reconstructed_image
-    def one_step_multi_NST(self, style_images, content_encoded):
+ 
+    def avg_multi_NST(self, style_images, content_encoded):
         stylized_image = content_encoded
         for s in style_images:
             style_encoded = self.encoder(s)
@@ -245,4 +236,5 @@ class NeuralStyleTransfer(tf.keras.Model):
             self.psnr_tracker,
             self.ssim_tracker,
             self.lpips_tracker,
+            self.ms_ssim_tracker
         ]
