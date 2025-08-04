@@ -1,6 +1,5 @@
 import time
 import psutil
-import tensorflow as tf
 from shared_utils.device import get_gpu_usage
 import pandas as pd
 class HardwareLogger:

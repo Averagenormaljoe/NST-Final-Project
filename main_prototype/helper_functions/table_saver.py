@@ -1,13 +1,10 @@
-from calendar import c
-from curses import meta
-from matplotlib.pylab import f
 import matplotlib.pyplot as plt
+from numpy import save
 import pandas as pd
 import os
 
-from requests import get
-
-from main_prototype.helper_functions.meta_manager import prepare_metadata, save_metadata
+from sympy import plot
+from helper_functions.meta_manager import prepare_metadata, save_metadata
 from shared_utils.file_nav import get_base_name 
 
 
@@ -37,6 +34,8 @@ def save_data_logs(image_data_logs, image_paths,folder = "csv_hardware"):
         )
         metadata_file_name = f"{output_path}_metadata.json"
         save_metadata(metadata, metadata_file_name)
+        plot_losses(df, image_paths[i])
+        plot_NST_losses(df, image_paths[i])
         
                 
 def get_avg_metrics(df):
@@ -57,20 +56,30 @@ def get_total_time(df):
     return time_dict
         
     
-def plot_losses(df):
+def plot_losses(df,image_paths,show_plot=True):
     plt.figure(figsize=(10, 5))
     plt.plot(df['iterations'], df['loss'], label='Loss')
     plt.title(f"Loss over iterations")
     plt.xlabel('Iterations')
     plt.ylabel('Loss')
     plt.legend()
-    plt.show()
+    if show_plot:
+        plt.show()
+    save_plot(image_paths)
+    
+    
 
+def save_plot(image_paths, folder="plots"):
+    os.makedirs(folder, exist_ok=True)
+    content_path, style_path = image_paths
+    content_name = get_base_name(content_path)
+    style_name = get_base_name(style_path )
+    save_name = f"{content_name}_{style_name}_loss_plot.png"
+    save_path = os.path.join(folder, save_name)
+    plt.savefig(save_path)
 
-def plot_NST_losses(df, metrics_filter = []):
+def plot_NST_losses(df,image_paths, show_plot=True):
     metric_keys = ['content', 'style', 'ssim', 'psnr', 'total_variation']
-    if metrics_filter:
-        metric_keys = [k for k in metric_keys if k in metrics_filter]
     plt.figure(figsize=(10, 5))
     missing_keys = [k for k in metric_keys if k not in df.columns]
     if missing_keys:
@@ -84,4 +93,6 @@ def plot_NST_losses(df, metrics_filter = []):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    if show_plot:
+        plt.show()
+    save_plot(df, image_paths)

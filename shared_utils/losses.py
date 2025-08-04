@@ -4,12 +4,11 @@ import numpy as np
 import tensorflow as tf
 from torch_fidelity import calculate_metrics
 import lpips
-import torch
 from PIL import Image
 import os
+from torchvision.io import read_image
 
-
-def save_tmp_img(image, folder, prefix="tmp"):
+def save_tmp_img(image, folder, prefix="tmp", return_img=False):
     dir_path = f"/{prefix}/{folder}"
     if os.path.exists(dir_path):
         shutil.rmtree(dir_path)
@@ -17,6 +16,8 @@ def save_tmp_img(image, folder, prefix="tmp"):
     img_path = os.path.join(dir_path, "img_0.png")
     numpy_image = image.squeeze().astype("uint8")
     Image.fromarray(numpy_image.astype("uint8")).save(img_path)
+    if return_img:
+        return img_path
     return dir_path
 
 
@@ -33,28 +34,14 @@ def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
     return 1 - tf.reduce_mean(mm_ssim)
 
 
-def get_lpips_loss(base_image, combination_image, loss_net='alex'):
-
-   
-    base_image_np = base_image.numpy()
-    combination_image_np = combination_image.numpy()
-    perm = (0, 3, 1, 2)
-    base_image_np_transpose = np.transpose(base_image_np, perm)
-    combination_image_np_transpose = np.transpose(combination_image_np, perm)
-
-    base_image_pt = torch.from_numpy(base_image_np_transpose)
-    combination_image_pt = torch.from_numpy(combination_image_np_transpose)
-
-
-
+def get_lpips_loss(base_image, combination_image, loss_net='vgg'):
+    base_img_path = save_tmp_img(base_image.numpy(), "base",return_img=True)
+    combination_img_path = save_tmp_img(combination_image.numpy(), "combination", return_img=True)
     loss_fn = lpips.LPIPS(net=loss_net) 
-
-
+    base_image_pt = read_image(base_img_path)
+    combination_image_pt = read_image(combination_img_path)
     distance_pt = loss_fn(base_image_pt, combination_image_pt)
-
-    distance_np = distance_pt.detach().cpu().numpy()
-    distance_tf = tf.convert_to_tensor(distance_np)
-    return tf.reduce_mean(distance_tf)
+    return distance_pt.item()
 
 
 

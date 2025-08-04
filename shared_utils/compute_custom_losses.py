@@ -1,7 +1,5 @@
-from shared_utils import losses
 from shared_utils.losses import get_fidelity, get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss, ms_ssim_loss
-import numpy as np
-def compute_custom_losses(base_image,combination_image, loss_net = "alex", includes : list[str] = ["ssim", "psnr", "lpips"]) ->  dict:
+def compute_custom_losses(base_image,combination_image, loss_net = "vgg", includes : list[str] = ["ssim", "psnr", "lpips"]) ->  dict:
     losses_dict = {}
     if includes is None or len(includes) == 0:
         return losses_dict
