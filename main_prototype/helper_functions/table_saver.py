@@ -62,7 +62,7 @@ def get_total_time(df):
 def plot_losses(df,image_paths,show_plot=True):
     plt.figure(figsize=(10, 5))
     plt.plot(df['iterations'], df['loss'], label='Loss')
-    plt.title(f"Loss over iterations")
+    plt.title(f"Loss vs iterations")
     plt.xlabel('Iterations')
     plt.ylabel('Loss')
     plt.legend()
@@ -81,16 +81,15 @@ def save_plot(image_paths, folder="plots"):
     save_path = os.path.join(folder, save_name)
     plt.savefig(save_path)
 
-def plot_NST_losses(df,image_paths, show_plot=True):
+def plot_NST_losses(df,image_paths, show_plot=True,verbose=False):
     metric_keys = ['ssim', 'lpips', 'ms_ssim']
     plt.figure(figsize=(10, 5))
-    missing_keys = [k for k in metric_keys if k not in df.columns]
-    if missing_keys:
-        print(f"Error: keys ({missing_keys}) are missing from the dataframe")
-        return
+    not_found_keys = [k for k in metric_keys if k not in df.columns]
+    if not_found_keys and verbose:
+        print(f"Error: keys ({not_found_keys}) are missing from the dataframe")
     for key in metric_keys:
         plt.plot(df['iterations'], df[key], label=f'{key} loss')
-    plt.title(f"NST Losses over iterations")
+    plt.title(f"NST Losses vs iterations")
     plt.xlabel('Iterations')
     plt.ylabel('NST Losses')
     plt.legend()
