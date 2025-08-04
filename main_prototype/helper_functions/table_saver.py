@@ -1,3 +1,5 @@
+from calendar import c
+from turtle import st
 import matplotlib.pyplot as plt
 from numpy import save
 import pandas as pd
@@ -15,8 +17,9 @@ def save_data_logs(image_data_logs, image_paths,folder = "csv_hardware"):
     os.makedirs(folder, exist_ok=True)
     for i,x in enumerate(image_data_logs):
         df = pd.DataFrame(data=x)
-        content_name = get_base_name(image_paths[i][0])
-        style_name = get_base_name(image_paths[i][1])
+        content_path, style_path = image_paths[i]
+        content_name = get_base_name(content_path)
+        style_name = get_base_name(style_path)
         name = f"{content_name}_{style_name}_image_data_logs"
         output_path = os.path.join(folder, name)
         df.to_csv(f"{output_path}.csv", index=False)
