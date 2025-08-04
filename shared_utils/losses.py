@@ -20,7 +20,6 @@ def save_tmp_img(image, folder, prefix="tmp", return_img=False):
         return img_path
     return dir_path
 
-
 def ssim_loss(x,y,val_range: float = 1):
     ssim_value = tf.image.ssim(x,y, max_val=val_range)
     return 1 - tf.reduce_mean(ssim_value)
@@ -33,7 +32,6 @@ def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
     mm_ssim = tf.image.ssim_multiscale(base_image,combination_image, max_val=val_range)  
     return 1 - tf.reduce_mean(mm_ssim)
 
-
 def get_lpips_loss(base_image, combination_image, loss_net='vgg'):
     base_img_path = save_tmp_img(base_image.numpy(), "base",return_img=True)
     combination_img_path = save_tmp_img(combination_image.numpy(), "combination", return_img=True)
@@ -42,9 +40,6 @@ def get_lpips_loss(base_image, combination_image, loss_net='vgg'):
     combination_image_pt = read_image(combination_img_path)
     distance_pt = loss_fn(base_image_pt, combination_image_pt)
     return distance_pt.item()
-
-
-
 
 def get_fidelity(base_image, combination_image,includes = []) -> dict:
     if includes is None:
@@ -75,9 +70,6 @@ def get_fidelity(base_image, combination_image,includes = []) -> dict:
             output[k] = results[v]
     return output
 
-
-
-
 def get_artfid_loss(base_image, combination_image):
     includes = ["fid"]
     fid_loss = get_fidelity(base_image, combination_image,includes)["fid"]
@@ -91,9 +83,6 @@ def square_or_l2(x, square: bool = True):
         return tf.square(x)
     else:
         return tf.nn.l2_loss(x)
-
-
-
 
 
 def apply_mask(loss, mask=None):

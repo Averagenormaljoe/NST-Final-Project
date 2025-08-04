@@ -1,11 +1,7 @@
-from calendar import c
-from turtle import st
 import matplotlib.pyplot as plt
-from numpy import save
 import pandas as pd
 import os
 
-from sympy import plot
 from helper_functions.meta_manager import prepare_metadata, save_metadata
 from shared_utils.file_nav import get_base_name 
 
@@ -57,7 +53,13 @@ def get_total_time(df):
             total_time = df[time].sum()
             time_dict[f"total_{time}"] = total_time
     return time_dict
-        
+     
+     
+def show_or_close_plot(show_plot):
+    if show_plot:
+        plt.show()
+    else:
+        plt.close()   
     
 def plot_losses(df,image_paths,show_plot=True):
     plt.figure(figsize=(10, 5))
@@ -66,27 +68,29 @@ def plot_losses(df,image_paths,show_plot=True):
     plt.xlabel('Iterations')
     plt.ylabel('Loss')
     plt.legend()
-    if show_plot:
-        plt.show()
-    save_plot(image_paths)
+
+    plot_name = "default"
+    save_plot(image_paths, plot_name)
+    show_or_close_plot(show_plot)
     
     
 
-def save_plot(image_paths, folder="plots"):
+def save_plot(image_paths,name, folder="plots"):
     os.makedirs(folder, exist_ok=True)
     content_path, style_path = image_paths
     content_name = get_base_name(content_path)
     style_name = get_base_name(style_path )
-    save_name = f"{content_name}_{style_name}_loss_plot.png"
+    save_name = f"{content_name}_{style_name}_{name}_loss_plot.png"
     save_path = os.path.join(folder, save_name)
     plt.savefig(save_path)
 
-def plot_NST_losses(df,image_paths, show_plot=True,verbose=False):
+def plot_NST_losses(df,image_paths, show_plot=True,verbose=True):
     metric_keys = ['ssim', 'lpips', 'ms_ssim']
     plt.figure(figsize=(10, 5))
     not_found_keys = [k for k in metric_keys if k not in df.columns]
     if not_found_keys and verbose:
         print(f"Error: keys ({not_found_keys}) are missing from the dataframe")
+        return
     for key in metric_keys:
         plt.plot(df['iterations'], df[key], label=f'{key} loss')
     plt.title(f"NST Losses vs iterations")
@@ -95,6 +99,7 @@ def plot_NST_losses(df,image_paths, show_plot=True,verbose=False):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    if show_plot:
-        plt.show()
-    save_plot(df, image_paths)
+
+    plot_name = "NST"
+    save_plot(image_paths,plot_name)
+    show_or_close_plot(show_plot)
