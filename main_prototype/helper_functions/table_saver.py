@@ -42,7 +42,7 @@ def save_data_logs(image_data_logs, image_paths,folder = "csv_hardware"):
         
                 
 def get_avg_metrics(df):
-    metrics_to_avg = ['ssim', 'psnr', 'lpips', 'total_variation', 'content', 'style', 'ms_ssim']
+    metrics_to_avg = ['ssim',  'lpips', 'total_variation', 'content', 'style', 'ms_ssim']
     avg = {}
     for metric in metrics_to_avg:
         if metric in df.columns:
@@ -82,7 +82,7 @@ def save_plot(image_paths, folder="plots"):
     plt.savefig(save_path)
 
 def plot_NST_losses(df,image_paths, show_plot=True):
-    metric_keys = ['content', 'style', 'ssim', 'psnr', 'total_variation']
+    metric_keys = ['ssim', 'lpips', 'ms_ssim']
     plt.figure(figsize=(10, 5))
     missing_keys = [k for k in metric_keys if k not in df.columns]
     if missing_keys:
