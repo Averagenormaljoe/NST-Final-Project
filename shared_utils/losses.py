@@ -34,27 +34,9 @@ def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
 
 
 def get_lpips_loss(base_image, combination_image, loss_net='alex'):
-
-   
-    base_image_np = base_image.numpy()
-    combination_image_np = combination_image.numpy()
-    perm = (0, 3, 1, 2)
-    base_image_np_transpose = np.transpose(base_image_np, perm)
-    combination_image_np_transpose = np.transpose(combination_image_np, perm)
-
-    base_image_pt = torch.from_numpy(base_image_np_transpose)
-    combination_image_pt = torch.from_numpy(combination_image_np_transpose)
-
-
-
     loss_fn = lpips.LPIPS(net=loss_net) 
-
-
-    distance_pt = loss_fn(base_image_pt, combination_image_pt)
-
-    distance_np = distance_pt.detach().cpu().numpy()
-    distance_tf = tf.convert_to_tensor(distance_np)
-    return tf.reduce_mean(distance_tf)
+    distance = loss_fn(base_image, combination_image)
+    return distance.item()
 
 
 
