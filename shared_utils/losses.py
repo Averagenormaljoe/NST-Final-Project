@@ -1,7 +1,8 @@
+from calendar import c
 import shutil
-from matplotlib.pylab import f
 import numpy as np
 import tensorflow as tf
+from AdaIN.AdaIN_functions import convert
 from torch_fidelity import calculate_metrics
 import lpips
 from PIL import Image
@@ -33,8 +34,10 @@ def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
     return 1 - tf.reduce_mean(mm_ssim)
 
 def get_lpips_loss(base_image, combination_image, loss_net='vgg'):
-    base_img_path = save_tmp_img(base_image.numpy(), "base",return_img=True)
-    combination_img_path = save_tmp_img(combination_image.numpy(), "combination", return_img=True)
+    convert_base_image = base_image if isinstance(base_image, np.ndarray) else base_image.numpy()
+    convert_combination_image = combination_image if isinstance(combination_image, np.ndarray) else combination_image.numpy()
+    base_img_path = save_tmp_img(convert_base_image, "base",return_img=True)
+    combination_img_path = save_tmp_img(convert_combination_image, "combination", return_img=True)
     loss_fn = lpips.LPIPS(net=loss_net) 
     base_image_pt = read_image(base_img_path)
     combination_image_pt = read_image(combination_img_path)
