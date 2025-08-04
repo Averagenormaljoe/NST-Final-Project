@@ -6,7 +6,7 @@ def save_metadata(metadata, file_name):
     with open(file_name, 'w') as f:
         json.dump(metadata, f,sort_keys=True, indent=4)
 
-def prepare_metadata(config, file_paths):
+def prepare_metadata(config, file_paths,extra_dict):
     content_image, style_image = file_paths
     metadata = {
         "content_image": get_base_name(content_image),
@@ -16,4 +16,6 @@ def prepare_metadata(config, file_paths):
         "noise": config.get('noise', False),
         "clip": config.get('clip', False)
     }
+    if extra_dict:
+        metadata.update(extra_dict)
     return metadata

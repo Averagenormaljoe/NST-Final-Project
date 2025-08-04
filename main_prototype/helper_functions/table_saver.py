@@ -1,14 +1,20 @@
+from calendar import c
+from curses import meta
+from matplotlib.pylab import f
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
+from requests import get
+
+from main_prototype.helper_functions.meta_manager import prepare_metadata, save_metadata
 from shared_utils.file_nav import get_base_name 
 
-import json
+
 
 
 def save_data_logs(image_data_logs, image_paths,folder = "csv_hardware"):
-    
+
     os.makedirs(folder, exist_ok=True)
     for i,x in enumerate(image_data_logs):
         df = pd.DataFrame(data=x)
@@ -17,6 +23,28 @@ def save_data_logs(image_data_logs, image_paths,folder = "csv_hardware"):
         name = f"{content_name}_{style_name}_image_data_logs"
         output_path = os.path.join(folder, name)
         df.to_csv(f"{output_path}.csv", index=False)
+        avg = get_avg_metrics(df)
+        config = {
+            "content_name": content_name,
+            "style_name": style_name
+        }
+        metadata = prepare_metadata(
+            config=config,
+            file_paths=image_paths[i],
+            extra_dict=avg
+        )
+        metadata_file_name = f"{output_path}_metadata.json"
+        save_metadata(metadata, metadata_file_name)
+        
+                
+def get_avg_metrics(df):
+    metrics_to_avg = ['ssim', 'psnr', 'lpips', 'total_variation', 'content', 'style', 'ms_ssim']
+    avg = {}
+    for metric in metrics_to_avg:
+        if metric in df.columns:
+            avg_value = df[metric].mean()
+            avg[f"avg_{metric}"] = avg_value
+    return avg
         
     
 def plot_losses(df):
