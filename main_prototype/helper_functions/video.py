@@ -91,16 +91,16 @@ def save_output_video(config, video_details):
     if verbose:
         print(f'Video successfully synthesized to {output_video_path}.')
         
-        
+def normalize_output_size(output_size):
+    if output_size is not None:
+        resized_output_size = tuple(output_size) if len(output_size) > 1 else output_size[0]
+        return resized_output_size
+    
         
 def video_style_transfer(config,video_details,loop_manager):
     verbose = config.get('verbose', False)
     output_size = config.get('size')
-    if output_size is not None:
-        if len(output_size) > 1: 
-            output_size = tuple(output_size)
-        else:
-            output_size = output_size[0]
+    output_size = normalize_output_size(output_size)
     config['size'] = output_size
     total_frames,h,w, content_fps = video_details
     content_video_path, style_path, output_dir = get_video_paths(config)
