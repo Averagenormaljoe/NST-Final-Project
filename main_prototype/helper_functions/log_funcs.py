@@ -1,6 +1,4 @@
 from shared_utils.helper import create_dir
-
-
 def create_log_dir(content_name : str, style_name : str):
     log_folder : str = "logs/tensorboard"
     create_dir(log_folder)

@@ -70,7 +70,8 @@ def save_output_video(config, video_details):
     content_video_path, style_path, output_dir = get_video_paths(config)
     content_video_name = get_base_name(content_video_path)
     style_img_name = get_base_name(style_path)
-    output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.mp4")
+    output_extension = config.get('output_extension', 'mp4')
+    output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.{output_extension}")
     frames_dir, transferred_dir = get_frame_dir()
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
     extension = config.get('extension', 'jpg')
@@ -105,7 +106,7 @@ def video_style_transfer(config,video_details,loop_manager):
     content_video_path, style_path, output_dir = get_video_paths(config)
     frames_dir, transferred_dir = get_frame_dir()
     content_frames_dir = os.path.join(output_dir,  frames_dir)
-    transferred_frames_dir = os.path.join(output_dir transferred_dir)
+    transferred_frames_dir = os.path.join(output_dir, transferred_dir)
     if not os.path.exists(transferred_frames_dir):
         os.makedirs(transferred_frames_dir )
     if not os.path.exists(content_frames_dir):
