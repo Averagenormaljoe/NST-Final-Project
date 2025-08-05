@@ -1,4 +1,4 @@
-# Code adapted from 'https://github.com/elenaliao1002/neural-style-transfer'
+# Code adapted from 'https://github.com/elenaliao1002/neural-style-transfer/blob/main/video_style_transfer.py'
 import os
 import cv2
 from shared_utils.file_nav import get_base_name
@@ -7,7 +7,7 @@ from shared_utils.helper import create_dir
 def get_video_paths(config):
 
     output_dir = config.get('output_dir')
-    os.makedirs(output_dir, exist_ok=True)
+    create_dir(output_dir)
     content_video_path = config.get('content_path')
     style_path = config.get('style_path')
     return content_video_path, style_path, output_dir
