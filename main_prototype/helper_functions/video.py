@@ -1,5 +1,4 @@
-
-from calendar import c
+# Code adapted from 'https://github.com/elenaliao1002/neural-style-transfer'
 import os
 import cv2
 from shared_utils.file_nav import get_base_name
