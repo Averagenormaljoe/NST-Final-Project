@@ -28,7 +28,8 @@ def write_frames(config):
   
     verbose = config.get('verbose', False)
     frames_dir, transferred_dir = get_frame_dir()
-    
+    content_prefix = config.get('content_frame_prefix', 'frame')
+    extension = config.get('extension', 'jpg')
     content_video_path, style_path, output_dir = get_video_paths(config)
     if not os.path.exists(os.path.join(output_dir,  frames_dir)):
         os.makedirs(os.path.join(output_dir,  frames_dir))
@@ -47,10 +48,11 @@ def write_frames(config):
     for i in trange(frames_limit, desc="Extracting frames from content video", disable=not verbose):
         ret, frame = cap.read()
         frame_i = f"{i+1:08d}"
+        path = os.path.join(output_dir, frames_dir, f"{content_prefix}-{frame_i}.{extension}")
         if ret:
-            cv2.imwrite(os.path.join(output_dir, frames_dir, f"frame-{frame_i}.jpg"), frame)
+            cv2.imwrite(path, frame)
         else:
-            print(F'ERROR: {os.path.join(output_dir, frames_dir, f"frame-{frame_i}.jpg")} failed to be extracted.')
+            print(F'ERROR: {path} failed to be extracted.')
             return
 
     cap.release()
@@ -70,13 +72,16 @@ def save_output_video(config, video_details):
     style_img_name = get_base_name(style_path)
     output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.mp4")
     frames_dir, transferred_dir = get_frame_dir()
-    output_frame_height, output_frame_width, _ = cv2.imread(os.path.join(output_dir, transferred_dir, "transferred_frame-00000001.jpg")).shape
+    transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
+    extension = config.get('extension', 'jpg')
+    first_output_frame = os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{1:08d}.{extension}")
+    output_frame_height, output_frame_width, _ = cv2.imread(first_output_frame).shape
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_writer = cv2.VideoWriter(output_video_path, fourcc, output_fps, (output_frame_width, output_frame_height), True)
     
     for i in trange(total_frames, desc="Combining the stylized frames of the video together", disable=not verbose):
-        frame = cv2.imread(os.path.join(output_dir, transferred_dir, f"transferred_frame-{i+1:08d}.jpg"))
+        frame = cv2.imread(os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{i+1:08d}.{extension}"))
         if frame is not None:
             video_writer.write(frame)
 
@@ -106,11 +111,14 @@ def video_style_transfer(config,video_details,loop_manager):
     if not os.path.exists(content_frames_dir):
         os.makedirs(content_frames_dir)
     prev_frames = []
+    content_prefix = config.get('content_prefix', 'frame')
+    transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
+    extension = config.get('extension', 'jpg')
     # perform image style transfer with each content frame and style image
     for i in trange(total_frames, desc="Performing style transfer for each frame", disable=not verbose):
         frame_i = f"{i+1:08d}"
-        content_frame_path = os.path.join(content_frames_dir, f"frame-{frame_i}.jpg")
-        output_frame_path = os.path.join(transferred_frames_dir, f"transferred_frame-{frame_i}.jpg")
+        content_frame_path = os.path.join(content_frames_dir, f"{content_prefix}-{frame_i}.{extension}")
+        output_frame_path = os.path.join(transferred_frames_dir, f"{transformed_prefix}-{frame_i}.{extension}")
         config['output_path'] = output_frame_path
         config["frames"] = prev_frames
         results = loop_manager.training_loop(content_frame_path, style_path, config=config)
