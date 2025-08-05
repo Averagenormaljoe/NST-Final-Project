@@ -109,10 +109,8 @@ def video_style_transfer(config,video_details,loop_manager):
     frames_dir, transferred_dir = get_frame_dir()
     content_frames_dir = os.path.join(output_dir,  frames_dir)
     transferred_frames_dir = os.path.join(output_dir, transferred_dir)
-    if not os.path.exists(transferred_frames_dir):
-        os.makedirs(transferred_frames_dir )
-    if not os.path.exists(content_frames_dir):
-        os.makedirs(content_frames_dir)
+    create_dir(transferred_frames_dir)
+    create_dir(content_frames_dir)
     prev_frames = []
     content_prefix = config.get('content_prefix', 'frame')
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')

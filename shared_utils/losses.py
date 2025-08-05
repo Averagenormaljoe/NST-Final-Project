@@ -16,8 +16,8 @@ def save_tmp_img(image, folder, prefix="tmp", return_img=False):
     os.makedirs(dir_path, exist_ok=True)
     img_name = "img_dummy.png"
     img_path = os.path.join(dir_path, img_name)
-    numpy_image = image.squeeze().astype("uint8")
-    Image.fromarray(numpy_image.astype("uint8")).save(img_path)
+    im = Image.fromarray(image)
+    im.save(img_path)
     if return_img:
         return img_path
     return dir_path
