@@ -19,12 +19,16 @@ def get_video_details(cap):
     content_fps = cap.get(cv2.CAP_PROP_FPS)
     return total_frames, h, w, content_fps
 
+def get_frame_dir():
+    return "content_frames", "transferred_frames"
+
 def write_frames(config):
 
     
   
     verbose = config.get('verbose', False)
-    frames_dir =  "content_frames"
+    frames_dir, transferred_dir = get_frame_dir()
+    
     content_video_path, style_path, output_dir = get_video_paths(config)
     if not os.path.exists(os.path.join(output_dir,  frames_dir)):
         os.makedirs(os.path.join(output_dir,  frames_dir))
@@ -65,14 +69,14 @@ def save_output_video(config, video_details):
     content_video_name = get_base_name(content_video_path)
     style_img_name = get_base_name(style_path)
     output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.mp4")
-
-    output_frame_height, output_frame_width, _ = cv2.imread(os.path.join(output_dir, "transferred_frames", "transferred_frame-00000001.jpg")).shape
+    frames_dir, transferred_dir = get_frame_dir()
+    output_frame_height, output_frame_width, _ = cv2.imread(os.path.join(output_dir, transferred_dir, "transferred_frame-00000001.jpg")).shape
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_writer = cv2.VideoWriter(output_video_path, fourcc, output_fps, (output_frame_width, output_frame_height), True)
-
+    
     for i in trange(total_frames, desc="Combining the stylized frames of the video together", disable=not verbose):
-        frame = cv2.imread(os.path.join(output_dir, "transferred_frames", f"transferred_frame-{i+1:08d}.jpg"))
+        frame = cv2.imread(os.path.join(output_dir, transferred_dir, f"transferred_frame-{i+1:08d}.jpg"))
         if frame is not None:
             video_writer.write(frame)
 
@@ -94,9 +98,9 @@ def video_style_transfer(config,video_details,loop_manager):
     config['size'] = output_size
     total_frames,h,w, content_fps = video_details
     content_video_path, style_path, output_dir = get_video_paths(config)
-    
-    content_frames_dir = os.path.join(output_dir, "content_frames")
-    transferred_frames_dir = os.path.join(output_dir, "transferred_frames")
+    frames_dir, transferred_dir = get_frame_dir()
+    content_frames_dir = os.path.join(output_dir,  frames_dir)
+    transferred_frames_dir = os.path.join(output_dir transferred_dir)
     if not os.path.exists(transferred_frames_dir):
         os.makedirs(transferred_frames_dir )
     if not os.path.exists(content_frames_dir):
