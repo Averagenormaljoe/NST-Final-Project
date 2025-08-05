@@ -13,4 +13,4 @@ def result_save(content_name : str,style_name: str,iterations : int, img: np.nda
     fname = f"{output_dir}/{content_name}_{style_name}_{now}_{data_name}_{iterations}.{file_extension}"
     keras.utils.save_img(fname, img) 
     if verbose > 0:
-        print("Image saved at iteration {}".format(iterations))
+        print(f"Image saved at iteration {iterations}")
