@@ -1,8 +1,10 @@
 
+from calendar import c
 import os
 import cv2
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
+from shared_utils.helper import create_dir
 def get_video_paths(config):
 
     output_dir = config.get('output_dir')
@@ -31,8 +33,8 @@ def write_frames(config):
     content_prefix = config.get('content_frame_prefix', 'frame')
     extension = config.get('extension', 'jpg')
     content_video_path, style_path, output_dir = get_video_paths(config)
-    if not os.path.exists(os.path.join(output_dir,  frames_dir)):
-        os.makedirs(os.path.join(output_dir,  frames_dir))
+    output_frames_dir = os.path.join(output_dir, frames_dir)
+    create_dir(output_frames_dir)
     if verbose:
         print("Loading content video...")
 

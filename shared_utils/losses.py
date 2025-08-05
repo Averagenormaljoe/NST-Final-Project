@@ -14,7 +14,8 @@ def save_tmp_img(image, folder, prefix="tmp", return_img=False):
     if os.path.exists(dir_path):
         shutil.rmtree(dir_path)
     os.makedirs(dir_path, exist_ok=True)
-    img_path = os.path.join(dir_path, "img_0.png")
+    img_name = "img_dummy.png"
+    img_path = os.path.join(dir_path, img_name)
     numpy_image = image.squeeze().astype("uint8")
     Image.fromarray(numpy_image.astype("uint8")).save(img_path)
     if return_img:
