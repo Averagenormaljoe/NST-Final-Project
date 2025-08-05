@@ -1,8 +1,6 @@
 
 import os
-
 import cv2
-from requests import get
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
 def get_video_paths(config):
@@ -44,10 +42,11 @@ def write_frames(config):
     # extract frames from content video
     for i in trange(frames_limit, desc="Extracting frames from content video", disable=not verbose):
         ret, frame = cap.read()
+        frame_i = f"{i+1:08d}"
         if ret:
-            cv2.imwrite(os.path.join(output_dir, frames_dir, f"frame-{i+1:08d}.jpg"), frame)
+            cv2.imwrite(os.path.join(output_dir, frames_dir, f"frame-{frame_i}.jpg"), frame)
         else:
-            print(F'ERROR: {os.path.join(output_dir, frames_dir, f"frame-{i+1:08d}.jpg")} failed to be extracted.')
+            print(F'ERROR: {os.path.join(output_dir, frames_dir, f"frame-{frame_i}.jpg")} failed to be extracted.')
             return
 
     cap.release()
@@ -66,11 +65,11 @@ def save_output_video(config, video_details):
     content_video_name = get_base_name(content_video_path)
     style_img_name = get_base_name(style_path)
     output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.mp4")
-    
+
     output_frame_height, output_frame_width, _ = cv2.imread(os.path.join(output_dir, "transferred_frames", "transferred_frame-00000001.jpg")).shape
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
-    cv2_fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video_writer = cv2.VideoWriter(output_video_path, cv2_fourcc, output_fps, (output_frame_width, output_frame_height), True)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    video_writer = cv2.VideoWriter(output_video_path, fourcc, output_fps, (output_frame_width, output_frame_height), True)
 
     for i in trange(total_frames, desc="Combining the stylized frames of the video together", disable=not verbose):
         frame = cv2.imread(os.path.join(output_dir, "transferred_frames", f"transferred_frame-{i+1:08d}.jpg"))
@@ -102,14 +101,16 @@ def video_style_transfer(config,video_details,loop_manager):
         os.makedirs(transferred_frames_dir )
     if not os.path.exists(content_frames_dir):
         os.makedirs(content_frames_dir)
-
+    prev_frames = []
     # perform image style transfer with each content frame and style image
     for i in trange(total_frames, desc="Performing style transfer for each frame", disable=not verbose):
-        content_frame_path = os.path.join(content_frames_dir, f"frame-{i+1:08d}.jpg")
-        output_frame_path = os.path.join(transferred_frames_dir, f"transferred_frame-{i+1:08d}.jpg")
+        frame_i = f"{i+1:08d}"
+        content_frame_path = os.path.join(content_frames_dir, f"frame-{frame_i}.jpg")
+        output_frame_path = os.path.join(transferred_frames_dir, f"transferred_frame-{frame_i}.jpg")
         config['output_path'] = output_frame_path
+        config["frames"] = prev_frames
         results = loop_manager.training_loop(content_frame_path, style_path, config=config)
-    
+        
 
         if verbose:
             if results:
@@ -117,7 +118,7 @@ def video_style_transfer(config,video_details,loop_manager):
             else:
                 print(f'\tWarning: Image style transfer failed for frame {content_frame_path}.')
                 return
-    
+        prev_frames.append(results['best_image'])
     if verbose:
         print("Image style transfer complete.")
         print()
