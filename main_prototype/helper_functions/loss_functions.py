@@ -66,13 +66,13 @@ def high_pass_x_y(image, size = None):
         y = image[:, 1:, :, :] - image[:, :-1, :, :]         
     return x, y
 
-def total_variation_loss(x,use="gatys" ,size = None,):
+def total_variation_loss(x,tv_type="gatys" ,size = None,):
     a,b = high_pass_x_y(x, size)
-    if use == "gatys":
+    if tv_type == "gatys":
         return total_variation_loss_gatys(a,b)
-    elif use == "l1":
+    elif tv_type == "l1":
         return total_variation_loss_l1(a,b)
-    elif use == "l2":
+    elif tv_type == "l2":
         return total_variation_loss_l2(a,b)
     
 def total_variation_loss_gatys(a,b):
