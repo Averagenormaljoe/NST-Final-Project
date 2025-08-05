@@ -32,20 +32,20 @@ def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
         )
     return segmenter
 
-def optimal_flow(prev_img, curr_img,prepared_flow , type='farneback', save_flow=False):
-    if type == 'deepflow':
+def get_optimal_flow(prev_img, curr_img config={}):
+    flow_type = config.get("flow_type", "farneback")
+    save_flow = config.get("save_flow", False)
+    if flow_type == 'deepflow':
         deepflow = cv2.optflow.createOptFlow_DeepFlow()
         flow = deepflow.calc(prev_img, curr_img, None)
-    elif type == 'farneback':
+    elif flow_type == 'farneback':
         flow = cv2.calcOpticalFlowFarneback(prev_img, curr_img, None, 0.5, 3, 15, 3, 5, 1.2, 0)
-    elif type == 'lucas_kanade':
+    elif flow_type == 'lucas_kanade':
         flow = cv2.calcOpticalFlowPyrLK(prev_img, curr_img, None)
-    elif type == 'dis':
+    elif flow_type == 'dis':
         dis = cv2.optflow.createOptFlow_DIS()
         flow = dis.calc(prev_img,curr_img, None)
-
-    
-                
+     
     if save_flow:
         output_path = "dp.flo"
         cv2.optflow.writeOpticalFlow(output_path, flow)
