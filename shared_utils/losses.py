@@ -1,7 +1,6 @@
 import shutil
 import numpy as np
 import tensorflow as tf
-from AdaIN.AdaIN_functions import convert
 from torch_fidelity import calculate_metrics
 import lpips
 from PIL import Image
@@ -15,7 +14,8 @@ def save_tmp_img(image, folder, prefix="tmp", return_img=False):
     os.makedirs(dir_path, exist_ok=True)
     img_name = "img_dummy.png"
     img_path = os.path.join(dir_path, img_name)
-    im = Image.fromarray(image)
+    numpy_image = image.squeeze().astype("uint8")
+    im = Image.fromarray(numpy_image)
     im.save(img_path)
     if return_img:
         return img_path
