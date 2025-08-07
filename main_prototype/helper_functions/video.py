@@ -129,7 +129,7 @@ def video_style_transfer(config,video_details,loop_manager):
             else:
                 print(f'\tWarning: Image style transfer failed for frame {content_frame_path}.')
                 return
-        prev_frames.append(results['best_image'])
+        prev_frames.append(results.best_image)
     if verbose:
         print("Image style transfer complete.")
         print()
