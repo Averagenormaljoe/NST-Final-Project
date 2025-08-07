@@ -1,6 +1,5 @@
 import os
 from typing import Optional
-from sympy import li
 import tensorflowjs as tfjs
 import tensorflow as tf
 import zipfile

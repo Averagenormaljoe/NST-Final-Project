@@ -32,7 +32,7 @@ def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
         )
     return segmenter
 
-def get_optimal_flow(prev_img, curr_img config={}):
+def get_optimal_flow(prev_img, curr_img, config={}):
     flow_type = config.get("flow_type", "farneback")
     save_flow = config.get("save_flow", False)
     if flow_type == 'deepflow':
@@ -96,7 +96,7 @@ def multi_pass(n_pass,frames,flow):
                     wrap_img = warp_flow(init_img, flow)
                     init_img = wrap_img + frames[i]
                 
-                y =   * init_img
+                y *=  init_img
         else:
             if direction == "backward":
                 for i in trange(0, frames, desc=f"Processing frames in pass {j+1}"):
