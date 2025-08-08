@@ -31,6 +31,9 @@ def save_in_numpy(image, img_path):
     im.save(img_path)
     
 def save_in_tensor(img_tensor,path):
+    if not isinstance(path, tf.Tensor):
+        path = tf.convert_to_tensor(path, dtype=tf.string)
+    path = tf.reshape(path, [])
     img_uint8 = tf.image.convert_image_dtype(img_tensor, dtype=tf.uint8)
     encoded = tf.io.encode_png(img_uint8)
     tf.io.write_file(path, encoded) 
