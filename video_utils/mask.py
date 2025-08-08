@@ -40,6 +40,7 @@ def convert_to_numpy(img):
 def get_optimal_flow(prev_img, curr_img, config={}):
     flow_type = config.get("flow_type", "farneback")
     save_flow = config.get("save_flow", False)
+    output_path = config.get("flow_output_path", "optical_flow.flo")
     prev_img = convert_to_numpy(prev_img)
     curr_img = convert_to_numpy(curr_img)
     if flow_type == 'deepflow':
@@ -56,7 +57,6 @@ def get_optimal_flow(prev_img, curr_img, config={}):
         flow = dis.calc(prev_img, curr_img, None)
      
     if save_flow:
-        output_path = "dp.flo"
         cv2.optflow.writeOpticalFlow(output_path, flow)
     return flow
 
