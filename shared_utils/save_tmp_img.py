@@ -9,13 +9,17 @@ def save_tmp_img(image, folder, prefix="tmp", return_img=False, save_tensor=Fals
     os.makedirs(dir_path, exist_ok=True)
     img_name = "img_dummy.png"
     img_path = os.path.join(dir_path, img_name)
-    if save_tensor:
-        save_in_tensor(image, img_path)
-    else:
-        save_in_numpy(image, img_path)
+    save_img_format(image, img_path, save_tensor=save_tensor)
     if return_img:
         return img_path
     return dir_path
+
+def save_img_format(image, path, save_tensor=False):
+    if save_tensor:
+        save_in_tensor(image, path)
+    else:
+        save_in_numpy(image, path)
+    
 
 def destroy_tmp_img(path):
     if os.path.exists(path):
