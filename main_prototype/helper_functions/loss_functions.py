@@ -39,7 +39,8 @@ def style_loss(style_img, combination_img,img_width : int,img_height: int):
  channels = 3
  size = img_height * img_width
  diff_squared = tf.square(S - C)
- return tf.reduce_sum(diff_squared) / (4.0 * (channels ** 2) * (size ** 2))
+ sum_diff = tf.reduce_sum(diff_squared)
+ return sum_diff / (4.0 * (channels ** 2) * (size ** 2))
 
 
 def compute_style_loss_with_consine_similarity(x, y):
@@ -66,22 +67,22 @@ def high_pass_x_y(image, size = None):
         y = image[:, 1:, :, :] - image[:, :-1, :, :]         
     return x, y
 
-def total_variation_loss(x,use="gatys" ,size = None,):
+def total_variation_loss(x,tv_type="gatys" ,size = None,):
     a,b = high_pass_x_y(x, size)
-    if use == "gatys":
+    if tv_type == "gatys":
         return total_variation_loss_gatys(a,b)
-    elif use == "l1":
+    elif tv_type == "l1":
         return total_variation_loss_l1(a,b)
-    elif use == "l2":
+    elif tv_type == "l2":
         return total_variation_loss_l2(a,b)
     
 def total_variation_loss_gatys(a,b):
     return tf.reduce_sum(tf.pow(a + b, 1.25))
 def total_variation_loss_l1(a,b):
-        return tf.reduce_sum(tf.abs(a)) + tf.reduce_sum(tf.abs(b))
+        return tf.reduce_sum(tf.abs(a) + tf.abs(b))
 
 def total_variation_loss_l2(a,b):
-    return tf.reduce_sum(tf.square(a)) + tf.reduce_sum(tf.square(b))
+    return tf.reduce_sum(tf.square(a) + tf.square(b))
 
 
     
