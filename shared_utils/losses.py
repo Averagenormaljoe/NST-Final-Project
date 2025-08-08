@@ -1,25 +1,10 @@
-import shutil
 import numpy as np
 import tensorflow as tf
 from torch_fidelity import calculate_metrics
 import lpips
-from PIL import Image
-import os
 from torchvision.io import read_image
+from shared_utils.save_tmp_img import save_tmp_img  
 
-def save_tmp_img(image, folder, prefix="tmp", return_img=False):
-    dir_path = f"/{prefix}/{folder}"
-    if os.path.exists(dir_path):
-        shutil.rmtree(dir_path)
-    os.makedirs(dir_path, exist_ok=True)
-    img_name = "img_dummy.png"
-    img_path = os.path.join(dir_path, img_name)
-    numpy_image = image.squeeze().astype("uint8")
-    im = Image.fromarray(numpy_image)
-    im.save(img_path)
-    if return_img:
-        return img_path
-    return dir_path
 
 def ssim_loss(x,y,val_range: float = 1):
     ssim_value = tf.image.ssim(x,y, max_val=val_range)
