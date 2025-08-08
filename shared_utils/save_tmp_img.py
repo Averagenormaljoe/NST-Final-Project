@@ -14,3 +14,7 @@ def save_tmp_img(image, folder, prefix="tmp", return_img=False):
     if return_img:
         return img_path
     return dir_path
+
+def destroy_tmp_img(path):
+    if os.path.exists(path):
+        shutil.rmtree(path)

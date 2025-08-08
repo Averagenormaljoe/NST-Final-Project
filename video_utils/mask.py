@@ -8,6 +8,7 @@ import tensorflow_hub as hub
 import numpy as np
 import urllib
 import keras_hub
+from shared_utils.save_tmp_img import save_tmp_img
 def generate_mask(img,segmenter):
   
     mask = segmenter.predict(img)
@@ -41,8 +42,10 @@ def get_optimal_flow(prev_img, curr_img, config={}):
     flow_type = config.get("flow_type", "farneback")
     save_flow = config.get("save_flow", False)
     output_path = config.get("flow_output_path", "optical_flow.flo")
-    prev_img = convert_to_numpy(prev_img)
-    curr_img = convert_to_numpy(curr_img)
+    prev_image_path = save_tmp_img(prev_img, "prev_image", return_img=True)
+    curr_image_path = save_tmp_img(curr_img, "curr_image", return_img=True)
+    prev_img = cv2.imread(prev_image_path, cv2.IMREAD_GRAYSCALE)
+    curr_img = cv2.imread(curr_image_path, cv2.IMREAD_GRAYSCALE)
     if flow_type == 'deepflow':
         deepflow = cv2.optflow.createOptFlow_DeepFlow()
         flow = deepflow.calc(prev_img, curr_img, None)
