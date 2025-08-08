@@ -33,10 +33,6 @@ def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
         )
     return segmenter
 
-def convert_to_numpy(img):
-    if hasattr(img, 'numpy'):
-        img = img.numpy()
-    return img
 
 def get_optimal_flow(prev_img, curr_img, config={}):
     prev_image_path = save_tmp_img(prev_img, "prev_image", return_img=True)
