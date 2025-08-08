@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from shared_utils.file_nav import get_base_name
 def open_file(style_path : str):
-   
     img = Image.open(style_path)
     img = np.array(img)
     return img
