@@ -113,6 +113,7 @@ def video_style_transfer(config,video_details,loop_manager):
     content_prefix = config.get('content_prefix', 'frame')
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
     extension = config.get('extension', 'jpg')
+    logs = []
     # perform image style transfer with each content frame and style image
     for i in trange(total_frames, desc="Performing style transfer for each frame", disable=not verbose):
         frame_i = f"{i+1:08d}"
@@ -129,11 +130,14 @@ def video_style_transfer(config,video_details,loop_manager):
             else:
                 print(f'\tWarning: Image style transfer failed for frame {content_frame_path}.')
                 return
-        prev_frames.append(results.best_image)
+        generated_images, best_image,log_data = results
+        prev_frames.append(results)
+        logs.append(log_data)
     if verbose:
         print("Image style transfer complete.")
         print()
         print("Synthesizing video from transferred frames...")
+    config["logs"] = logs
     return video_details
     
     
