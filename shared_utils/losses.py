@@ -33,12 +33,13 @@ def ms_ssim_loss(base_image, combination_image,val_range: float = 1.0):
     mm_ssim = tf.image.ssim_multiscale(base_image,combination_image, max_val=val_range)  
     return 1 - tf.reduce_mean(mm_ssim)
 
-def get_lpips_loss(base_image, combination_image, loss_net='vgg'):
+def get_lpips_loss(base_image, combination_image, loss_fn = None):
     convert_base_image = base_image if isinstance(base_image, np.ndarray) else base_image.numpy()
     convert_combination_image = combination_image if isinstance(combination_image, np.ndarray) else combination_image.numpy()
     base_img_path = save_tmp_img(convert_base_image, "base",return_img=True)
     combination_img_path = save_tmp_img(convert_combination_image, "combination", return_img=True)
-    loss_fn = lpips.LPIPS(net=loss_net) 
+    if loss_fn is None:
+        loss_fn = lpips.LPIPS(net='vgg')
     base_image_pt = read_image(base_img_path)
     combination_image_pt = read_image(combination_img_path)
     distance_pt = loss_fn(base_image_pt, combination_image_pt)

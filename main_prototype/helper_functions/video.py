@@ -28,11 +28,11 @@ def write_frames(config):
   
     verbose = config.get('verbose', False)
     frames_dir, transferred_dir = get_frame_dir()
-    content_prefix = config.get('content_frame_prefix', 'frame')
+    content_prefix = config.get('content_prefix', 'frame')
     extension = config.get('extension', 'jpg')
     content_video_path, style_path, output_dir = get_video_paths(config)
-    output_frames_dir = os.path.join(output_dir, frames_dir)
-    create_dir(output_frames_dir)
+    content_frames_dir = os.path.join(output_dir, frames_dir)
+    create_dir(content_frames_dir)
     if verbose:
         print("Loading content video...")
 
@@ -48,7 +48,7 @@ def write_frames(config):
     for i in trange(frames_limit, desc="Extracting frames from content video", disable=not verbose):
         ret, frame = cap.read()
         frame_i = f"{i+1:08d}"
-        path = os.path.join(output_dir, frames_dir, f"{content_prefix}-{frame_i}.{extension}")
+        path = os.path.join(content_frames_dir, f"{content_prefix}-{frame_i}.{extension}")
         if ret:
             cv2.imwrite(path, frame)
         else:
@@ -77,6 +77,9 @@ def save_output_video(config, video_details):
     extension = config.get('extension', 'jpg')
     first_output_frame = os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{1:08d}.{extension}")
     output_frame_height, output_frame_width, _ = cv2.imread(first_output_frame).shape
+    if not os.path.exists(first_output_frame):
+        print(f"ERROR: First output frame not found at {first_output_frame}")
+        return
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_writer = cv2.VideoWriter(output_video_path, fourcc, output_fps, (output_frame_width, output_frame_height), True)
@@ -131,7 +134,7 @@ def video_style_transfer(config,video_details,loop_manager):
                 print(f'\tWarning: Image style transfer failed for frame {content_frame_path}.')
                 return
         generated_images, best_image,log_data = results
-        prev_frames.append(results)
+        prev_frames.append(best_image.get_image())
         logs.append(log_data)
     if verbose:
         print("Image style transfer complete.")
