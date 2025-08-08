@@ -39,13 +39,17 @@ def convert_to_numpy(img):
     return img
 
 def get_optimal_flow(prev_img, curr_img, config={}):
+    prev_image_path = save_tmp_img(prev_img, "prev_image", return_img=True)
+    curr_image_path = save_tmp_img(curr_img, "curr_image", return_img=True)
+    flow = load_optical_flow(prev_image_path, curr_image_path, config)
+    return flow
+    
+def load_optical_flow(prev_image_path, curr_image_path, config): 
+    prev_img = cv2.imread(prev_image_path, cv2.IMREAD_GRAYSCALE)
+    curr_img = cv2.imread(curr_image_path, cv2.IMREAD_GRAYSCALE)
     flow_type = config.get("flow_type", "farneback")
     save_flow = config.get("save_flow", False)
     output_path = config.get("flow_output_path", "optical_flow.flo")
-    prev_image_path = save_tmp_img(prev_img, "prev_image", return_img=True)
-    curr_image_path = save_tmp_img(curr_img, "curr_image", return_img=True)
-    prev_img = cv2.imread(prev_image_path, cv2.IMREAD_GRAYSCALE)
-    curr_img = cv2.imread(curr_image_path, cv2.IMREAD_GRAYSCALE)
     if flow_type == 'deepflow':
         deepflow = cv2.optflow.createOptFlow_DeepFlow()
         flow = deepflow.calc(prev_img, curr_img, None)
