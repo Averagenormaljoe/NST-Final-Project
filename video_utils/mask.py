@@ -35,8 +35,8 @@ def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
 
 
 def get_optimal_flow(prev_img, curr_img, config={}):
-    prev_image_path = save_tmp_img(prev_img, "prev_image", return_img=True)
-    curr_image_path = save_tmp_img(curr_img, "curr_image", return_img=True)
+    prev_image_path = save_tmp_img(prev_img, "prev_image", return_img=True, save_tensor=True)
+    curr_image_path = save_tmp_img(curr_img, "curr_image", return_img=True, save_tensor=True)
     flow = load_optical_flow(prev_image_path, curr_image_path, config)
     return flow
     
