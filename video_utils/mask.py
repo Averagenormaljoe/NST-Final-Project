@@ -33,16 +33,20 @@ def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
         )
     return segmenter
 
+def convert_to_numpy(img):
+    numpy_img = img.numpy()
+    return numpy_img
+
 
 def get_optimal_flow(prev_img, curr_img, config={}):
-    prev_image_path = save_tmp_img(prev_img, "prev_image", return_img=True, save_tensor=True)
-    curr_image_path = save_tmp_img(curr_img, "curr_image", return_img=True, save_tensor=True)
-    flow = load_optical_flow(prev_image_path, curr_image_path, config)
+    prev_numpy_img = convert_to_numpy(prev_img)
+    curr_numpy_img = convert_to_numpy(curr_img)
+    flow = load_optical_flow(prev_numpy_img, curr_numpy_img, config)
     return flow
     
-def load_optical_flow(prev_image_path, curr_image_path, config): 
-    prev_img = cv2.imread(prev_image_path, cv2.IMREAD_GRAYSCALE)
-    curr_img = cv2.imread(curr_image_path, cv2.IMREAD_GRAYSCALE)
+def load_optical_flow(prev_numpy_img, curr_numpy_img, config): 
+    prev_img = cv2.cvtColor(prev_numpy_img, cv2.COLOR_RGB2GRAY)
+    curr_img = cv2.cvtColor(curr_numpy_img, cv2.COLOR_RGB2GRAY)
     flow_type = config.get("flow_type", "farneback")
     save_flow = config.get("save_flow", False)
     output_path = config.get("flow_output_path", "optical_flow.flo")
