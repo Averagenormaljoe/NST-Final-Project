@@ -45,9 +45,14 @@ def get_optimal_flow(prev_img, curr_img, config={}):
     flow = load_optical_flow(prev_numpy_img, curr_numpy_img, config)
     return flow
     
+def convert_to_grayscale(img):
+    if len(img.shape) == 3:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    return img   
+    
 def load_optical_flow(prev_numpy_img, curr_numpy_img, config): 
-    prev_img = cv2.cvtColor(prev_numpy_img, cv2.COLOR_RGB2GRAY)
-    curr_img = cv2.cvtColor(curr_numpy_img, cv2.COLOR_RGB2GRAY)
+    prev_img = convert_to_grayscale(prev_numpy_img)
+    curr_img = convert_to_grayscale(curr_numpy_img)
     flow_type = config.get("flow_type", "farneback")
     save_flow = config.get("save_flow", False)
     output_path = config.get("flow_output_path", "optical_flow.flo")
@@ -70,13 +75,19 @@ def load_optical_flow(prev_numpy_img, curr_numpy_img, config):
 
 
 def warp_flow(img, flow,reverse=False):
-    cast_flow = flow.astype(np.float32)
+    cast_flow = tf.cast(flow, tf.float32) if isinstance(flow, tf.Tensor) else flow.astype(np.float32)
+
     h, w = cast_flow.shape[:2]
-    if reverse:
-        cast_flow = -cast_flow
-    cast_flow[:,:,0] += np.arange(w)
-    cast_flow[:,:,1] += np.arange(h)[:,np.newaxis]
-    res = cv2.remap(img, cast_flow, None, cv2.INTER_LINEAR)
+
+
+    adjusted_flow = -tf.identity(cast_flow) if reverse else tf.identity(cast_flow)
+    arrange_x = np.arange(w)
+    arrange_y = np.arange(h)
+    displace_flow_x = adjusted_flow[:,:,0] + arrange_x
+    displace_flow_y = adjusted_flow[:,:,1] + arrange_y[:, np.newaxis]
+
+    final_flow = np.stack((displace_flow_x, displace_flow_y), axis=-1)
+    res = cv2.remap(img, final_flow, None, cv2.INTER_LINEAR)
     return res
 
 def feature_map_temporal_loss(prev_feature_map, curr_feature_map,flow, mask=None):
