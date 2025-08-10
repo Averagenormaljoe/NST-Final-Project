@@ -1,5 +1,6 @@
 import tensorflow as tf
 def content_loss(base_img, combination_img):
+ assert base_img.shape == combination_img.shape
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
 def mse_loss(base_img, combination_img):
@@ -28,6 +29,7 @@ def equal_blends(gram_matrices):
     return sum(gram_matrices) / len(gram_matrices)
 
 def style_loss(style_img, combination_img,img_width : int,img_height: int):
+ assert style_img.shape == combination_img.shape
  S = gram_matrix(style_img)
  C = gram_matrix(combination_img)
  channels = 3
