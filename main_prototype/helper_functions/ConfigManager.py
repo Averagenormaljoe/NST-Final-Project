@@ -1,6 +1,7 @@
-from shared_utils.HardwareLogger import HardwareLogger
-class ConfigManager:
+from shared_utils.LoopLogger import LoopLogger
+class ConfigManager(LoopLogger):
     def __init__(self, config: dict):
+        super().__init__(config)
         self.unpack_config(config)
         self.update_settings(config)
     def unpack_config(self, config: dict):
@@ -14,7 +15,6 @@ class ConfigManager:
         self.lr = config.get("lr", 1.0)
         self.w, self.h = config.get("size", (400, 400))
         self.output_path = config.get("output_path", None)
-        self.hardware_logger = HardwareLogger()
     def update_settings(self, config: dict):
         self.verbose = config.get("verbose", 0)
         self.include_checkpoints = config.get("include_checkpoints", False)
