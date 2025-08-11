@@ -108,9 +108,9 @@ def square_and_sum(img,diff, mask=None):
     return tl
 
 def temporal_loss_l2(x, w, c):
-  c = c[np.newaxis,:,:,:]
+  expand_c = tf.expand_dims(c, axis=0)
   D = tf.size(x, out_type=tf.float32)
-  loss = (1. / D) * tf.reduce_sum(c * tf.nn.l2_loss(x - w))
-  loss = tf.cast(loss, tf.float32)
-  return loss
+  loss = (1. / D) * tf.reduce_sum(expand_c * tf.nn.l2_loss(x - w))
+  float_loss = tf.cast(loss, tf.float32)
+  return float_loss
 
