@@ -99,7 +99,12 @@ def temporal_warping_error(prev_stylized_frame, curr_stylized_frame, flow, mask=
     warped_prev = warp_flow(prev_stylized_frame, flow)
     twe = temporal_loss(warped_prev, curr_stylized_frame, mask=mask)
     return twe
-
+def warp_previous_frames(previous_stylized_frames, flow):
+    warped_frames = []
+    for prev_frame in previous_stylized_frames:
+        warped_frame = warp_flow(prev_frame, flow)
+        warped_frames.append(warped_frame)
+    return warped_frames
 def long_term_temporal_loss(curr_stylized_frame, flow, mask=None,previous_stylized_frames=[]):    
     loss = tf.zeros(shape=())
     for prev_frame in previous_stylized_frames:
@@ -108,7 +113,12 @@ def long_term_temporal_loss(curr_stylized_frame, flow, mask=None,previous_styliz
         loss += twe
     return loss
 
-
+def long_term_temporal_loss_non_warp(curr_stylized_frame, mask=None,previous_warp_frames=[]):    
+    loss = tf.zeros(shape=())
+    for prev_frame in previous_warp_frames:
+        twe = temporal_loss(prev_frame, curr_stylized_frame, mask=mask)
+        loss += twe
+    return loss
 def multi_pass(n_pass,frames,flow):
     tick = time()
     pass_time = []
