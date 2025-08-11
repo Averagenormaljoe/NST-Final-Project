@@ -1,16 +1,10 @@
 import tensorflow as tf
 from functools import reduce
-from model_components.ReflectionPadding2D import ReflectionPadding2D
+
 class ConditionalInstanceNormalization(tf.keras.layers.Layer):
     def __init__(self, **kwargs):
         super(ConditionalInstanceNormalization, self).__init__(**kwargs)
   
-
-
-   
-
-
-
     def call(self, inputs, style_vector):
         batch, rows, cols, channels = [i for i in inputs.get_shape()]
         mu, var = tf.nn.moments(inputs, [1, 2], keepdims=True)
