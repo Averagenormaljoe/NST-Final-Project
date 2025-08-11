@@ -88,7 +88,7 @@ def apply_mask(loss, mask=None):
 
 def apply_mask_and_sum(img,loss, mask=None):
     mask_loss = apply_mask(loss, mask)
-    D = float(img.size)
+    D = tf.size(img, out_type=tf.float32)
     mse = (1. / D) *  tf.reduce_sum(mask_loss)
     tl = tf.cast(mse, tf.float32)
     return tl
@@ -109,7 +109,7 @@ def square_and_sum(img,diff, mask=None):
 
 def temporal_loss_l2(x, w, c):
   c = c[np.newaxis,:,:,:]
-  D = float(x.size)
+  D = tf.size(x, out_type=tf.float32)
   loss = (1. / D) * tf.reduce_sum(c * tf.nn.l2_loss(x - w))
   loss = tf.cast(loss, tf.float32)
   return loss
