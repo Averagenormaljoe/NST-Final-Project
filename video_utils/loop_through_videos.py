@@ -33,5 +33,5 @@ def loop_through_videos(apply_model,style_paths, video_content_path="demo_video/
         if logs:
             total_logs.append(logs)
         else:
-            print(f"No logs found for 'loop_through_videos'. Path: {video_style_path}")
+            print(f"No metrics logs found for 'loop_through_videos'. Path: {video_style_path}")
     return total_logs
