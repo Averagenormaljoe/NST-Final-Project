@@ -94,9 +94,12 @@ def apply_mask_and_sum(img,loss, mask=None):
     return tl
 
 def temporal_loss(prev_stylized_frame, curr_stylized_frame, mask=None):
-    diff = curr_stylized_frame - prev_stylized_frame
+    float32_prev_stylized_frame = tf.cast(prev_stylized_frame, tf.float32)
+    float32_curr_stylized_frame = tf.cast(curr_stylized_frame, tf.float32)
+
+    diff = tf.subtract(float32_curr_stylized_frame, float32_prev_stylized_frame)
     l2_diff = square_or_l2(diff,True)
-    tl = apply_mask_and_sum(prev_stylized_frame, l2_diff, mask)
+    tl = apply_mask_and_sum(float32_prev_stylized_frame, l2_diff, mask)
     return tl
 
 def square_and_sum(img,diff, mask=None):
