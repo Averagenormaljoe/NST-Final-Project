@@ -72,23 +72,17 @@ def load_optical_flow(prev_numpy_img, curr_numpy_img, config):
     if save_flow:
         cv2.optflow.writeOpticalFlow(output_path, flow)
     return flow
-
-
 def warp_flow(img, flow,reverse=False):
-    cast_flow = tf.cast(flow, tf.float32) if isinstance(flow, tf.Tensor) else flow.astype(np.float32)
-
+    cast_flow = flow.astype(np.float32)
     h, w = cast_flow.shape[:2]
-
-
-    adjusted_flow = -tf.identity(cast_flow) if reverse else tf.identity(cast_flow)
-    arrange_x = np.arange(w)
-    arrange_y = np.arange(h)
-    displace_flow_x = adjusted_flow[:,:,0] + arrange_x
-    displace_flow_y = adjusted_flow[:,:,1] + arrange_y[:, np.newaxis]
-
-    final_flow = np.stack((displace_flow_x, displace_flow_y), axis=-1)
-    res = cv2.remap(img, final_flow, None, cv2.INTER_LINEAR)
+    if reverse:
+        cast_flow = -cast_flow
+    cast_flow[:,:,0] += np.arange(w)
+    cast_flow[:,:,1] += np.arange(h)[:,np.newaxis]
+    res = cv2.remap(img, cast_flow, None, cv2.INTER_LINEAR)
     return res
+
+
 
 def feature_map_temporal_loss(prev_feature_map, curr_feature_map,flow, mask=None):
     optimal_flow = warp_flow(prev_feature_map,flow) 
