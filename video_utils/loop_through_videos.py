@@ -1,6 +1,7 @@
+import os
 from video_utils.video import execute_video_style_transfer
 from shared_utils.file_nav import get_base_name
-def loop_through_videos(style_paths, video_content_path="demo_video/man_at_sea_sliced.mp4", config= {}, apply_model=apply_model):
+def loop_through_videos(apply_model,style_paths, video_content_path="demo_video/man_at_sea_sliced.mp4", config= {}):
     total_logs = []
     if not os.path.exists(video_content_path):
         print(f"Video content path does not exist: {video_content_path}. Stopping processing.")
