@@ -1,3 +1,6 @@
+import tensorflow as tf
+from forward_feed.CIN.CIN import ConditionalInstanceNormalization
+from model_components.ReflectionPadding2D import ReflectionPadding2D
 class ConvInstanceLayer(tf.keras.layers.Layer):
     def __init__(self, num_style, in_ch, out_ch,filters, kernel_size, strides=1, **kwargs):
         super(ConvInstanceLayer, self).__init__(**kwargs)
