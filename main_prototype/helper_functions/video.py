@@ -121,6 +121,10 @@ def video_style_transfer(config,video_details,loop_manager):
     for i in trange(total_frames, desc="Performing style transfer for each frame", disable=not verbose):
         frame_i = f"{i+1:08d}"
         content_frame_path = os.path.join(content_frames_dir, f"{content_prefix}-{frame_i}.{extension}")
+        
+        if not os.path.exists(content_frame_path):
+            print(f"Missing content frame: {content_frame_path}")
+            continue
         output_frame_path = os.path.join(transferred_frames_dir, f"{transformed_prefix}-{frame_i}.{extension}")
         config['output_path'] = output_frame_path
         config["frames"] = prev_frames
