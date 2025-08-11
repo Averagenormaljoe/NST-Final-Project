@@ -1,4 +1,4 @@
-from video_utils.video import image_read
+from video_utils.video_helper import image_read
 import cv2
 import numpy as np
 def load_image(path : str):
