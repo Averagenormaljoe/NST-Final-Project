@@ -83,7 +83,9 @@ def square_or_l2(x, square: bool = True):
 
 def apply_mask(loss, mask=None):
     if mask is not None:
-        loss *= mask
+        float_loss = tf.cast(loss, tf.float32)
+        float_mask = tf.cast(mask, tf.float32)
+        loss = tf.multiply(float_loss, float_mask)
     return loss
 
 def apply_mask_and_sum(img,loss, mask=None):
