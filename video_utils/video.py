@@ -1,66 +1,177 @@
+import os
 import cv2
-from typing import Union
-import numpy as np
-import time
-import tensorflow as tf
-def get_cam_details(cam):
-    frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = int(cam.get(cv2.CAP_PROP_FPS))
-    return frame_width, frame_height, fps
+from requests import get
+from shared_utils.file_nav import get_base_name
+from tqdm import trange
+from shared_utils.helper import create_dir
+def get_video_paths(config):
 
-def load_the_video(video_path : str):
-    cap = cv2.VideoCapture(video_path)
-    frames = []
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        frames.append(frame)
-    cap.release()
-    return frames
+    output_dir = config.get('output_dir')
+    create_dir(output_dir)
+    content_video_path = config.get('content_path')
+    style_path = config.get('style_path')
+    return content_video_path, style_path, output_dir
 
+def get_video_details(cap):
+    
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    content_fps = cap.get(cv2.CAP_PROP_FPS)
+    return total_frames, h, w, content_fps
 
+def get_frame_dir():
+    return "content_frames", "transferred_frames"
 
-ImageType = Union[np.ndarray, tf.Tensor]
+def get_frame_limit(config, total_frames):
+    frames_limit = config.get('frames_limit', total_frames)
+    if frames_limit > total_frames:
+        frames_limit = total_frames
+    return frames_limit
 
-def image_read(image : ImageType) -> tf.Tensor:
-  max_dim=512
-  image= tf.convert_to_tensor(image, dtype = tf.float32)
-  image= image/255.0
-  shape = tf.cast(tf.shape(image)[:-1], tf.float32)
-  long_dim = max(shape)
-  scale = max_dim/long_dim
-  new_shape = tf.cast(shape*scale, tf.int32)
-  new_image = tf.image.resize(image, new_shape)
-  new_image = new_image[tf.newaxis, :]
+def write_frames(config):
+
+    
   
-  return new_image
+    verbose = config.get('verbose', False)
+    frames_dir, transferred_dir = get_frame_dir()
+    content_prefix = config.get('content_prefix', 'frame')
+    extension = config.get('extension', 'jpg')
+    content_video_path, style_path, output_dir = get_video_paths(config)
+    content_frames_dir = os.path.join(output_dir, frames_dir)
+    create_dir(content_frames_dir)
+    if verbose:
+        print("Loading content video...")
 
-def get_cam(video_path: str,camera_mode = True):
-    if camera_mode == True:
-        cam = cv2.VideoCapture(0) 
-    else:
-        cam = cv2.VideoCapture(video_path)
-    frame_width, frame_height, fps = get_cam_details(cam)
-    return cam, frame_width, frame_height, fps
+    cap = cv2.VideoCapture(content_video_path)
+    # retrieve metadata from content video
+    total_frames, h, w, content_fps = get_video_details(cap)
+    frames_limit = get_frame_limit(config, total_frames)
+    if total_frames == 0:
+        print(f"ERROR: could not retrieve frames from content video at path: '{content_video_path}'.")
+        return
+    # extract frames from content video
+    for i in trange(frames_limit, desc="Extracting frames from content video", disable=not verbose):
+        ret, frame = cap.read()
+        frame_i = f"{i+1:08d}"
+        path = os.path.join(content_frames_dir, f"{content_prefix}-{frame_i}.{extension}")
+        if ret:
+            cv2.imwrite(path, frame)
+        else:
+            print(F'ERROR: {path} failed to be extracted.')
+            return
 
-def prepare_video_writer(output_path: str, frame_width: int, frame_height: int, fps: int,file_format : str = 'mp4v'):
+    cap.release()
+    if verbose:
+        print("Frames successfully extracted from content video.")
+        print()
+        print("Performing image style transfer for each frame...")
+    
+    return total_frames, h, w, content_fps
+
+
+def save_output_video(config, video_details):
+    verbose = config.get('verbose', False)
+    total_frames,h,w, content_fps = video_details
+    content_video_path, style_path, output_dir = get_video_paths(config)
+    content_video_name = get_base_name(content_video_path)
+    style_img_name = get_base_name(style_path)
+    output_extension = config.get('output_extension', 'mp4')
+    output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.{output_extension}")
+    frames_dir, transferred_dir = get_frame_dir()
+    transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
+    extension = config.get('extension', 'jpg')
+    first_output_frame = os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{1:08d}.{extension}")
+    output_frame_height, output_frame_width, _ = cv2.imread(first_output_frame).shape
+    if not os.path.exists(first_output_frame):
+        print(f"ERROR: First output frame not found at {first_output_frame}")
+        return
+    output_fps = config.get('fps') if config.get('fps') is not None else content_fps
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
-    return out
+    video_writer = cv2.VideoWriter(output_video_path, fourcc, output_fps, (output_frame_width, output_frame_height), True)
+    frames_limit = get_frame_limit(config, total_frames)
+    for i in trange(frames_limit, desc="Combining the stylized frames of the video together", disable=not verbose):
+        frame = cv2.imread(os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{i+1:08d}.{extension}"))
+        if frame is not None:
+            video_writer.write(frame)
 
-def release_video_writer(cam,out):
-    if out is not None:
-        cam.release()
-        out.release()
-        cv2.destroyAllWindows()
+    video_writer.release()
+
+    if verbose:
+        print(f'Video successfully synthesized to {output_video_path}.')
         
-def video_end(start_time: float):
-    end_time = time.time()
-    processing_duration = end_time - start_time
-    print(f"Processing completed in {processing_duration:.2f} seconds.")
-def resize_frame(frame, target_size):
-    if frame.shape[:2] != target_size:
-        return cv2.resize(frame, target_size)
-    return frame
+def normalize_output_size(output_size):
+    if output_size is not None:
+        resized_output_size = tuple(output_size) if len(output_size) > 1 else output_size[0]
+        return resized_output_size
+    
+        
+def video_style_transfer(config,video_details,style_func):
+    verbose = config.get('verbose', False)
+    output_size = config.get('size')
+    output_size = normalize_output_size(output_size)
+    config['size'] = output_size
+    total_frames,h,w, content_fps = video_details
+    content_video_path, style_path, output_dir = get_video_paths(config)
+    frames_dir, transferred_dir = get_frame_dir()
+    content_frames_dir = os.path.join(output_dir,  frames_dir)
+    transferred_frames_dir = os.path.join(output_dir, transferred_dir)
+    create_dir(transferred_frames_dir)
+    create_dir(content_frames_dir)
+    prev_frames = []
+    content_prefix = config.get('content_prefix', 'frame')
+    transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
+    extension = config.get('extension', 'jpg')
+    logs = []
+    frames_limit = get_frame_limit(config, total_frames)
+    # perform image style transfer with each content frame and style image
+    for i in trange(frames_limit, desc="Performing style transfer for each frame", disable=not verbose):
+        frame_i = f"{i+1:08d}"
+        content_frame_path = os.path.join(content_frames_dir, f"{content_prefix}-{frame_i}.{extension}")
+        if not os.path.exists(content_frame_path):
+            print(f"Missing content frame: {content_frame_path}")
+            continue
+        output_frame_path = os.path.join(transferred_frames_dir, f"{transformed_prefix}-{frame_i}.{extension}")
+        config['output_path'] = output_frame_path
+        config["frames"] = prev_frames
+        results = style_func(content_frame_path, style_path, config=config)
+        
+
+        if verbose:
+            if results:
+                print(f'\tImage style transfer success for frame {content_frame_path}.')
+            else:
+                print(f'\tWarning: Image style transfer failed for frame {content_frame_path}.')
+                return
+        generated_images, best_image,log_data = results
+        prev_frames.append(best_image.get_image())
+        logs.append(log_data)
+    if verbose:
+        print("Image style transfer complete.")
+        print()
+        print("Synthesizing video from transferred frames...")
+    config["logs"] = logs
+    return video_details
+    
+    
+    
+    
+def execute_video_style_transfer(config, style_func):
+    verbose = config.get('verbose', False)
+    if verbose:
+        print("Starting video style transfer...")
+    
+    video_details = write_frames(config)
+    if video_details is None:
+        print("Failed to write frames. Exiting...")
+        return
+    
+    video_details = video_style_transfer(config, video_details, style_func)
+    if video_details is None:
+        print("Video style transfer failed. Exiting...")
+        return
+    
+    save_output_video(config, video_details)
+    
+    if verbose:
+        print("Video style transfer completed successfully.")
