@@ -109,7 +109,7 @@ def square_and_sum(img,diff, mask=None):
     tl = apply_mask_and_sum(img, l2_diff, mask)
     return tl
 
-def temporal_loss_l2(x, w, c):
+def temporal_loss_v2(x, w, c):
   expand_c = tf.expand_dims(c, axis=0)
   D = tf.size(x, out_type=tf.float32)
   loss = (1. / D) * tf.reduce_sum(expand_c * tf.nn.l2_loss(x - w))
