@@ -1,5 +1,6 @@
 import os
 import cv2
+from requests import get
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
 from shared_utils.helper import create_dir
@@ -22,6 +23,12 @@ def get_video_details(cap):
 def get_frame_dir():
     return "content_frames", "transferred_frames"
 
+def get_frame_limit(config, total_frames):
+    frames_limit = config.get('frames_limit', total_frames)
+    if frames_limit > total_frames:
+        frames_limit = total_frames
+    return frames_limit
+
 def write_frames(config):
 
     
@@ -39,11 +46,10 @@ def write_frames(config):
     cap = cv2.VideoCapture(content_video_path)
     # retrieve metadata from content video
     total_frames, h, w, content_fps = get_video_details(cap)
-    frames_limit = config.get('frames_limit', total_frames)
+    frames_limit = get_frame_limit(config, total_frames)
     if total_frames == 0:
         print(f"ERROR: could not retrieve frames from content video at path: '{content_video_path}'.")
         return
-
     # extract frames from content video
     for i in trange(frames_limit, desc="Extracting frames from content video", disable=not verbose):
         ret, frame = cap.read()
@@ -83,8 +89,8 @@ def save_output_video(config, video_details):
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_writer = cv2.VideoWriter(output_video_path, fourcc, output_fps, (output_frame_width, output_frame_height), True)
-    
-    for i in trange(total_frames, desc="Combining the stylized frames of the video together", disable=not verbose):
+    frames_limit = get_frame_limit(config, total_frames)
+    for i in trange(frames_limit, desc="Combining the stylized frames of the video together", disable=not verbose):
         frame = cv2.imread(os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{i+1:08d}.{extension}"))
         if frame is not None:
             video_writer.write(frame)
@@ -117,11 +123,11 @@ def video_style_transfer(config,video_details,loop_manager):
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
     extension = config.get('extension', 'jpg')
     logs = []
+    frames_limit = get_frame_limit(config, total_frames)
     # perform image style transfer with each content frame and style image
-    for i in trange(total_frames, desc="Performing style transfer for each frame", disable=not verbose):
+    for i in trange(frames_limit, desc="Performing style transfer for each frame", disable=not verbose):
         frame_i = f"{i+1:08d}"
         content_frame_path = os.path.join(content_frames_dir, f"{content_prefix}-{frame_i}.{extension}")
-        
         if not os.path.exists(content_frame_path):
             print(f"Missing content frame: {content_frame_path}")
             continue
