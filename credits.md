@@ -10,3 +10,7 @@
    Author: Logan Engstrom
    Year: Sep 18, 2021
    Website: GitHub.
+5. The notebook for the johnson model was adapted from 'https://github.com/tarun-bisht/fast-style-transfer'
+   Author: Tarun Bisht
+   Website: GitHub
+   The notebook: https://github.com/tarun-bisht/fast-style-transfer/blob/master/notebooks/Fast_Style_Transfer_Colab.ipynb
