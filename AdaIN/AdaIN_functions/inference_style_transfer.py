@@ -27,7 +27,10 @@ def inference_style_transfer(model, dataset,stylize_func, num_samples=10,output_
         plt.savefig(save_path)
         plt.close(fig)
         plt.show()
-        
+    zip_dir(output_dir)
+
+    
+def zip_dir(output_dir : str):
     command = f"!zip -r /{output_dir}.zip /{output_dir}"
     split_command = command.split()
     subprocess.run(split_command, shell=False, check=True)
