@@ -1,11 +1,8 @@
 import os
 from typing import Optional
-import tensorflowjs as tfjs
 import tensorflow as tf
 import zipfile
-def save_tensorflowjs_model(model):
-    tfjs.converters.save_keras_model(model, "model_tfjs")
-    
+
 def save_model(model):
     # save each part of the model in the '.keras' format.
     model.encoder.save("encoder.keras")
