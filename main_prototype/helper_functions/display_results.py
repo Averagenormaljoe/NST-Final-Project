@@ -102,13 +102,12 @@ def save_fig(fig : Figure,image_file_paths : tuple[str,str],prefix : str ="",sav
     
     if image_file_paths is None:
         return
-    if image_file_paths is None or len(image_file_paths) < 2:
+    if len(image_file_paths) < 2:
         return
     os.makedirs(save_dir, exist_ok=True)
-
     content_path, style_path = image_file_paths
-    content_name : str  = os.path.splitext(os.path.basename(content_path))[0]
-    style_name : str  = os.path.splitext(os.path.basename(style_path))[0]
+    content_name : str  = get_base_name(content_path)
+    style_name : str  = get_base_name(style_path)
     file_name : str = f"{prefix}_{content_name}_{style_name}"
     save_plt_path = os.path.join(save_dir, f"{file_name}.png")
     fig.savefig(save_plt_path, bbox_inches='tight', pad_inches=0.1)
