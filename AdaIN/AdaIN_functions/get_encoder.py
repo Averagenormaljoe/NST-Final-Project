@@ -1,4 +1,6 @@
-
+import keras
+from keras import layers
+IMAGE_SIZE = (224, 224)
 def get_encoder(image_size: tuple[int, int] = IMAGE_SIZE,custom_layers = False) -> keras.Model:
     vgg19 = keras.applications.VGG19(
         include_top=False,
