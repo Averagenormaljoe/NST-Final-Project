@@ -29,9 +29,11 @@ class LoopLogger():
         custom_metrics = self.custom_losses.compute_custom_losses(base_image,combination_image,includes=includes)
         metrics_dict.update(custom_metrics)
         return metrics_dict
-    def log_metrics(self, metrics_list, base_image, combination_image) -> None:
+    def log_metrics(self, metrics_list, base_image, combination_image,metrics_dict) -> None:
         dict_sum = self.sum_metrics(metrics_list)
         custom_metrics = self.get_custom_metrics(base_image, combination_image)
         dict_sum.update(custom_metrics)
+        if metrics_dict:
+            dict_sum.update(metrics_dict)
         for key, value in dict_sum.items():
             self.hardware_logger.append(key, value)
