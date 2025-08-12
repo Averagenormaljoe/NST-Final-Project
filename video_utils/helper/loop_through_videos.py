@@ -1,6 +1,22 @@
 import os
 from video_utils.video import execute_video_style_transfer
 from shared_utils.file_nav import get_base_name
+def get_default_config(output_dir, video_content_path, video_style_path):
+       config = {
+            "output_dir": output_dir,
+            "content_path": video_content_path,
+            "style_path": video_style_path,
+            "iterations": 500,
+            "save_step": 100,
+            "lr": 1.0,
+            "string_optimizer": "adam",
+            "size": (244,244),
+            "verbose": 0,
+            "frames_limit": 5,
+
+        }
+       return config
+
 def loop_through_videos(apply_model,style_paths, video_content_path="demo_video/man_at_sea_sliced.mp4", config= {}):
     total_logs = []
     if not os.path.exists(video_content_path):
@@ -14,20 +30,7 @@ def loop_through_videos(apply_model,style_paths, video_content_path="demo_video/
         video_style_name = get_base_name(video_style_path)
         name = f"({video_name})_({video_style_name})"
         output_dir = f"../demo_images_{name}/video_output"
-        config = {
-            "output_dir": output_dir,
-            "content_path": video_content_path,
-            "style_path": video_style_path,
-            "iterations": 500,
-            "save_step": 100,
-            "lr": 1.0,
-            "string_optimizer": "adam",
-            "size": (244,244),
-            "verbose": 0,
-            "frames_limit": 5,
-
-        }
-
+        config = get_default_config(output_dir, video_content_path, video_style_path)
         execute_video_style_transfer(config,apply_model)
         logs = config.get("logs", [])
         if logs:
@@ -35,3 +38,4 @@ def loop_through_videos(apply_model,style_paths, video_content_path="demo_video/
         else:
             print(f"No metrics logs found for 'loop_through_videos'. Path: {video_style_path}")
     return total_logs
+
