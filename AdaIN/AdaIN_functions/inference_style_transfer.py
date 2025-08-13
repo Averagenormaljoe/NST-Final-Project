@@ -2,6 +2,14 @@ import os
 import matplotlib.pyplot as plt
 import subprocess
 import numpy as np
+def plot_images(axis, style_image, content_image, nst_image):
+    ax_style, ax_content, ax_reconstructed = axis
+    ax_style.imshow(style_image)
+    ax_style.set_title("Style Image")
+    ax_content.imshow(content_image)
+    ax_content.set_title("Content Image")
+    ax_reconstructed.imshow(nst_image)
+    ax_reconstructed.set_title("NST Image")
 def inference_style_transfer(model, dataset,stylize_func, num_samples=10,output_dir="stylized_images",batch = 1):
     os.makedirs(output_dir, exist_ok=True)
     sample_index = 0
@@ -14,16 +22,9 @@ def inference_style_transfer(model, dataset,stylize_func, num_samples=10,output_
         for axis, style_image, content_image, nst_image in zip(
             axes, style[:num_samples], content[:num_samples], reconstructed_image[:num_samples]
         ):
-            ax_style, ax_content, ax_reconstructed = axis
-            ax_style.imshow(style_image)
-            ax_style.set_title("Style Image")
-            ax_content.imshow(content_image)
-            ax_content.set_title("Content Image")
-            ax_reconstructed.imshow(nst_image)
-            ax_reconstructed.set_title("NST Image")
+            plot_images(axis, style_image, content_image, nst_image)
         sample_index += 1
         save_path = os.path.join(output_dir, f"stylized_image_sample_{sample_index}.png")
-        plt.tight_layout()
         plt.savefig(save_path)
         plt.close(fig)
         plt.show()
