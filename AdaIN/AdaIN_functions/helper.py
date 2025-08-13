@@ -26,6 +26,6 @@ def extract_image_from_voc(element):
         A resized image.
     """
     image = element["image"]
-    image = tf.image.convert_image_dtype(image, dtype="float32")
+    image = tf.image.convert_image_dtype(image, tf.float32)
     image = tf.image.resize(image, IMAGE_SIZE)
     return image
