@@ -16,7 +16,10 @@ def get_style_images(on_kaggle : bool = True):
 def split_style_images(on_kaggle : bool):
     style_images = get_style_images(on_kaggle)
     total_style_images = len(style_images)
-    train_style = style_images[: int(0.8 * total_style_images)]
-    val_style = style_images[int(0.8 * total_style_images) : int(0.9 * total_style_images)]
-    test_style = style_images[int(0.9 * total_style_images) :]
+    train_split = int(0.8 * total_style_images)
+    train_style = style_images[: train_split]
+    val_split = int(0.9 * total_style_images)
+    val_style = style_images[train_split : val_split]
+    test_split = int(0.9 * total_style_images)
+    test_style = style_images[test_split :]
     return train_style, val_style, test_style
