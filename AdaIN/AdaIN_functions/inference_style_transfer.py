@@ -43,7 +43,7 @@ def save_df(metrics_list, output_dir):
     metrics_df = pd.DataFrame(metrics_list)
     curr_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     df_name = f"{curr_time}_metrics.csv"
-    output_df_path = os.path.join(output_dir, "metrics.csv")
+    output_df_path = os.path.join(output_dir, df_name)
     metrics_df.to_csv(output_df_path, index=False)
   
     
