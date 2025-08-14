@@ -15,7 +15,6 @@ def get_style_images(on_kaggle : bool = True, dataset : str = "best"):
             style_images = retrieve_style_image("/content/artwork/resized")
             return style_images
     else:
-        
         style_images = retrieve_style_image("/kaggle/input/wikiart")
             
 
