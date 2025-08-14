@@ -1,7 +1,7 @@
 import subprocess
-def download_libraries():
+def download_libraries(path = "/content/drive/MyDrive/Library"):
     pip_commands = [
-        "pip install torch_fidelity",
+        "pip install  torch_fidelity",
         "pip install pytorch_msssim",
         "pip install lpips",
         "pip install tf2onnx",
@@ -12,6 +12,8 @@ def download_libraries():
         "pip install --upgrade tensorflow_decision_forests"
     ]
     for cmd in pip_commands:
-        subprocess.run(cmd.split())
+        command = cmd.split()
+        inserted_path = command.insert(2, f"--target=${path}")
+        subprocess.run(inserted_path)
         
         
