@@ -6,3 +6,4 @@ def control_policy(enable_mixed_precision: bool = False):
             set_global_policy('mixed_float16')
     except Exception as e:
         print(f"Error: {e}")
+        

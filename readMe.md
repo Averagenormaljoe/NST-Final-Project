@@ -97,7 +97,8 @@ The gatys model is stored in the 'main_protoype/' directory and its training is 
 
 The Huang model is stored in the 'Huang/' directory and its training is handle in the 'training.py' file. This also store methods such as the luminance constraint proposed by the ReCoNet paper.
 
-The Johnson al et model is stored in the 'forward_feed/' directory and its training is handle in the 'training.py' file.
+The Johnson al et model is stored in the 'forward_feed/' directory and its training is handle in the 'training.py' file. This model is coded adapted from 'https://github.com/tarun-bisht/fast-style-transfer', specifically the notebook:
+'https://github.com/tarun-bisht/fast-style-transfer'.
 
 ## Code
 

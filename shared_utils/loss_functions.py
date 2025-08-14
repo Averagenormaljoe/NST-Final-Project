@@ -36,7 +36,8 @@ def style_loss(style_img, combination_img,img_width : int,img_height: int):
  size = img_height * img_width
  diff_squared = tf.square(S - C)
  sum_diff = tf.reduce_sum(diff_squared)
- return sum_diff / (4.0 * (channels ** 2) * (size ** 2))
+ sum_norm = sum_diff / (4.0 * (channels ** 2) * (size ** 2))
+ return sum_norm 
 
 
 def compute_style_loss_with_consine_similarity(x, y):
