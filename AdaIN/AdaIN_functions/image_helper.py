@@ -1,17 +1,23 @@
 import os
 def retrieve_style_image(images_path: str):
     style_images = os.listdir(images_path)
-    style_images = [os.path.join(images_path, path) for path in style_images]
+    extensions = ('.jpg', '.jpeg', '.png')
+    style_images = [os.path.join(images_path, path) for path in style_images if path.endswith(extensions)]
     return style_images
 
 # Get the image file paths for the style images.
-def get_style_images(on_kaggle : bool = True):
-    if on_kaggle:
-        style_images = retrieve_style_image("/kaggle/input/best-artworks-of-all-time/resized/resized")
-        return style_images
+def get_style_images(on_kaggle : bool = True, dataset : str = "best"):
+    if dataset == "best":
+        if on_kaggle:
+            style_images = retrieve_style_image("/kaggle/input/best-artworks-of-all-time/resized/resized")
+            return style_images
+        else:
+            style_images = retrieve_style_image("/content/artwork/resized")
+            return style_images
     else:
-        style_images = retrieve_style_image("/content/artwork/resized")
-        return style_images
+        
+        style_images = retrieve_style_image("/kaggle/input/wikiart")
+            
 
 def split_style_images(on_kaggle : bool):
     style_images = get_style_images(on_kaggle)
