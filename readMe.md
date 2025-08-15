@@ -248,6 +248,14 @@ Recommended CPU: Intel i3 with 8GB memory or equivalent (Efficient cores: 2.5 GH
 
 ## Youtube Link
 
+## Retrained models
+
+You can download the pre-trained models for the project at.
+
+### Johnson et al. Model
+
+### Huang et al. Model
+
 ## References
 
 1. F. Chollet. 2018. Deep Learning with Python. Manning Publications.
