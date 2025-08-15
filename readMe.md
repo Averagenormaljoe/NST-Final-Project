@@ -213,6 +213,8 @@ For easier usage, use the Google Colab examples of the notebooks, which require 
 
 Note, it is recommended to use a GPU and select Python 3 as the runtime. It can run on CPU but is significantly slower.
 
+If GPU is not available, then use TPU instead. TPU and GPU in Google Colab refreshes every 24 hours.
+
 ### AdaIN Model (StyleMotion)
 
 ### Gatys et al. Model
