@@ -1,5 +1,5 @@
 import subprocess
-def download_libraries(path = "/content/drive/MyDrive/Library"):
+def download_libraries(path : str = "/content/drive/MyDrive/Library"):
     pip_commands = [
         "pip install torch_fidelity",
         "pip install pytorch_msssim",
@@ -13,7 +13,8 @@ def download_libraries(path = "/content/drive/MyDrive/Library"):
     ]
     for cmd in pip_commands:
         command = cmd.split()
-        inserted_path_command = command.insert(2, f"--target=${path}")
+        if path:
+            inserted_path_command = command.insert(2, f"--target=${path}")
         subprocess.run(inserted_path_command)
         
         

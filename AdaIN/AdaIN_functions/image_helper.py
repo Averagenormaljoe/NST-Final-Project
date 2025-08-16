@@ -6,8 +6,8 @@ def retrieve_style_image(images_path: str):
     return style_images
 
 # Get the image file paths for the style images.
-def get_style_images(on_kaggle : bool = True, dataset : str = "best"):
-    if dataset == "best":
+def get_style_images(on_kaggle : bool = True, dataset : str = "artwork"):
+    if dataset == "artwork":
         if on_kaggle:
             style_images = retrieve_style_image("/kaggle/input/best-artworks-of-all-time/resized/resized")
             return style_images
@@ -18,8 +18,8 @@ def get_style_images(on_kaggle : bool = True, dataset : str = "best"):
         style_images = retrieve_style_image("/kaggle/input/wikiart")
             
 
-def split_style_images(on_kaggle : bool):
-    style_images = get_style_images(on_kaggle)
+def split_style_images(on_kaggle : bool, dataset : str = "artwork"):
+    style_images = get_style_images(on_kaggle, dataset)
     total_style_images = len(style_images)
     train_split = int(0.8 * total_style_images)
     train_style = style_images[: train_split]
