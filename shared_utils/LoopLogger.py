@@ -35,5 +35,8 @@ class LoopLogger():
         dict_sum.update(custom_metrics)
         if metrics_dict:
             dict_sum.update(metrics_dict)
+        self.add(dict_sum)
+    
+    def add(self,dict_sum):
         for key, value in dict_sum.items():
             self.hardware_logger.append(key, value)
