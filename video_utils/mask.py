@@ -82,7 +82,8 @@ def warp_flow(img, flow,reverse=False):
     res = cv2.remap(img, cast_flow, None, cv2.INTER_LINEAR)
     return res
 
-def generate_occlusion_masks(prev_frame,curr_frame)
+def generate_occlusion_masks(prev_frame,curr_frame):
+    pass
 
 def feature_map_temporal_loss(prev_feature_map, curr_feature_map,flow, mask=None):
     optimal_flow = warp_flow(prev_feature_map,flow) 
