@@ -1,4 +1,7 @@
 # Now define the style and content layers for the project along with the weights for each layer.
+from shared_utils.gatys_network import get_content_layer_names, get_style_layer_names, get_style_weights, get_content_weights
+
+
 def get_layers(use_custom: bool,loss_network : str) -> tuple[list[str], list[str], dict, dict]:
     # decides if custom layers and weights should be used
     if use_custom:
