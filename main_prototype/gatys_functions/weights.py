@@ -9,4 +9,3 @@ def get_weights(config):
     style_weight = config.get("s_weight", 1e-6)
     total_variation_weight = config.get("tv_weight", 1e-6)
     return content_weight, style_weight, total_variation_weight
-def compute_loss(combination_image, base_image, style_reference_image, config = {}):
