@@ -62,6 +62,19 @@ class LoopManager(ConfigManager):
         name : str = f"({content_name}) + ({style_name})"
         save_image = config.get("save_image", True)
         output_path = config.get("output_path", None)
+        is_checkpoint = config.get("is_checkpoint", False)
+        
+        if is_checkpoint:
+            checkpoint_dir = os.path.join(log_dir, "tf_checkpoints")
+            ckpt = tf.train.Checkpoint(optimizer=optimizer, combination_image=combination_image)
+            manager = tf.train.CheckpointManager(ckpt, checkpoint_dir, max_to_keep=3)
+            latest_checkpoint = manager.latest_checkpoint
+            if latest_checkpoint:
+                ckpt.restore(latest_checkpoint)
+                print(f"Restored from {latest_checkpoint}")
+            else:
+                print("Initializing from scratch.")
+        
         config = process_flow_on_frames(config, combination_image=combination_image)
         for i in trange(self.start_step, self.iterations + 1, desc=f"{name} NST Optimization Loop Progress", disable=not self.verbose):
             loss, grads,optimizer, all_metrics,metrics_dict = apply_style_transfer_step(combination_image, base_image, style_image, optimizer,config,device_config)
@@ -81,6 +94,8 @@ class LoopManager(ConfigManager):
                 with file_writer.as_default():
                     tf.summary.scalar("loss", float_loss, step=i)
                     tf.summary.image("generated_image", combination_image, step=i)
+                if is_checkpoint:
+                    manager.save(checkpoint_number=i)
         if output_path is not None and best_image is not None:
             keras.utils.save_img(output_path, best_image.get_image()) 
             
