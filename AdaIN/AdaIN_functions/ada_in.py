@@ -8,8 +8,16 @@ def get_mean_std(x, epsilon=1e-5):
     standard_deviation = tf.math.sqrt(tf.maximum(variance, 0.0) + epsilon)
     return mean, standard_deviation
 
+def get_att(content, style, att=True):
+    if att:
+        self_content = self_attention(content, tf.shape(content))
+        self_style = self_attention(style, tf.shape(style))
+    else:
+        self_content = content
+        self_style = style
+    return ada_in(self_style, self_content, att)
 
-def ada_in(style, content):
+def ada_in(style, content, att=True):
     """Computes the AdaIn feature map.
 
     Args:
@@ -19,8 +27,7 @@ def ada_in(style, content):
     Returns:
         The AdaIN feature map.
     """
-    self_content = self_attention(content, tf.shape(content))
-    self_style = self_attention(style, tf.shape(style))
+    self_content, self_style = get_att(content, style, att)
     content_mean, content_std = get_mean_std(self_content)
     style_mean, style_std = get_mean_std(self_style)
     cal = (self_content - content_mean) / (content_std + style_mean)
