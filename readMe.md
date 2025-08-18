@@ -147,7 +147,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.
    'pip' can also be upgrade with the 'pip install --upgrade pip' command.
 3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
-4. Running this in an IDE (VScode or PyCharm) or JupyterLabs is the recommended option for running these notebooks.
+4. Running this in an Integrated development environment (IDE) such as VScode, PyCharm or JupyterLabs is the recommended option for running these notebooks.
 
 #### Cloning the repository
 
@@ -259,4 +259,4 @@ You can download the pre-trained models for the project at.
 ## References
 
 1. F. Chollet. 2018. Deep Learning with Python. Manning Publications.
-2. A. R. Gosthipaty and R. Raha. 2021. Neural style transfer with AdaIN. Keras Documentation. Retrieved June 16, 2025 from https://keras.io/examples/generative/adain
+2. A. R. Gosthipaty and R. Raha. 2021. Neural style transfer with AdaIN. Keras Documentation. Retrieved June 16, 2025 from https://keras.io/examples/generative/adain.
