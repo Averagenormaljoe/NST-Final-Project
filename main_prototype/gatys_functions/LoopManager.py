@@ -7,12 +7,12 @@ import tensorflow as tf
 from helper_functions.training_helper import result_save
 from tqdm import trange
 
-from main_prototype.gatys_functions import apply_style_transfer_step
-from main_prototype.gatys_functions.preprocess_NST_images import preprocess_NST_images
-from main_prototype.helper_functions.ConfigManager import ConfigManager
-from main_prototype.helper_functions.bestImage import BestImage
-from main_prototype.helper_functions.helper import deprocess_image
-from main_prototype.helper_functions.log_funcs import create_log_dir
+from gatys_functions.apply_style_transfer_step import apply_style_transfer_step
+from gatys_functions.preprocess_NST_images import preprocess_NST_images
+from helper_functions.ConfigManager import ConfigManager
+from helper_functions.bestImage import BestImage
+from helper_functions.helper import deprocess_image
+from helper_functions.log_funcs import create_log_dir
 from shared_utils.optimizer import get_optimizer
 from video_utils.helper.process_flow_on_frames import process_flow_on_frames
 class LoopManager(ConfigManager):
@@ -64,7 +64,7 @@ class LoopManager(ConfigManager):
         output_path = config.get("output_path", None)
         config = process_flow_on_frames(config, combination_image=combination_image)
         for i in trange(self.start_step, self.iterations + 1, desc=f"{name} NST Optimization Loop Progress", disable=not self.verbose):
-            loss, grads,optimizer, all_metrics,metrics_dict = apply_style_transfer_step(combination_image, base_image, style_image, optimizer,config=config)
+            loss, grads,optimizer, all_metrics,metrics_dict = apply_style_transfer_step(combination_image, base_image, style_image, optimizer,config=config,device_config : dict = {})
             if self.should_save(i):
                 # hardware usage
                 float_loss = float(loss)

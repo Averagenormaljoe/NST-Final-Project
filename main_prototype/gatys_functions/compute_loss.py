@@ -9,7 +9,7 @@ def compute_loss(combination_image, base_image, style_reference_image, config = 
     feature_extractor = config.get("feature", None)
     content_weight, style_weight, total_variation_weight = get_weights(config)
     if feature_extractor is None:
-      print("Error: feature extract has not be provided.")
+      print("Error: feature extractor has not be provided.")
       return None, metrics_dict
     content_names, style_names = get_loss_layers(config)
     input_tensor = tf.concat(
