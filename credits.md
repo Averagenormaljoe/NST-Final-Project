@@ -14,3 +14,4 @@
    Author: Tarun Bisht
    Website: GitHub
    The notebook: https://github.com/tarun-bisht/fast-style-transfer/blob/master/notebooks/Fast_Style_Transfer_Colab.ipynb
+6. Attention mechanism code was adapted from 'https://github.com/JianqiangRen'.

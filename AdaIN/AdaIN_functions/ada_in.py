@@ -19,8 +19,10 @@ def ada_in(style, content):
     Returns:
         The AdaIN feature map.
     """
-    content_mean, content_std = get_mean_std(content)
-    style_mean, style_std = get_mean_std(style)
+    self_content = self_attention(content, tf.shape(content))
+    self_style = self_attention(style, tf.shape(style))
+    content_mean, content_std = get_mean_std(self_content)
+    style_mean, style_std = get_mean_std(self_style)
     t = style_std * (content - content_mean) / content_std + style_mean
     return t
 
