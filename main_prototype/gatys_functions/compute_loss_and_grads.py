@@ -1,0 +1,32 @@
+import tensorflow as tf
+@tf.function
+def compute_loss_and_grads(combination_image, base_image, style_images, config= {}):
+    verbose = config.get("verbose", 0)
+    if verbose > 0:
+        tf.print("combination_image == tf.Variable", isinstance(combination_image, tf.Variable))
+    # ensures that 'style_images' is a list
+    type_style_images = style_images if isinstance(style_images,list) else [style_images]
+    
+    # get the device for computation
+    all_metrics = []
+    # for storing losses that are not style or content
+    metrics_dict = {}
+    with get_device(GPU_in_use, CPU_in_use):  
+        with tf.GradientTape() as tape:
+            loss = tf.zeros(shape=())
+            num : int = len(type_style_images)
+            style_cal = single_style_weight / num
+            # iterate through the style images
+            for image in type_style_images:
+                style_loss_value, metrics_dict = compute_loss(
+                    combination_image, base_image, image,config  
+                )
+                loss += style_loss_value
+                all_metrics.append(metrics_dict)
+            t_loss = compute_temporal_loss(combination_image, config)
+            
+            if t_loss > 0:
+                loss += t_loss
+                metrics_dict["temporal_loss"] = t_loss
+        grads = tape.gradient(loss, combination_image)
+        return loss, grads, all_metrics , metrics_dict

@@ -1,0 +1,40 @@
+def compute_loss(combination_image, base_image, style_reference_image, config = {}):
+  metrics_dict = {}
+  tv_type = config.get("tv_type", "gatys")
+  size = config.get("size", (400, 400))
+  content_names, style_names = get_loss_layers(config)
+  input_tensor = tf.concat(
+  [base_image, style_reference_image, combination_image], axis=0)
+  features = feature_extractor(input_tensor)
+  loss = tf.zeros(shape=())
+  w,h = size
+  content_weight_per_layer : float = single_content_weight / len(content_layer_names)
+  c_loss = tf.zeros(shape=())
+  # content layer iteration
+  for layer_name in content_names:
+    layer_features = features[layer_name]
+    base_image_features = layer_features[0, :, :, :]
+    combination_features = layer_features[2, :, :, :]
+    c_loss += content_weight_per_layer  * content_loss(
+        base_image_features, combination_features
+    )
+  loss += c_loss
+  metrics_dict["content"] =  float(c_loss)
+  s_loss = tf.zeros(shape=())
+  style_weight_per_layer : float = single_style_weight / len(style_names)
+  # style layer iteration
+  for layer_name in style_names:
+    layer_features = features[layer_name]
+    style_reference_features = layer_features[1, :, :, :]
+    combination_features = layer_features[2, :, :, :]
+    style_loss_value = style_loss(
+    style_reference_features, combination_features, w, h)
+    s_loss +=  style_weight_per_layer * style_loss_value
+
+  loss += s_loss
+  metrics_dict["style"] =  float(s_loss)
+  # calculate the total variation loss
+  t_loss = total_variation_weight * total_variation_loss(combination_image,tv_type=tv_type, size=size)
+  loss += t_loss
+  metrics_dict["total_variation"] = float(t_loss)
+  return loss, metrics_dict
