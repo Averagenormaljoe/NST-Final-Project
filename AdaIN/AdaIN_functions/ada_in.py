@@ -23,7 +23,8 @@ def ada_in(style, content):
     self_style = self_attention(style, tf.shape(style))
     content_mean, content_std = get_mean_std(self_content)
     style_mean, style_std = get_mean_std(self_style)
-    t = style_std * (content - content_mean) / content_std + style_mean
+    normalized_features = (self_content - content_mean) / (content_std + style_mean)
+    t = style_std * normalized_features
     return t
 
 def hw_flatten(x):
