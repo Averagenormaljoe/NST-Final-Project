@@ -162,7 +162,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 2. Create a virtual environment in by running 'python -m venv venv' or 'virtualenv venv' in the terminal.
 3. activate the environment with:
 
-'venv\Scripts\activate' (Windows) or 'source venv\Scripts\activate' (MacOS and Linux).
+'venv\Scripts\activate' (Windows) or 'source venv/bin/activate' (MacOS and Linux).
 
 'source venv/Scripts/activate' (Win&Bash).
 
