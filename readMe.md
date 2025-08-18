@@ -229,6 +229,8 @@ If GPU is not available, then use TPU instead. TPU and GPU in Google Colab refre
 
 ## Requirements
 
+Project size is 684 MB.
+
 It is recommended to run this application on a GPU instead of a CPU, as it is significantly faster.
 
 CUDA (GPU) -- Recommended
