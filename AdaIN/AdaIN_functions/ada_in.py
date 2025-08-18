@@ -43,7 +43,6 @@ def self_attention(x,size ):
     g_flat = hw_flatten(g)  
     h_flat = hw_flatten(h)  
     
-    
     s = tf.matmul(g_flat, f_flat, transpose_b=True)  
     
     beta = tf.nn.softmax(s) 
