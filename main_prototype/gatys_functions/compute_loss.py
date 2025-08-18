@@ -1,6 +1,11 @@
 import tensorflow as tf
 from main_prototype.gatys_functions.weights import get_loss_layers, get_weights
 from shared_utils.loss_functions import content_loss, style_loss, total_variation_loss
+def get_features(features, layer_name,base_index, combination_index):
+      layer_features = features[layer_name]
+      base_features = layer_features[base_index, :, :, :]
+      combination_features = layer_features[combination_index, :, :, :]
+      return base_features, combination_features
 def compute_loss(combination_image, base_image, style_reference_image, config = {}):
     metrics_dict = {}
     tv_type = config.get("tv_type", "gatys")
@@ -20,11 +25,9 @@ def compute_loss(combination_image, base_image, style_reference_image, config = 
     c_loss = tf.zeros(shape=())
     # content layer iteration
     for layer_name in content_names:
-      layer_features = features[layer_name]
-      base_image_features = layer_features[0, :, :, :]
-      combination_features = layer_features[2, :, :, :]
+      base_features, combination_features = get_features(features, layer_name, base_index=0, combination_index=2)
       c_loss += content_weight_per_layer  * content_loss(
-          base_image_features, combination_features
+          base_features, combination_features
       )
     loss += c_loss
     metrics_dict["content"] =  float(c_loss)
@@ -32,11 +35,9 @@ def compute_loss(combination_image, base_image, style_reference_image, config = 
     style_weight_per_layer : float = style_weight / len(style_names)
     # style layer iteration
     for layer_name in style_names:
-      layer_features = features[layer_name]
-      style_reference_features = layer_features[1, :, :, :]
-      combination_features = layer_features[2, :, :, :]
+      base_features, combination_features = get_features(features, layer_name, base_index=1, combination_index=2)
       style_loss_value = style_loss(
-      style_reference_features, combination_features, w, h)
+      base_features, combination_features, w, h)
       s_loss +=  style_weight_per_layer * style_loss_value
 
     loss += s_loss
