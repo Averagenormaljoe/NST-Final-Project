@@ -64,7 +64,7 @@ class LoopManager(ConfigManager):
         output_path = config.get("output_path", None)
         config = process_flow_on_frames(config, combination_image=combination_image)
         for i in trange(self.start_step, self.iterations + 1, desc=f"{name} NST Optimization Loop Progress", disable=not self.verbose):
-            loss, grads,optimizer, all_metrics,metrics_dict = apply_style_transfer_step(combination_image, base_image, style_image, optimizer,config=config,device_config : dict = {})
+            loss, grads,optimizer, all_metrics,metrics_dict = apply_style_transfer_step(combination_image, base_image, style_image, optimizer,config,device_config)
             if self.should_save(i):
                 # hardware usage
                 float_loss = float(loss)

@@ -1,6 +1,6 @@
 from shared_utils.gatys_network import get_content_layer_names, get_style_layer_names
 def get_loss_layers(config):
-    loss_network = config.get("loss_network","vgg19")
+    loss_network = config.get("ln","vgg19")
     style_names = config.get("style_layer_names", get_style_layer_names(loss_network))
     content_names = config.get("content_layer_names", get_content_layer_names(loss_network))
     return content_names, style_names

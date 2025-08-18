@@ -4,7 +4,7 @@ from helper_functions.device_helper import get_device
 from video_utils.compute import compute_temporal_loss
 
 @tf.function
-def compute_loss_and_grads(combination_image, base_image, style_images, config= {},device_config):
+def compute_loss_and_grads(combination_image, base_image, style_images, config= {},device_config = {}):
     verbose = config.get("verbose", 0)
     if verbose > 0:
         tf.print("combination_image == tf.Variable", isinstance(combination_image, tf.Variable))
