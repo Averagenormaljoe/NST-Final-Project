@@ -1,11 +1,7 @@
 import tensorflow as tf
-from main_prototype.gatys_functions.weights import get_loss_layers, get_weights
+from gatys_functions.weights import get_loss_layers, get_weights
 from shared_utils.loss_functions import content_loss, style_loss, total_variation_loss
-def get_features(features, layer_name,base_index, combination_index):
-      layer_features = features[layer_name]
-      base_features = layer_features[base_index, :, :, :]
-      combination_features = layer_features[combination_index, :, :, :]
-      return base_features, combination_features
+from gatys_functions.get_features import get_features
 def compute_loss(combination_image, base_image, style_reference_image, config = {}):
     metrics_dict = {}
     tv_type = config.get("tv_type", "gatys")
