@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow.keras import layers
 def get_mean_std(x, epsilon=1e-5):
     axes = [1, 2]
 
@@ -22,3 +23,28 @@ def ada_in(style, content):
     style_mean, style_std = get_mean_std(style)
     t = style_std * (content - content_mean) / content_std + style_mean
     return t
+
+def hw_flatten(x):
+    return tf.reshape(x, shape=[x.shape[0], -1, x.shape[-1]])
+
+def self_attention(x,size ):
+
+    tensor_shape = tf.shape(x)
+    channels = tensor_shape[-1]
+    floor_C = channels // 2
+    f = layers.Conv2D(floor_C, kernel_size=1, padding='same')(x)  # [bs, h, w, c']
+    g = layers.Conv2D(floor_C, kernel_size=1, padding='same')(x)  # [bs, h, w, c']
+    h = layers.Conv2D(channels, kernel_size=1, padding='same')(x)    # [bs, h, w, c]
+    
+    f_flat = hw_flatten(f) 
+    g_flat = hw_flatten(g)  
+    h_flat = hw_flatten(h)  
+    
+    
+    s = tf.matmul(g_flat, f_flat, transpose_b=True)  
+    
+    beta = tf.nn.softmax(s) 
+
+    o = tf.matmul(beta, h_flat)  # [bs, N, C]
+    o = tf.reshape(o, shape=size)  # [bs, h, w, C]
+    return o
