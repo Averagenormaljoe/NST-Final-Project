@@ -13,12 +13,22 @@ def generate_mask(img,segmenter):
   
     mask = segmenter.predict(img)
     return mask
-def start_process(img):
+def get_mask(img):
     segmenter = get_segmenter()
     mask = generate_mask(img, segmenter)
-    
+    return mask
 
-    
+def get_simple_mask(img, flow, reverse=False):
+    img_shape = img.shape[:2]
+    mask_of_ones = np.ones(img_shape, dtype=np.float32)
+    warped_mask = warp_flow(mask_of_ones, flow, reverse=reverse)
+    filter_value = 0.9999
+    filtered_mask = (warped_mask > filter_value)
+    float_mask = filtered_mask.astype(np.float32)
+    return float_mask
+
+
+
    
 def process_mask(mask, img):
     mask = tf.image.resize(mask, (img.shape[0], img.shape[1]))
