@@ -19,23 +19,13 @@ def get_mask(img):
     return mask
 
 def get_simple_mask(img, flow, reverse=False):
-    img_shape = img.shape[:2]
-    mask_of_ones = np.ones(img_shape, dtype=np.float32)
+    img_shape = img.shape
+    mask_of_ones = np.ones(img_shape)
     warped_mask = warp_flow(mask_of_ones, flow, reverse=reverse)
     filter_value = 0.9999
     filtered_mask = (warped_mask > filter_value)
     float_mask = filtered_mask.astype(np.float32)
-    return float_mask
-
-
-
-   
-def process_mask(mask, img):
-    mask = tf.image.resize(mask, (img.shape[0], img.shape[1]))
-    mask = tf.cast(mask, tf.float32)
-    mask = tf.expand_dims(mask, axis=-1)
-    mask = tf.image.grayscale_to_rgb(mask)
-    return mask          
+    return float_mask        
     
 def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
     segmenter = keras_hub.models.DeepLabV3ImageSegmenter.from_preset(
