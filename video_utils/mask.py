@@ -138,11 +138,4 @@ def multi_pass(n_pass,frames,flow):
         
     tock = time()
     print(f"Multi-pass process ({tock - tick:.2f}) seconds")
-    
-
-def get_deeplab():
-
-    url, filename = ("https://github.com/pytorch/hub/raw/master/images/deeplab1.png", "deeplab1.png")
-    try: urllib.URLopener().retrieve(url, filename)
-    except: urllib.request.urlretrieve(url, filename)
 
