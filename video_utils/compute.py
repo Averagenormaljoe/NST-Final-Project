@@ -4,6 +4,7 @@ def compute_temporal_loss(combination_image, config = {}):
     frames = config.get("warp_frames", [])
     long_term = config.get("long_term", False)
     flow = config.get("flow", None)
+    mask = config.get("mask", None)
     loss = tf.zeros(shape=()) 
     
     if flow is None:
@@ -12,14 +13,14 @@ def compute_temporal_loss(combination_image, config = {}):
     if len(frames) > 0:
         if long_term:
             temporal_error = long_term_temporal_loss_non_warp(
-                curr_stylized_frame=combination_image, previous_warp_frames=frames 
+                curr_stylized_frame=combination_image, previous_warp_frames=frames, mask=mask
             )
             loss += temporal_error
         else:
             # Since items are appended to frames, the previous frame is the last element
             prev_frame = frames[-1]
             temporal_error = temporal_loss(
-                prev_frame, combination_image
+                prev_frame, combination_image, mask=mask
             )
             loss += temporal_error
 
