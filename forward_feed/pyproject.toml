@@ -71,3 +71,6 @@ dependencies = [
 [project.scripts]
 # Uncomment and define if you want to expose CLI commands
 # your-command = "your_module:main"
+
+[tool.setuptools]
+packages = { find = { include = ["model_components","model_functions","image_helper", "CIN"] } }

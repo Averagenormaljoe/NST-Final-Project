@@ -61,4 +61,4 @@ dependencies = [
 # your-command = "your_module:main"
 
 [tool.setuptools]
-packages = { find = { include = ["AdaIN_functions"] } }
+packages = { find = { include = ["AdaIN_functions", "functions"] } }
