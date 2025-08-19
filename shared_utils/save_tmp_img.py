@@ -27,8 +27,6 @@ def destroy_tmp_img(path):
             
 def save_in_numpy(image, img_path):
     numpy_image = image.squeeze()
-    if numpy_image.ndim == 3 and numpy_image.shape[0] == 1:
-        numpy_image = numpy_image[0]
     int8_image = numpy_image.astype("uint8")
     im = Image.fromarray(int8_image)
     im.save(img_path)

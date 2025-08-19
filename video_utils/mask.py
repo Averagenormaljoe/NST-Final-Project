@@ -6,7 +6,6 @@ from video_utils import wrap
 from shared_utils.losses import temporal_loss
 import tensorflow_hub as hub
 import numpy as np
-import urllib
 import keras_hub
 from shared_utils.save_tmp_img import save_tmp_img
 def generate_mask(img,segmenter):

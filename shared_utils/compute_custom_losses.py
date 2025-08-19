@@ -11,27 +11,25 @@ class CustomLosses:
         else:
             self.loss_fn = lpips.LPIPS(net=loss_fn)
     
+    def get_loss(self,name,base_image, combination_image,includes,func,loss_dict={}):
+        if name in includes:
+            loss = func(base_image, combination_image)
+            loss_dict[name] = float(loss)
+            return loss
+        return 0
  
     def compute_custom_losses(self,base_image,combination_image, includes : list[str] = ["ssim", "psnr", "lpips", "ms_ssim"]) ->  dict:
         losses_dict = {}
         if includes is None or len(includes) == 0:
             return losses_dict
-        if "ssim" in includes:
-            ssim_loss_value = ssim_loss(combination_image, base_image)
-            losses_dict["ssim"] =  float(ssim_loss_value)
-        if "psnr" in includes:
-            psnr_loss_value = psnr_loss(combination_image, base_image)
-            losses_dict["psnr"] =  float(psnr_loss_value)
-        if "ms_ssim" in includes:
-            ms_ssim_loss_value = ms_ssim_loss(base_image, combination_image)
-            losses_dict["ms_ssim"] = float(ms_ssim_loss_value)
+        self.get_loss("ssim", base_image, combination_image, includes, ssim_loss, losses_dict)
+        self.get_loss("psnr", base_image, combination_image, includes, psnr_loss, losses_dict)
+        self.get_loss("ms_ssim", base_image, combination_image, includes, ms_ssim_loss, losses_dict)
         if "lpips" in includes:
             loss_fn = self.get_loss_fn_lpips()
             lpips_loss = get_lpips_loss(base_image, combination_image, loss_fn)
             losses_dict["lpips"] =  float(lpips_loss)
-        if "artfid" in includes:
-            artfid_loss = get_artfid_loss(base_image, combination_image)
-            losses_dict["artfid"] =  float(artfid_loss)
+        self.get_loss("artfid", base_image, combination_image, includes, get_artfid_loss, losses_dict)
         fidelity_metrics = get_fidelity_losses(base_image, combination_image, includes)
         losses_dict.update(fidelity_metrics)
         return losses_dict 
