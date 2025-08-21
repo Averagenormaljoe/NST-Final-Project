@@ -28,3 +28,27 @@ class ConditionalInstanceNormalization(tf.keras.layers.Layer):
         return output
     
     
+
+class CIN(nn.Module):
+    """Conditional Instance Norm."""
+
+    def __init__(self, num_style, ch):
+        """Init with number of style and channel."""
+        super(CIN, self).__init__()
+        self.normalize = nn.InstanceNorm2d(ch, affine=False)
+        self.offset = tf.Variable(0.01 * tf.random.normal(shape=(1, num_style, ch)), trainable=True))
+        
+        self.scale = tf.Variable(1.0 + 0.01 * tf.random.normal(shape=(1, num_style, ch)), trainable=True)
+
+    def forward(self, x, style_codes):
+        """Forward func."""
+        b, c, h, w = x.size()
+
+        x = self.normalize(x)
+
+        gamma = torch.sum(self.scale * style_codes, dim=1).view(b, c, 1, 1)
+        beta = torch.sum(self.offset * style_codes, dim=1).view(b, c, 1, 1)
+
+        x = x * gamma + beta
+
+        return x.view(b, c, h, w)
