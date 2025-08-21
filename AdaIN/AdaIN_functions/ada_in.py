@@ -50,9 +50,9 @@ def self_attention(x,size ):
     g_flat = hw_flatten(g)  
     h_flat = hw_flatten(h)  
     
-    s = tf.matmul(g_flat, f_flat, transpose_b=True)  
-    
-    beta = tf.nn.softmax(s) 
+    s = tf.matmul(g_flat, f_flat, transpose_b=True) 
+    axes = -1
+    beta = tf.nn.softmax(s, axes=axes) 
 
     o = tf.matmul(beta, h_flat)  # [bs, N, C]
     o = tf.reshape(o, shape=size)  # [bs, h, w, C]
