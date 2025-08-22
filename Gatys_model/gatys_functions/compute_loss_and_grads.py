@@ -25,17 +25,17 @@ def compute_loss_and_grads(combination_image, base_image, style_images, config= 
             style_cal = style_weight / num
             # iterate through the style images
             for image in type_style_images:
-                style_loss_value, metrics_dict = compute_loss(
+                style_loss_value, style_metrics = compute_loss(
                     combination_image, base_image, image,config  
                 )
                 loss += style_loss_value
-                all_metrics.append(metrics_dict)
+                all_metrics.append(style_metrics)
             t_loss = compute_temporal_loss(combination_image, config)
             
             if t_loss > 0:
                 loss += t_loss
                 metrics_dict["temporal_loss"] = t_loss
             else:
-                metrics_dict["temporal_loss"] = tf.zeros(shape=())
+                metrics_dict["temporal_loss"] = tf.constant(0.0, dtype=tf.float32)
         grads = tape.gradient(loss, combination_image)
         return loss, grads, all_metrics , metrics_dict

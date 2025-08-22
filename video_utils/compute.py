@@ -5,7 +5,7 @@ def compute_temporal_loss(combination_image, config = {}):
     long_term = config.get("long_term", False)
     flow = config.get("flow", None)
     mask = config.get("mask", None)
-    loss = tf.zeros(shape=()) 
+    loss = tf.constant(0.0, dtype=tf.float32)
     
     if flow is None:
         print("ERROR: flow is None, returning zero loss")
