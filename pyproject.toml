@@ -1,24 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "StyleMotion"
 version = "0.1.0"
 description = "Three NST model project"
 requires-python = ">=3.11"
 
-[build-system]
-build-backend = "flit_core.buildapi"
-requires = ["flit_core >=3.2,<4"]
-
-[tool.flit.packages]
-find = { include = [
+[tool.setuptools.packages.find]
+include = [
     "shared_utils",
     "video_utils",
-    "video_utils/helper",
-    "Gatys_model/gatys_functions",
-    "Gatys_model/helper_functions",
+    "video_utils.helper",
+    "Gatys_model.gatys_functions",
+    "Gatys_model.helper_functions",
     "forward_feed",
-    "forward_feed/CIN",
-    "forward_feed/model_functions",
-    "forward_feed/model_components",
-    "AdaIN/AdaIN_functions",
-    "AdaIN/functions"
-] }
+    "forward_feed.model_functions",
+    "forward_feed.model_components",
+    "forward_feed.image_helper",
+    "AdaIN.AdaIN_functions",
+    "AdaIN.AdaIN",
+    "AdaIN.functions"
+]

@@ -3,7 +3,7 @@ from Gatys_model.helper_functions.device_helper import get_device
 from Gatys_model.helper_functions.helper import match_style_color_to_base, preprocess_image
 from Gatys_model.helper_functions.image_helper import add_noise_to_image
 def preprocess_NST_images(base_image_path : str, style_reference_image_path : str, config : dict = {},device_config : dict = {}):
-    size = config
+    size = config.get("size",(400,400))
     w,h = size
     GPU_in_use = device_config.get("gpu",0)
     CPU_in_use = device_config.get("cpu",0)
