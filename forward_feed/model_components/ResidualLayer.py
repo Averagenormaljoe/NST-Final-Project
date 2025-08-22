@@ -1,5 +1,5 @@
 import tensorflow as tf
-from model_components import ConvLayer
+from model_components.ConvLayer import ConvLayer
 
 
 class ResidualLayer(tf.keras.layers.Layer):

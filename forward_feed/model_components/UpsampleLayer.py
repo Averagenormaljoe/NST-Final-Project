@@ -1,6 +1,6 @@
 import tensorflow as tf
-from model_components import InstanceNormalization
-from model_components import ReflectionPadding2D
+from model_components.InstanceNormalization import InstanceNormalization
+from model_components.ReflectionPadding2D import ReflectionPadding2D
 
 
 class UpsampleLayer(tf.keras.layers.Layer):

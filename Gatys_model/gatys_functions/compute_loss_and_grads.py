@@ -1,5 +1,5 @@
 import tensorflow as tf
-from gatys_functions import compute_loss
+from gatys_functions.compute_loss import compute_loss
 from helper_functions.device_helper import get_device
 from video_utils.compute import compute_temporal_loss
 
@@ -35,5 +35,7 @@ def compute_loss_and_grads(combination_image, base_image, style_images, config= 
             if t_loss > 0:
                 loss += t_loss
                 metrics_dict["temporal_loss"] = t_loss
+            else:
+                metrics_dict["temporal_loss"] = 0.0
         grads = tape.gradient(loss, combination_image)
         return loss, grads, all_metrics , metrics_dict
