@@ -36,6 +36,6 @@ def compute_loss_and_grads(combination_image, base_image, style_images, config= 
                 loss += t_loss
                 metrics_dict["temporal_loss"] = t_loss
             else:
-                metrics_dict["temporal_loss"] = 0.0
+                metrics_dict["temporal_loss"] = tf.zeros(shape=())
         grads = tape.gradient(loss, combination_image)
         return loss, grads, all_metrics , metrics_dict
