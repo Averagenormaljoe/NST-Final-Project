@@ -6,3 +6,5 @@ description = "NST project"
 [build-system]
 build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.2,<4"]
+requires-python = ">=3.11"
+packages = { find = { include = ["shared_utils", "video_utils", "Gatys_prototype"] } }

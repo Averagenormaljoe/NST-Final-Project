@@ -1,6 +1,6 @@
 # Credits
 
-1. Code for 'main_prototype/helper_functions/video.py' was adapted from 'https://github.com/elenaliao1002/neural-style-transfer/blob/main/video_style_transfer.py'
+1. Code for 'Gatys_prototype/helper_functions/video.py' was adapted from 'https://github.com/elenaliao1002/neural-style-transfer/blob/main/video_style_transfer.py'
    Author: Wan-Chun(Elena) Liao
    Year: Jun 23, 2023
    Website: GitHub

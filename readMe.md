@@ -16,7 +16,7 @@
   - [General code](#general-code)
     - [StyleMotion (AdaIN) - "AdaIN" directory](#stylemotion-adain---adain-directory)
     - [Ruber - "Ruber" directory](#ruber---ruber-directory)
-    - [main_prototype (Gatys) - "main_prototype" directory](#main_prototype-gatys---main_prototype-directory)
+    - [Gatys_prototype (Gatys) - "Gatys_prototype" directory](#Gatys_prototype-gatys---Gatys_prototype-directory)
     - [forward_feed (Johnson) - "forward_feed" directory](#forward_feed-johnson---forward_feed-directory)
     - [shared utils](#shared-utils)
       - [files](#files)
@@ -116,7 +116,7 @@ The main StyleMotion prototype. Code is adapted from tensorflow website [2].
 
 'main.ipynb' file is the main entry point notebook for the folder.
 
-### main_prototype (Gatys) - "main_prototype" directory
+### Gatys_prototype (Gatys) - "Gatys_prototype" directory
 
 'prototype.ipynb' file is the main entry point notebook for the folder. Code is adapted from Chollet F book [1]. When this file finish, running  
 it outputs the created images into the 'images' directory, which it will create if it does not exist.
@@ -167,7 +167,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 'source venv/Scripts/activate' (Win&Bash).
 
 4. Use 'pip install -r requirements.txt' to download the dependencies required.
-5. Go to the notebook. For main_prototype, it is the 'prototype.ipynb' file.
+5. Go to the notebook. For Gatys_prototype, it is the 'prototype.ipynb' file.
 6. Select the 'run all' command at the top of the notebook
 7. To deactivate the environment run:
 
