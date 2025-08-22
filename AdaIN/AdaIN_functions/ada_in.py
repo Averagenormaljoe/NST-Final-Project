@@ -55,5 +55,5 @@ def self_attention(x,size ):
     beta = tf.nn.softmax(s, axes=axes) 
 
     o = tf.matmul(beta, h_flat)  # [bs, N, C]
-    o = tf.reshape(o, shape=size)  # [bs, h, w, C]
-    return o
+    reshape_o = tf.reshape(o, shape=size)  # [bs, h, w, C]
+    return reshape_o
