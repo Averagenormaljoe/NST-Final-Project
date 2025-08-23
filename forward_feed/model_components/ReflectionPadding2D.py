@@ -1,5 +1,6 @@
 import tensorflow as tf
-@tf.keras.saving.register_keras_serializable()
+from keras.saving import register_keras_serializable
+@register_keras_serializable()
 class ReflectionPadding2D(tf.keras.layers.Layer):
     def __init__(self, padding=(1, 1), **kwargs):
         super(ReflectionPadding2D, self).__init__(**kwargs)
@@ -17,3 +18,13 @@ class ReflectionPadding2D(tf.keras.layers.Layer):
             ],
             "REFLECT",
         )
+    def get_config(self):
+        config = super(ReflectionPadding2D, self).get_config()
+        config.update({
+            "padding": self.padding,
+        })
+        return config
+    
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)

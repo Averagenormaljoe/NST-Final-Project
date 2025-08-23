@@ -61,7 +61,6 @@ class LoopManager(ConfigManager):
         file_writer = tf.summary.create_file_writer(log_dir)
         name : str = f"({content_name}) + ({style_name})"
         save_image = config.get("save_image", True)
-        output_path = config.get("output_path", None)
         is_checkpoint = config.get("is_checkpoint", False)
         
         if is_checkpoint:
@@ -98,8 +97,7 @@ class LoopManager(ConfigManager):
                     tf.summary.image("generated_image", combination_image, step=i)
                 if is_checkpoint:
                     manager.save(checkpoint_number=i)
-        if output_path is not None and best_image is not None:
-            keras.utils.save_img(output_path, best_image.get_image()) 
+      
             
         file_writer.close()        
         log_data = self.end_training()

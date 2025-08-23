@@ -1,8 +1,7 @@
-import keras
 from keras.applications import vgg19
 from keras.models import Model
+from keras.saving import register_keras_serializable
 import tensorflow as tf
-@tf.keras.saving.register_keras_serializable()
 class LossModel:
     def __init__(self, pretrained_model, content_layers, style_layers):
         self.model = pretrained_model

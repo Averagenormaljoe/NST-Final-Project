@@ -2,8 +2,8 @@ import tensorflow as tf
 from model_components.UpsampleLayer import  UpsampleLayer
 from model_components.ConvLayer import ConvLayer
 from model_components.ResidualLayer import ResidualLayer
-
-@tf.keras.saving.register_keras_serializable()
+from keras.saving import register_keras_serializable
+@register_keras_serializable()
 class StyleTransferModel(tf.keras.Model):
     def __init__(self, **kwargs):
         super(StyleTransferModel, self).__init__(name="StyleTransferModel", **kwargs)
@@ -81,3 +81,12 @@ class StyleTransferModel(tf.keras.Model):
         x = self.relu(x)
         x = self.deconv2d_3(x)
         print(x.shape)
+    def get_config(self):
+        config = super(StyleTransferModel, self).get_config()
+        config.update({
+            "name": self.name,
+        })
+        return config
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)

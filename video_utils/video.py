@@ -1,5 +1,6 @@
 import os
 import cv2
+import keras
 from requests import get
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
@@ -136,7 +137,6 @@ def video_style_transfer(config,video_details,style_func):
             print(f"Missing content frame: {content_frame_path}")
             continue
         output_frame_path = os.path.join(transferred_frames_dir, f"{transformed_prefix}-{frame_i}.{extension}")
-        config['output_path'] = output_frame_path
         config["frames"] = prev_frames
         results = style_func(content_frame_path, style_path, config=config)
         
@@ -152,7 +152,10 @@ def video_style_transfer(config,video_details,style_func):
             appended_image = best_image.get_image()
         else:
             appended_image = best_image
-            prev_frames.append(appended_image)
+        
+        prev_frames.append(appended_image)
+        if output_frame_path is not None and appended_image is not None:
+            keras.utils.save_img(output_frame_path, appended_image) 
         logs.append(log_data)
     if verbose:
         print("Image style transfer complete.")
