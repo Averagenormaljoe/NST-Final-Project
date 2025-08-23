@@ -1,3 +1,8 @@
+import tensorflow as tf
+from forward_feed.model_components.InstanceNormalization import InstanceNormalization
+from forward_feed.model_components.ReflectionPadding2D import ReflectionPadding2D
+
+
 class ConvLayer(tf.keras.layers.Layer):
     def __init__(self, filters, kernel_size, strides=1, **kwargs):
         super(ConvLayer, self).__init__(**kwargs)
