@@ -1,7 +1,7 @@
 import tensorflow as tf
 from model_components.ConvLayer import ConvLayer
 
-
+@tf.keras.saving.register_keras_serializable()
 class ResidualLayer(tf.keras.layers.Layer):
     def __init__(self, filters, kernel_size, **kwargs):
         super(ResidualLayer, self).__init__(**kwargs)

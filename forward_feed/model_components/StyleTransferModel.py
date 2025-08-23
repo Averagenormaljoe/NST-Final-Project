@@ -1,8 +1,9 @@
+import tensorflow as tf
 from model_components.UpsampleLayer import  UpsampleLayer
 from model_components.ConvLayer import ConvLayer
 from model_components.ResidualLayer import ResidualLayer
 
-
+@tf.keras.saving.register_keras_serializable()
 class StyleTransferModel(tf.keras.Model):
     def __init__(self, **kwargs):
         super(StyleTransferModel, self).__init__(name="StyleTransferModel", **kwargs)

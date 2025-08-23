@@ -2,7 +2,7 @@ import tensorflow as tf
 from model_components.InstanceNormalization import InstanceNormalization
 from model_components.ReflectionPadding2D import ReflectionPadding2D
 
-
+@tf.keras.saving.register_keras_serializable()
 class ConvLayer(tf.keras.layers.Layer):
     def __init__(self, filters, kernel_size, strides=1, **kwargs):
         super(ConvLayer, self).__init__(**kwargs)

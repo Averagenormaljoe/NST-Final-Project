@@ -1,7 +1,7 @@
 
 import tensorflow as tf
 
-
+@tf.keras.saving.register_keras_serializable()
 class InstanceNormalization(tf.keras.layers.Layer):
     def __init__(self, **kwargs):
         super(InstanceNormalization, self).__init__(**kwargs)
