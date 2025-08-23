@@ -4,7 +4,7 @@ from video_utils.get_flow_and_mask import get_flow_and_mask
 from video_utils.helper.reset_warp_frames import reset_warp_frames
 def apply_style_transfer_step(combination_image, base_image, style_image, optimizer, config : dict = {},device_config : dict = {}):
     video_mode = config.get("video_mode",True)
-    if not video_mode:
+    if video_mode:
         config = get_flow_and_mask(config, combination_image)
     GPU_in_use = device_config.get("gpu", 0)
     CPU_in_use = device_config.get("cpu", 0)
