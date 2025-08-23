@@ -1,6 +1,6 @@
 import tensorflow as tf
-from forward_feed.model_components.InstanceNormalization import InstanceNormalization
-from forward_feed.model_components.ReflectionPadding2D import ReflectionPadding2D
+from model_components.InstanceNormalization import InstanceNormalization
+from model_components.ReflectionPadding2D import ReflectionPadding2D
 
 
 class ConvLayer(tf.keras.layers.Layer):

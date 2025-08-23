@@ -1,5 +1,5 @@
 import tensorflow as tf
-from forward_feed.CIN.CIN import ConditionalInstanceNormalization
+from CIN.CIN import ConditionalInstanceNormalization
 from model_components.ReflectionPadding2D import ReflectionPadding2D
 class ConvInstanceLayer(tf.keras.layers.Layer):
     def __init__(self, num_style, filters, kernel_size, strides=1, activation='relu', **kwargs):
