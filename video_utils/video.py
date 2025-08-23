@@ -111,6 +111,10 @@ def video_style_transfer(config,video_details,style_func):
     output_size = config.get('size')
     output_size = normalize_output_size(output_size)
     config['size'] = output_size
+    if not video_details:
+        if verbose:
+            print("ERROR: Not details (total_frames,h,w, fps) has been provided for the video. Exiting video style transfer process.")
+        return video_details
     total_frames,h,w, content_fps = video_details
     content_video_path, style_path, output_dir = get_video_paths(config)
     frames_dir, transferred_dir = get_frame_dir()
