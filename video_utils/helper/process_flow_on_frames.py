@@ -1,10 +1,14 @@
 import numpy as np
+import tensorflow as tf
 from video_utils.mask import get_optimal_flow
 def process_flow_on_frames(config,combination_image):
        frames = config.get("frames", [])
        if len(frames) > 0:
             prev_frame = frames[-1]
-            numpy_combination_image = np.squeeze(combination_image.numpy())
+            if hasattr(combination_image, 'numpy'):
+               numpy_combination_image = np.squeeze(combination_image.numpy())
+            else:
+               numpy_combination_image = combination_image
             flow = get_optimal_flow(prev_frame, numpy_combination_image)
             config["flow"] = flow
        return config
