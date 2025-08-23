@@ -42,7 +42,7 @@ class LoopManager(ConfigManager):
         
     def training_loop(self,content_path, style_path,content_name : str = "",style_name: str = "",config : dict={},device_config : dict = {}):
         if not os.path.exists(content_path) and not os.path.exists(style_path):
-            raise FileNotFoundError("Both of the paths for the style or content images are invalid.")
+            raise FileNotFoundError("Both of the paths for the style and content images are invalid.")
         if not os.path.exists(content_path):
             raise FileNotFoundError(f"Content image path does not exist.")
         if not os.path.exists(style_path):

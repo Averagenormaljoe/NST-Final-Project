@@ -45,6 +45,8 @@ def get_optimal_flow(prev_img, curr_img, config={}):
     
 def convert_to_grayscale(img):
     if len(img.shape) == 3:
+        if img.dtype == np.float64:
+            img = img.astype(np.float32)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return img   
     
