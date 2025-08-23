@@ -144,7 +144,11 @@ def video_style_transfer(config,video_details,style_func):
                 print(f'\tWarning: Image style transfer failed for frame {content_frame_path}.')
                 return
         generated_images, best_image,log_data = results
-        prev_frames.append(best_image.get_image())
+        if hasattr(best_image, 'get_image'):
+            appended_image = best_image.get_image()
+        else:
+            appended_image = best_image
+            prev_frames.append(appended_image)
         logs.append(log_data)
     if verbose:
         print("Image style transfer complete.")
