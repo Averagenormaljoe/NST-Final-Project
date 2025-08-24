@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from forward_feed.model_functions.convert_to_numpy import convert_to_numpy
+from video_utils.convert_to_numpy import convert_to_numpy
 def save_logs_table(logs, save_path, prefix = "logs_epoch"):
     if not os.path.exists(save_path):
         os.makedirs(save_path, exist_ok=True)
