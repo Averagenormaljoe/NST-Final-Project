@@ -6,8 +6,8 @@ def save_video_logs_table(logs, save_path, prefix = "logs_video"):
         os.makedirs(save_path, exist_ok=True)
     enumerate_logs = enumerate(logs)
     for i, x in enumerate_logs:
-        x = convert_to_numpy(x,["temporal_loss"])
         df = pd.DataFrame(x)
+        df['temporal_loss'] = df['temporal_loss'].apply(lambda x: x.numpy() if hasattr(x, 'numpy') else x)
         filename = f"{prefix}_{i}.csv"
         csv_path = os.path.join(save_path, filename)
         df.to_csv(csv_path, index=False)
