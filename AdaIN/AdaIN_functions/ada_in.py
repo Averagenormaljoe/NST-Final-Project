@@ -1,6 +1,6 @@
 import tensorflow as tf
 from keras import layers
-def get_mean_std(x, epsilon=1e-5):
+def get_mean_std(x : tf.Tensor, epsilon : float =1e-5):
     axes = [1, 2]
 
     # Compute the mean and standard deviation of a tensor.
@@ -8,7 +8,7 @@ def get_mean_std(x, epsilon=1e-5):
     standard_deviation = tf.math.sqrt(tf.maximum(variance, 0.0) + epsilon)
     return mean, standard_deviation
 
-def get_att(content, style, att=True):
+def get_att(content : tf.Tensor, style : tf.Tensor, att=True):
     if att:
         self_content = self_attention(content, tf.shape(content))
         self_style = self_attention(style, tf.shape(style))
@@ -17,7 +17,7 @@ def get_att(content, style, att=True):
         self_style = style
     return ada_in(self_style, self_content, att)
 
-def ada_in(style, content, att=True):
+def ada_in(style : tf.Tensor, content : tf.Tensor, att : bool =True):
     """Computes the AdaIn feature map.
 
     Args:
@@ -34,10 +34,10 @@ def ada_in(style, content, att=True):
     t = style_std * cal
     return t
 
-def hw_flatten(x):
+def hw_flatten(x : tf.Tensor):
     return tf.reshape(x, shape=[x.shape[0], -1, x.shape[-1]])
 
-def self_attention(x,size ):
+def self_attention(x : tf.Tensor,size : tf.Tensor ):
 
     tensor_shape = tf.shape(x)
     channels = tensor_shape[-1]
