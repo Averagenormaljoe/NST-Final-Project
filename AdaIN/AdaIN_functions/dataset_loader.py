@@ -6,24 +6,24 @@ import tensorflow_datasets as tfds
 # Defining the global variables.
 BATCH_SIZE = 64
 
-def load_train_dataset(dataset_use: str,train_style, batch_size : int,num_parallel_calls : int):
+def load_train_dataset(base_dir,dataset_use: str,train_style, batch_size : int,num_parallel_calls : int):
     train_style_ds = (
     tf.data.Dataset.from_tensor_slices(train_style)
     .map(decode_and_resize, num_parallel_calls=num_parallel_calls)
     .repeat()
     ) 
-    train_content_ds = tfds.load(dataset_use, split='train').map(extract_image_from_voc).repeat()
+    train_content_ds = tfds.load(dataset_use, split='train',data_dir=base_dir).map(extract_image_from_voc).repeat()
     return train_style_ds, train_content_ds
 
 
-def save_train_dataset(dataset_path,dataset_use: str, train_style, should_save: bool = True):
+def save_train_dataset(base_dir : str,dataset_path : str,dataset_use: str, train_style, should_save: bool = True,load : bool = False):
     train_path = f"{dataset_path}/train_style_ds"
     content_path = f"{dataset_path}/train_content_ds"
-    if os.path.exists(dataset_path):
+    if os.path.exists(dataset_path) and load:
         train_style_ds = tf.data.Dataset.load(train_path)
         train_content_ds = tf.data.Dataset.load(content_path)
     else:
-        train_style_ds,train_content_ds = load_train_dataset(dataset_use, train_style,BATCH_SIZE,AUTOTUNE)
+        train_style_ds,train_content_ds = load_train_dataset(base_dir, dataset_use, train_style,BATCH_SIZE,AUTOTUNE)
         if should_save:
             train_style_ds.save(train_path)
             train_content_ds.save(content_path)
@@ -67,7 +67,7 @@ def load_val_test_datasets(dataset_use: str, val_style, test_style, batch_size: 
     
     return val_ds, test_ds
 
-def get_train_ds(train_style_ds, train_content_ds, batch_size,autotune):
+def get_train_ds(train_style_ds, train_content_ds, batch_size : int,autotune):
     # Zipping the style and content datasets.
     train_ds = (
         tf.data.Dataset.zip((train_style_ds, train_content_ds))
