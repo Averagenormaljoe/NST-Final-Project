@@ -1,8 +1,12 @@
 import os
 def retrieve_style_image(images_path: str):
-    style_images = os.listdir(images_path)
     extensions = ('.jpg', '.jpeg', '.png')
-    style_images = [os.path.join(images_path, path) for path in style_images if path.endswith(extensions)]
+    style_images = []
+    for path, subdirs, files in os.walk(images_path):
+        for name in files:
+            if path.endswith(extensions):
+                full_path = os.path.join(path, name)
+                style_images.append(full_path)
     return style_images
 
 # Get the image file paths for the style images.
