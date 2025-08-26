@@ -62,8 +62,6 @@ def temporal_relative_luminance_f1(prev_warped_img,curr_img, prev_warped_stylize
 
 def temporal_relative_luminance_f2(prev_warped_img,curr_img, prev_warped_stylize_img,curr_stylize_img,mask):
     x,Y,z = warping_constraint(curr_stylize_img)
-    sum = tf.zeros(shape=())
-
     stylize_diff = curr_stylize_img -  prev_warped_stylize_img
     color_stylize_diff = stylize_diff * Y
     
@@ -77,7 +75,18 @@ def temporal_relative_luminance_f2(prev_warped_img,curr_img, prev_warped_stylize
     xy_diff =  stylize_diff * x * z
     xy_diff_l2 = square_or_l2(xy_diff,True)
     added_diff = final_diff_l2 + xy_diff_l2
-    final_sum = apply_mask_and_sum(added_diff)
+    final_sum = apply_mask_and_sum(curr_stylize_img,added_diff,mask)
+    mean = tf.reduce_mean(final_sum)
+    return  mean
+
+
+
+def no_luminance(prev_warped_stylize_img,curr_stylize_img,mask):
+    r, g, b = get_channels(curr_stylize_img)
+    stylize_diff = curr_stylize_img - prev_warped_stylize_img
+    color_stylize_diff = stylize_diff * r * g * b
+    final_diff_l2 += square_or_l2(color_stylize_diff,True)
+    final_sum = apply_mask_and_sum(curr_stylize_img,color_stylize_diff,mask)
     mean = tf.reduce_mean(final_sum)
     return  mean
 
