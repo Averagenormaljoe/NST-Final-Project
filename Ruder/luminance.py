@@ -33,6 +33,9 @@ def get_channels(img):
     return  r,g,b
 
 def wrap_images_prior_luminance_f1(prev_img,curr_img,prev_stylize_img,curr_stylize_img,mask,flow):
+    if curr_img is None:
+        print("Error: current image is not provided as a parameter. Returning zero.")
+        return tf.constant(0.0)
     prev_warped_stylize_img = warp_flow(prev_stylize_img, flow)
     prev_warped_img = warp_flow(prev_img, flow)
     mean = temporal_relative_luminance_f1(prev_warped_img,curr_img, prev_warped_stylize_img,curr_stylize_img,mask,flow)
