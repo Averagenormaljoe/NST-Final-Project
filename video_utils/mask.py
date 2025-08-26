@@ -108,34 +108,51 @@ def long_term_temporal_loss(curr_stylized_frame, flow, mask=None,previous_styliz
         loss += twe
     return loss
 
-def long_term_temporal_loss_non_warp(curr_stylized_frame, mask=None,previous_warp_frames=[]):    
+def long_term_temporal_loss_non_warp(curr_stylized_frame, mask=None,previous_warp_frames=[],):    
     loss = tf.zeros(shape=())
     for prev_frame in previous_warp_frames:
         twe = temporal_loss(prev_frame, curr_stylized_frame, mask=mask)
         loss += twe
     return loss
-def multi_pass(n_pass,frames,flow):
+def multi_pass(n_pass,flows,frames,combination_frames,masks, blend_factor=0.5):
     tick = time()
     pass_time = []
-        
-
+    stylize_frames = conbination_frames.copy()
+    neg_blend_factor = 1 - blend_factor
+    init_img
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
         direction = "f" if j % 2 == 0 else "b"
         if direction == "f":
             for i in trange(0, frames, desc=f"Processing frames in pass {j+1} ({direction})"):
                 if i == 0:
-                    init_img = get_content_noise(frames[i])
+                    prev_img = conbination_frames[i]
                 else:
-                    wrap_img = warp_flow(init_img, flow)
-                    init_img = wrap_img + frames[i]
+                    prev_mask = masks[i - 1]
+                    warp_img = warp_flow[i - 1]
+                    first_mul = blend_factor * prev_mask * warp_img
+                    ones_tensor = tf.ones_like(prev_mask)
+                     
+                    neg_prev_mask = tf.subtract(ones_tensor, prev_img) 
+                    
+                    second_mul = (neg_blend_factor * ones_tensor) + (blend_factor * neg_prev_mask) * init_img
+    
+                    final_result = tf.add(first_mul,second_mul)
+                    stylize_frames.append(final_result)
+                    prev_img = frames[i]
+                    conbination_frames[i] = final_result
+                    
                 
-                y *=  init_img
+                
         else:
             if direction == "backward":
                 for i in trange(0, frames, desc=f"Processing frames in pass {j+1}"):
                     if i == frames:
-                        init_img = get_content_noise(frames[i])
+                        init_img = frames[i]
+                    else:
+                        init_img = 
+                        conbination_frames[i] = final_result
         
     tock = time()
     print(f"Multi-pass process ({tock - tick:.2f}) seconds")
+    return stylize_frames
 
