@@ -19,18 +19,26 @@ def get_luminance(r,g,b):
 
 def wraping_constraint(img):
     xyz = get_xyz(img)
-    r,g,b = 1,2,3
-    x,y,z = 1,2,3
+    r,g,b = get_channels(img)
+    x,y,z = get_channels(img)
 
 
     luminance = get_luminance(r,g,b)
     y_with_luminance = y + luminance 
     return x, y_with_luminance, z
 
+def get_channels(img):
+    row, col, ch = tf.shape(img)
+    if ch == 3:
+        r, g, b = tf.unstack(tf.cast(img, tf.float32), axis=-1)
+    else:
+        r, g, b, a = tf.unstack(tf.cast(img, tf.float32), axis=-1)
+    return  r,g,b
+
 def temporal_relative_luminance_f1(prev_img,curr_img,prev_stylize_img,curr_stylize_img,mask,flow):
     prev_warped_stylize_img = warp_flow(prev_stylize_img, flow)
     prev_warped_img = warp_flow(prev_img, flow)
-    r,g,b = 1,2,3
+    r, g, b = get_channels(curr_stylize_img)
     img_channels = [r,g,b]
     y = get_luminance(r,g,b)
     sum = tf.zeros(shape=())

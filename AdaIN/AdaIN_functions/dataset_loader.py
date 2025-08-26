@@ -1,11 +1,10 @@
 import os
 import tensorflow as tf
-AUTOTUNE = tf.data.AUTOTUNE
 from AdaIN_functions.helper import decode_and_resize,extract_image_from_voc
 import tensorflow_datasets as tfds
 # Defining the global variables.
 BATCH_SIZE = 64
-
+AUTOTUNE = tf.data.AUTOTUNE
 def load_train_dataset(base_dir,dataset_use: str,train_style, batch_size : int,num_parallel_calls : int):
     train_style_ds = (
     tf.data.Dataset.from_tensor_slices(train_style)
