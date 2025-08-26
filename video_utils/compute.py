@@ -1,12 +1,13 @@
 import tensorflow as tf
 from video_utils.mask import long_term_temporal_loss_non_warp,temporal_loss, get_optimal_flow, warp_previous_frames
-from Ruder.luminance import wrap_images_prior_luminance_f1
+from Ruder.luminance import  no_luminance, wrap_images_prior_luminance
 def compute_temporal_loss(combination_image, config = {}):
     frames = config.get("warp_frames", [])
     long_term = config.get("long_term", False)
     flow = config.get("flow", None)
     mask = config.get("mask", None)
     is_luminance = config.get("is_luminance ",False)
+    luminance_version = config.get("is_luminance ",1)
     loss = tf.constant(0.0, dtype=tf.float32)
     
     if flow is None:
@@ -30,9 +31,13 @@ def compute_temporal_loss(combination_image, config = {}):
             non_warp_frames = config.get("frames",[])
             curr_img = config.get("curr_img", None)
             prev_non_warped_frame = non_warp_frames[-1]
-            wrap_images_prior_luminance_f1(prev_non_warped_frame,curr_img,prev_frame,combination_image,mask,flow)
+            if luminance_version == 3:
+                luminance_loss = no_luminance(prev_frame,combination_image,mask)
+            else:
+                luminance_type = "f2" if luminance_version == 2 else "f1"
+                luminance_loss = wrap_images_prior_luminance(prev_non_warped_frame,curr_img,prev_frame,combination_image,mask,flow,luminance_type)
             
-    return loss
+    return loss + luminance_loss
                      
 
                     

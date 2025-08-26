@@ -8,7 +8,7 @@ def load_image(path : str):
     return style_im
 
 
-def tensor_toimage(tensor):
+def tensor_toimage(tensor : tf.Tensor):
   tensor =tensor*255
   tensor = np.array(tensor, dtype=np.uint8)
   if np.ndim(tensor)>3:

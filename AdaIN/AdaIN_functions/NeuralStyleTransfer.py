@@ -203,7 +203,6 @@ class NeuralStyleTransfer(tf.keras.Model):
         return reconstructed_image
     
     
-    
     def get_config(self):
         config = super().get_config()
         config.update({

@@ -32,14 +32,6 @@ def get_channels(img):
         r, g, b, a = tf.unstack(tf.cast(img, tf.float32), axis=-1)
     return  r,g,b
 
-def wrap_images_prior_luminance_f1(prev_img,curr_img,prev_stylize_img,curr_stylize_img,mask,flow):
-    if curr_img is None:
-        print("Error: current image is not provided as a parameter. Returning zero.")
-        return tf.constant(0.0)
-    prev_warped_stylize_img = warp_flow(prev_stylize_img, flow)
-    prev_warped_img = warp_flow(prev_img, flow)
-    mean = temporal_relative_luminance_f1(prev_warped_img,curr_img, prev_warped_stylize_img,curr_stylize_img,mask,flow)
-    return mean
 
 
 def temporal_relative_luminance_f1(prev_warped_img,curr_img, prev_warped_stylize_img,curr_stylize_img,mask):
@@ -81,6 +73,18 @@ def temporal_relative_luminance_f2(prev_warped_img,curr_img, prev_warped_stylize
     final_sum = apply_mask_and_sum(curr_stylize_img,added_diff,mask)
     mean = tf.reduce_mean(final_sum)
     return  mean
+
+def wrap_images_prior_luminance(prev_img,curr_img,prev_stylize_img,curr_stylize_img,mask,flow,func = "f1"):
+    if curr_img is None:
+        print("Error: current image is not provided as a parameter. Returning zero.")
+        return tf.constant(0.0)
+    prev_warped_stylize_img = warp_flow(prev_stylize_img, flow)
+    prev_warped_img = warp_flow(prev_img, flow)
+    if func == "f2":
+        mean = temporal_relative_luminance_f2(prev_warped_img,curr_img, prev_warped_stylize_img,curr_stylize_img,mask)
+    else:
+        mean = temporal_relative_luminance_f1(prev_warped_img,curr_img, prev_warped_stylize_img,curr_stylize_img,mask)
+    return mean
 
 
 
