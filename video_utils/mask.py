@@ -77,9 +77,10 @@ def warp_flow(img, flow,reverse=False):
     h, w = cast_flow.shape[:2]
     if reverse:
         cast_flow = -cast_flow
-    cast_flow[:,:,0] += np.arange(w)
-    cast_flow[:,:,1] += np.arange(h)[:,np.newaxis]
-    res = cv2.remap(img, cast_flow, None, cv2.INTER_LINEAR)
+    cast_flow_copy = np.copy(cast_flow)
+    cast_flow_copy[:,:,0] += np.arange(w)
+    cast_flow_copy[:,:,1] += np.arange(h)[:,np.newaxis]
+    res = cv2.remap(img, cast_flow_copy, None, cv2.INTER_LINEAR)
     return res
 
 def generate_occlusion_masks(prev_frame,curr_frame):
@@ -114,45 +115,43 @@ def long_term_temporal_loss_non_warp(curr_stylized_frame, mask=None,previous_war
         twe = temporal_loss(prev_frame, curr_stylized_frame, mask=mask)
         loss += twe
     return loss
-def multi_pass(n_pass,flows,frames,combination_frames,masks, blend_factor=0.5):
+def get_pass_range(direction,frames):
+    initial_range = range(len(frames))
+    range_fn = initial_range if direction == "f" else reversed(initial_range)
+    return range_fn
+def multi_pass(n_pass,flows,frames,combination_frames,masks, blend_weight=0.5,temporal_loss_after_n_passes= 3,config = {}):
     tick = time()
     pass_time = []
-    stylize_frames = conbination_frames.copy()
-    neg_blend_factor = 1 - blend_factor
-    init_img
+    stylize_frames = combination_frames.copy()
+    neg_blend_weight = 1 - blend_weight
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
+        pass_tick = time()
         direction = "f" if j % 2 == 0 else "b"
-        if direction == "f":
-            for i in trange(0, frames, desc=f"Processing frames in pass {j+1} ({direction})"):
-                if i == 0:
-                    prev_img = conbination_frames[i]
-                else:
-                    prev_mask = masks[i - 1]
-                    warp_img = warp_flow[i - 1]
-                    first_mul = blend_factor * prev_mask * warp_img
-                    ones_tensor = tf.ones_like(prev_mask)
-                     
-                    neg_prev_mask = tf.subtract(ones_tensor, prev_img) 
-                    
-                    second_mul = (neg_blend_factor * ones_tensor) + (blend_factor * neg_prev_mask) * init_img
-    
-                    final_result = tf.add(first_mul,second_mul)
-                    stylize_frames.append(final_result)
-                    prev_img = frames[i]
-                    conbination_frames[i] = final_result
-                    
-                
-                
-        else:
-            if direction == "backward":
-                for i in trange(0, frames, desc=f"Processing frames in pass {j+1}"):
-                    if i == frames:
-                        init_img = frames[i]
-                    else:
-                        init_img = 
-                        conbination_frames[i] = final_result
-        
-    tock = time()
-    print(f"Multi-pass process ({tock - tick:.2f}) seconds")
+        pass_range = get_pass_range(direction,frames)
+        prev_img = None
+        is_temporal_loss : bool = temporal_loss_after_n_passes > 3
+        for i in pass_range:
+            index_d = i - 1 if direction == "f" else i + 1
+            if direction == "f" and i == 0 or direction == "b" and i - 1 == len(frames):
+                prev_img = combination_frames[i]
+                stylize_frames[i] = prev_img
+            else:
+                warp_mask = masks[index_d]
+                next_img = combination_frames[index_d]
+                reverse_flow = True if direction == "b" else False
+                warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
+                first_mul = blend_weight * warp_mask * warp_img
+                ones_tensor = tf.ones_like(warp_mask)
+                neg_prev_mask = tf.subtract(ones_tensor, prev_img) 
+                second_mul = (neg_blend_weight * ones_tensor) + (blend_weight * neg_prev_mask) * prev_img
+                final_result = tf.add(first_mul,second_mul)
+                prev_img = frames[i]
+                stylize_frames[i] = final_result
+        pass_end = time()
+        duration = pass_end - pass_tick
+        pass_time.append(duration)
+           
+    end = time()
+    print(f"Multi-pass process ({end - tick:.2f}) seconds")
     return stylize_frames
 
