@@ -12,19 +12,6 @@ def get_video_details(cap):
     content_fps = cap.get(cv2.CAP_PROP_FPS)
     return total_frames, h, w, content_fps
 
-def load_the_video(video_path : str):
-    cap = cv2.VideoCapture(video_path)
-    frames = []
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        frames.append(frame)
-    cap.release()
-    return frames
-
-
-
 ImageType = Union[np.ndarray, tf.Tensor]
 
 def image_read(image : ImageType) -> tf.Tensor:
