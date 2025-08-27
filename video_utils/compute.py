@@ -44,8 +44,9 @@ def compute_temporal_loss(combination_image, config = {}):
             else:
                 luminance_type = "f2" if luminance_version == 2 else "f1"
                 luminance_loss = wrap_images_prior_luminance(prev_non_warped_frame,curr_img,prev_frame,combination_image,mask,flow,luminance_type)
+            loss += luminance_loss
             
-    return loss + luminance_loss
+    return loss
                      
 
                     
