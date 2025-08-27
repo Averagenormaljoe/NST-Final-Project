@@ -11,7 +11,10 @@ def compute_temporal_loss(combination_image, config = {}):
     is_luminance = config.get("is_luminance ",False)
     luminance_version = config.get("is_luminance ",1)
     loss = tf.constant(0.0, dtype=tf.float32)
-    
+    if config is None:
+        raise ValueError("Error: config cannot be none.")
+    if isinstance(config,dict):
+        raise ValueError(f"Error: config is not a dictionary instead ({type(config)}).")
     if flow is None:
         print("ERROR: flow is None, returning zero loss")
         return loss
