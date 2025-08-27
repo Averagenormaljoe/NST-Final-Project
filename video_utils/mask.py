@@ -120,7 +120,11 @@ def get_pass_range(direction,frames):
     initial_range = range(len(frames))
     range_fn = initial_range if direction == "f" else reversed(initial_range)
     return range_fn
-def multi_pass(n_pass : int,flows,style_image,frames,combination_frames,masks, blend_weight : float =0.5,temporal_loss_after_n_passes= 3,config = {}):
+def multi_pass(n_pass : int,flows,style_image : tf.Tensor,frames,combination_frames,masks, blend_weight : float =0.5,temporal_loss_after_n_passes= 3,config = {}):
+    if not isinstance(n_pass,int):
+        print(f"Error: n_pass is not an int ({type(n_pass)}).")
+    if not isinstance(style_image,tf.Tensor):
+        print(f"Error: style_image is not a tensor ({type(style_image)}).")  
     tick = time()
     pass_time = []
     stylize_frames = combination_frames.copy()
