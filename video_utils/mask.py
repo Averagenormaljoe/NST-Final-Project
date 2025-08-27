@@ -137,12 +137,12 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
         direction : str = "f" if j % 2 == 0 else "b"
         pass_range : range = get_pass_range(direction,frames_length)
         prev_img = None
-        is_temporal_loss : bool = temporal_loss_after_n_passes >= j
+        is_temporal_loss : bool = j >= temporal_loss_after_n_passes
         config["video_mode"] = is_temporal_loss
         for i in pass_range:
             index_d : int = i - 1 if direction == "f" else i + 1
-            if direction == "f" and i == 0 or direction == "b" and i - 1 == frames_length:
-                prev_img = combination_frames[i]
+            if (direction == "f" and i == 0) or (direction == "b" and i == frames_length - 1):
+                prev_img = stylize_frames[i]
                 stylize_frames[i] = prev_img
                 
             else:
@@ -155,13 +155,13 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
                 neg_prev_mask = tf.subtract(ones_res, warp_mask) 
                 second_mul = (neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask) * prev_img
                 final_result = tf.add(first_mul,second_mul)
-                prev_img = combination_frames[i]
                 config["combination_frame"] = final_result
                 generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config,)
                 if not generated_frames or not best_frame or not log_data:
                     print("Error: optimization loop failed. Skipping")
                     continue
                 stylize_frames[i] = best_frame.get_image()
+                prev_img = stylize_frames[i]
         pass_end : float = time()
         duration : float = pass_end - pass_tick
         pass_time.append(duration)
