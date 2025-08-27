@@ -132,7 +132,7 @@ def multi_pass(n_pass : int,flows,style_image,frames,combination_frames,masks, b
         pass_range = get_pass_range(direction,frames)
         prev_img = None
         is_temporal_loss : bool = temporal_loss_after_n_passes >= 3
-        config["is_temporal_loss"] = is_temporal_loss
+        config["video_mode"] = is_temporal_loss
         for i in pass_range:
             index_d = i - 1 if direction == "f" else i + 1
             if direction == "f" and i == 0 or direction == "b" and i - 1 == len(frames):
