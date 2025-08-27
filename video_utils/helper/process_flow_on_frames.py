@@ -11,4 +11,7 @@ def process_flow_on_frames(config,combination_image):
                numpy_combination_image = combination_image
             flow = get_optimal_flow(prev_frame, numpy_combination_image)
             config["flow"] = flow
+            total_flows = config.get("total_flows",[])
+            total_flows.append(flow)
+            config["total_flows"] = total_flows
        return config

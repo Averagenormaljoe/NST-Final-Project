@@ -160,10 +160,10 @@ def video_style_transfer(config,video_details,style_func):
     if is_multi_pass:
         n_pass = config.get("n_pass",3)
         blend_weight = config.get("blend_weight", 0.5) 
-        flows = config.get("flows",[])
+        total_flows = config.get("total_flows",[])
         total_frames = config.get("total_frames",[])
         temporal_loss_n = config.get("temporal_loss_n",3)
-        multi_pass_frames = multi_pass(n_pass,flows,style_path,blend_weight,temporal_loss_n,config=config)
+        multi_pass_frames = multi_pass(n_pass,total_flows,style_path,blend_weight,temporal_loss_n,config=config)
         number_of_pass_frames = len(multi_pass_frames)
         for i in trange(number_of_pass_frames, desc="Performing multi-pass for each frame", disable=not verbose):
             output_frame_path = os.path.join(transferred_frames_dir, f"{pass_prefix}-{frame_i}.{extension}")
