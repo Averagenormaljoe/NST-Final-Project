@@ -1,10 +1,11 @@
 import os
+
 def retrieve_style_image(images_path: str):
     extensions = ('.jpg', '.jpeg', '.png')
     style_images = []
     for path, subdirs, files in os.walk(images_path):
         for name in files:
-            if path.endswith(extensions):
+            if name.lower().endswith(extensions):
                 full_path = os.path.join(path, name)
                 style_images.append(full_path)
     return style_images

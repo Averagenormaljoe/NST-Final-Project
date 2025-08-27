@@ -20,6 +20,6 @@ include = [
     "forward_feed.model_components",
     "forward_feed.image_helper",
     "AdaIN.AdaIN_functions",
-    "AdaIN.AdaIN",
     "AdaIN.functions"
+    "Ruder"
 ]
