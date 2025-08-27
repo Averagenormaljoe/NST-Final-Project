@@ -8,6 +8,10 @@ def get_flow_and_wrap(config):
     return config                        
 def prepare_mask(config, combination_image):
     flow = config.get("flow", None)
-    if flow is None:
-        config["mask"] = get_simple_mask(combination_image, flow, reverse=False)
+    if flow is not None:
+        mask = get_simple_mask(combination_image, flow, reverse=False)
+        config["mask"] = mask
+        total_masks = config.get("total_masks",[])
+        total_masks.append(mask)
+        config["total_masks"] = total_masks
     return config
