@@ -145,9 +145,9 @@ def multi_pass(n_pass : int,flows,style_image,frames,combination_frames,masks, b
                 reverse_flow = True if direction == "b" else False
                 warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
                 first_mul = blend_weight * warp_mask * warp_img
-                ones_tensor = tf.ones_like(warp_mask)
-                neg_prev_mask = tf.subtract(ones_tensor, prev_img) 
-                second_mul = (neg_blend_weight * ones_tensor) + (blend_weight * neg_prev_mask) * prev_img
+                ones_res = tf.ones_like(warp_mask)
+                neg_prev_mask = tf.subtract(ones_res, prev_img) 
+                second_mul = (neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask) * prev_img
                 final_result = tf.add(first_mul,second_mul)
                 prev_img = frames[i]
                 config["combination_frame"] = final_result
