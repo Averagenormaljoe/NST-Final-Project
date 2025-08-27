@@ -118,7 +118,8 @@ def get_pass_range(direction,frames):
     initial_range = range(len(frames))
     range_fn = initial_range if direction == "f" else reversed(initial_range)
     return range_fn
-def multi_pass(n_pass : int,flows,style_image : tf.Tensor,combination_frames : list,masks: list, blend_weight : float =0.5,temporal_loss_after_n_passes : int = 3,config : dict = {}):
+# multi pass algorithm adapted from 'https://arxiv.org/abs/1604.08610' paper by Ruder et al.
+def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,combination_frames : list,masks: list, blend_weight : float =0.5,temporal_loss_after_n_passes : int = 3,config : dict = {}):
     if not isinstance(n_pass,int):
         print(f"Error: n_pass is not an int ({type(n_pass)}).")
     if not isinstance(style_image,tf.Tensor):
