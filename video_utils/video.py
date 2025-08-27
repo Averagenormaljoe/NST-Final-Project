@@ -73,21 +73,37 @@ def save_output_video(config, video_details):
     content_video_name = get_base_name(content_video_path)
     style_img_name = get_base_name(style_path)
     output_extension = config.get('output_extension', 'mp4')
-    output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.{output_extension}")
+    file_name : str = f"nst-{content_video_name}-{style_img_name}-final.{output_extension}"
+    pass_name : str = f"pass-video-{file_name}"
     frames_dir, transferred_dir,pass_dir = get_frame_dir()
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
+    pass_prefix = config.get('pass_prefix', 'pass_frame')
+    output_fps = config.get('fps') if config.get('fps') is not None else content_fps
+    is_multi_pass = config.get("is_multi_pass",False)
+    frames_limit = get_frame_limit(config, total_frames)
+    process_video(file_name,output_dir,transformed_prefix,transferred_dir,frames_limit,output_fps,config)
+    if is_multi_pass:
+        process_video(pass_name,output_dir,pass_prefix,pass_dir,frames_limit,output_fps,config)
+        
+
+def process_video(output_file_name,output_dir,prefix,frames_dir,frames_limit,output_fps,config):
+    output_video_path = os.path.join(output_dir,  + output_file_name)
     extension = config.get('extension', 'jpg')
-    first_output_frame = os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{1:08d}.{extension}")
-    output_frame_height, output_frame_width, _ = cv2.imread(first_output_frame).shape
+    verbose = config.get('verbose', False)
+
+    first_output_frame = os.path.join(output_dir, frames_dir, f"{prefix}-{1:08d}.{extension}")
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     if not os.path.exists(first_output_frame):
         print(f"ERROR: First output frame not found at {first_output_frame}")
         return
-    output_fps = config.get('fps') if config.get('fps') is not None else content_fps
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_frame_height, output_frame_width, _ = cv2.imread(first_output_frame).shape
     video_writer = cv2.VideoWriter(output_video_path, fourcc, output_fps, (output_frame_width, output_frame_height), True)
-    frames_limit = get_frame_limit(config, total_frames)
+ 
+    if not os.path.exists(first_output_frame):
+        print(f"ERROR: First output frame not found at {first_output_frame}")
+        return
     for i in trange(frames_limit, desc="Combining the stylized frames of the video together", disable=not verbose):
-        frame = cv2.imread(os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{i+1:08d}.{extension}"))
+        frame = cv2.imread(os.path.join(output_dir, frames_dir, f"{prefix}-{i+1:08d}.{extension}"))
         if frame is not None:
             video_writer.write(frame)
 
@@ -95,6 +111,7 @@ def save_output_video(config, video_details):
 
     if verbose:
         print(f'Video successfully synthesized to {output_video_path}.')
+ 
         
 def normalize_output_size(output_size):
     if output_size is not None:
@@ -127,7 +144,7 @@ def video_style_transfer(config,video_details,style_func):
     prev_frames = []
     content_prefix = config.get('content_prefix', 'frame')
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
-    pass_prefix = config.get('multi_pass_prefix', 'pass_frame')
+    pass_prefix = config.get('pass_prefix', 'pass_frame')
     extension = config.get('extension', 'jpg')
     logs = []
     frames_limit = get_frame_limit(config, total_frames)
