@@ -4,6 +4,7 @@ import keras
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
 from shared_utils.helper import create_dir
+from video_utils.mask import multi_pass
 from video_utils.video_helper import get_video_details
 def get_video_paths(config):
 
@@ -99,6 +100,10 @@ def normalize_output_size(output_size):
     if output_size is not None:
         resized_output_size = tuple(output_size) if len(output_size) > 1 else output_size[0]
         return resized_output_size
+
+def save_frame(output_frame_path,img):
+     if output_frame_path is not None and img is not None:
+            keras.utils.save_img(output_frame_path, img) 
     
         
 def video_style_transfer(config,video_details,style_func):
@@ -120,9 +125,11 @@ def video_style_transfer(config,video_details,style_func):
     prev_frames = []
     content_prefix = config.get('content_prefix', 'frame')
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
+    pass_prefix = config.get('multi_pass_prefix', 'pass_frame')
     extension = config.get('extension', 'jpg')
     logs = []
     frames_limit = get_frame_limit(config, total_frames)
+    is_multi_pass = config.get("is_multi_pass",False)
     # perform image style transfer with each content frame and style image
     for i in trange(frames_limit, desc="Performing style transfer for each frame", disable=not verbose):
         frame_i = f"{i+1:08d}"
@@ -148,9 +155,24 @@ def video_style_transfer(config,video_details,style_func):
             appended_image = best_image
         
         prev_frames.append(appended_image)
-        if output_frame_path is not None and appended_image is not None:
-            keras.utils.save_img(output_frame_path, appended_image) 
+        save_frame(output_frame_path,appended_image)
         logs.append(log_data)
+    if is_multi_pass:
+        n_pass = config.get("n_pass",3)
+        blend_weight = config.get("blend_weight", 0.5) 
+        flows = config.get("flows",[])
+        total_frames = config.get("total_frames",[])
+        temporal_loss_n = config.get("temporal_loss_n",3)
+        multi_pass_frames = multi_pass(n_pass,flows,style_path,blend_weight,temporal_loss_n,config=config)
+        number_of_pass_frames = len(multi_pass_frames)
+        for i in trange(number_of_pass_frames, desc="Performing multi-pass for each frame", disable=not verbose):
+            output_frame_path = os.path.join(transferred_frames_dir, f"{pass_prefix}-{frame_i}.{extension}")
+            next_image =  multi_pass_frames[i]
+            save_frame(output_frame_path,next_image)
+        if verbose:
+            print("Finished multi pass step of the codebase.")
+    
+    
     if verbose:
         print("Image style transfer complete.")
         print()

@@ -18,6 +18,7 @@ def compute_loss_and_grads(combination_image, base_image, style_images, config= 
     GPU_in_use = device_config.get("gpu", 0)
     CPU_in_use = device_config.get("cpu", 0)
     video_mode = config.get("video_mode",True)
+
     with get_device(GPU_in_use, CPU_in_use):  
         with tf.GradientTape() as tape:
             loss = tf.zeros(shape=())
@@ -38,5 +39,7 @@ def compute_loss_and_grads(combination_image, base_image, style_images, config= 
                     metrics_dict["temporal_loss"] = t_loss
                 else:
                     metrics_dict["temporal_loss"] = tf.constant(0.0, dtype=tf.float32)
+        
+       
         grads = tape.gradient(loss, combination_image)
         return loss, grads, all_metrics , metrics_dict
