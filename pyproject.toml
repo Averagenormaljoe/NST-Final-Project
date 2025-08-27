@@ -13,13 +13,16 @@ include = [
     "shared_utils",
     "video_utils",
     "video_utils.helper",
+    "Gatys_model",
     "Gatys_model.gatys_functions",
     "Gatys_model.helper_functions",
+    "Gatys_model.table_saver",
     "forward_feed",
     "forward_feed.model_functions",
     "forward_feed.model_components",
     "forward_feed.image_helper",
     "AdaIN.AdaIN_functions",
-    "AdaIN.functions"
+    "AdaIN.functions",
+    "AdaIN",
     "Ruder"
 ]
