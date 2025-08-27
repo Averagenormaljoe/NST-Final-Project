@@ -3,11 +3,14 @@ from typing import Union
 import numpy as np
 import time
 import tensorflow as tf
-def get_cam_details(cam):
-    frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = int(cam.get(cv2.CAP_PROP_FPS))
-    return frame_width, frame_height, fps
+
+def get_video_details(cap):
+    
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    content_fps = cap.get(cv2.CAP_PROP_FPS)
+    return total_frames, h, w, content_fps
 
 def load_the_video(video_path : str):
     cap = cv2.VideoCapture(video_path)
@@ -42,7 +45,7 @@ def get_cam(video_path: str,camera_mode = True):
         cam = cv2.VideoCapture(0) 
     else:
         cam = cv2.VideoCapture(video_path)
-    frame_width, frame_height, fps = get_cam_details(cam)
+    _,frame_height,frame_width, fps = get_video_details(cam)
     return cam, frame_width, frame_height, fps
 
 def prepare_video_writer(output_path: str, frame_width: int, frame_height: int, fps: int,file_format : str = 'mp4v'):

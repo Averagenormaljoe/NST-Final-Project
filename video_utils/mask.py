@@ -4,10 +4,8 @@ import tensorflow as tf
 from tqdm import trange
 from Gatys_model.gatys_functions.LoopManager import LoopManager
 from shared_utils.losses import temporal_loss
-import tensorflow_hub as hub
 import numpy as np
 import keras_hub
-from shared_utils.save_tmp_img import save_tmp_img
 def generate_mask(img,segmenter):
   
     mask = segmenter.predict(img)

@@ -1,10 +1,10 @@
 import os
 import cv2
 import keras
-from requests import get
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
 from shared_utils.helper import create_dir
+from video_utils.video_helper import get_video_details
 def get_video_paths(config):
 
     output_dir = config.get('output_dir')
@@ -13,13 +13,7 @@ def get_video_paths(config):
     style_path = config.get('style_path')
     return content_video_path, style_path, output_dir
 
-def get_video_details(cap):
-    
-    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    content_fps = cap.get(cv2.CAP_PROP_FPS)
-    return total_frames, h, w, content_fps
+
 
 def get_frame_dir():
     return "content_frames", "transferred_frames"
