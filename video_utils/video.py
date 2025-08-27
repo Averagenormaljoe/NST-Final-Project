@@ -17,7 +17,7 @@ def get_video_paths(config):
 
 
 def get_frame_dir():
-    return "content_frames", "transferred_frames"
+    return "content_frames", "transferred_frames", "pass_frames"
 
 def get_frame_limit(config, total_frames):
     frames_limit = config.get('frames_limit', total_frames)
@@ -30,7 +30,7 @@ def write_frames(config):
     
   
     verbose = config.get('verbose', False)
-    frames_dir, transferred_dir = get_frame_dir()
+    frames_dir, transferred_dir,pass_dir = get_frame_dir()
     content_prefix = config.get('content_prefix', 'frame')
     extension = config.get('extension', 'jpg')
     content_video_path, style_path, output_dir = get_video_paths(config)
@@ -74,7 +74,7 @@ def save_output_video(config, video_details):
     style_img_name = get_base_name(style_path)
     output_extension = config.get('output_extension', 'mp4')
     output_video_path = os.path.join(output_dir, f"nst-{content_video_name}-{style_img_name}-final.{output_extension}")
-    frames_dir, transferred_dir = get_frame_dir()
+    frames_dir, transferred_dir,pass_dir = get_frame_dir()
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
     extension = config.get('extension', 'jpg')
     first_output_frame = os.path.join(output_dir, transferred_dir, f"{transformed_prefix}-{1:08d}.{extension}")
@@ -117,11 +117,13 @@ def video_style_transfer(config,video_details,style_func):
         return video_details
     total_frames,h,w, content_fps = video_details
     content_video_path, style_path, output_dir = get_video_paths(config)
-    frames_dir, transferred_dir = get_frame_dir()
+    frames_dir, transferred_dir, pass_dir = get_frame_dir()
     content_frames_dir = os.path.join(output_dir,  frames_dir)
     transferred_frames_dir = os.path.join(output_dir, transferred_dir)
+    pass_frames_dir = os.path.join(output_dir, pass_dir)
     create_dir(transferred_frames_dir)
     create_dir(content_frames_dir)
+    create_dir(pass_frames_dir)
     prev_frames = []
     content_prefix = config.get('content_prefix', 'frame')
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
@@ -166,7 +168,7 @@ def video_style_transfer(config,video_details,style_func):
         multi_pass_frames = multi_pass(n_pass,total_flows,style_path,blend_weight,temporal_loss_n,config=config)
         number_of_pass_frames = len(multi_pass_frames)
         for i in trange(number_of_pass_frames, desc="Performing multi-pass for each frame", disable=not verbose):
-            output_frame_path = os.path.join(transferred_frames_dir, f"{pass_prefix}-{frame_i}.{extension}")
+            output_frame_path = os.path.join(pass_frames_dir, f"{pass_prefix}-{frame_i}.{extension}")
             next_image =  multi_pass_frames[i]
             save_frame(output_frame_path,next_image)
         if verbose:
