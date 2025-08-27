@@ -68,8 +68,8 @@ class LoopManager(ConfigManager):
             base_image, style_image, combination_image = preprocess_NST_images(
                         content_path, style_path,config,device_config)
             generated_images = []
-        
-        
+        # this is for the luminance function, in the temporal loss section of the code
+        config["base_img"] = base_image
         optimizer = self.get_optimizer(self.string_optimizer)
         optimizer = self.update_optimizer(optimizer, config)
         if optimizer is None or self.invalid_iterations():

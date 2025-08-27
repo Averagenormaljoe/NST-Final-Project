@@ -13,6 +13,9 @@ def compute_temporal_loss(combination_image, config = {}):
     if flow is None:
         print("ERROR: flow is None, returning zero loss")
         return loss
+    if combination_image is None:
+        print("ERROR: combination_image is None, returning zero loss")
+        return loss
     if len(frames) > 0:
         if long_term:
             temporal_error = long_term_temporal_loss_non_warp(
@@ -29,7 +32,7 @@ def compute_temporal_loss(combination_image, config = {}):
         if is_luminance:
             prev_frame = frames[-1]
             non_warp_frames = config.get("frames",[])
-            curr_img = config.get("curr_img", None)
+            curr_img = config.get("base_img", None)
             prev_non_warped_frame = non_warp_frames[-1]
             if luminance_version == 3:
                 luminance_loss = no_luminance(prev_frame,combination_image,mask)

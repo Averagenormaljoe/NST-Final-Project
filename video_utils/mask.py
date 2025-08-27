@@ -118,12 +118,12 @@ def get_pass_range(direction,frames):
     initial_range = range(len(frames))
     range_fn = initial_range if direction == "f" else reversed(initial_range)
     return range_fn
-def multi_pass(n_pass : int,flows,style_image : tf.Tensor,frames,combination_frames,masks, blend_weight : float =0.5,temporal_loss_after_n_passes= 3,config = {}):
+def multi_pass(n_pass : int,flows,style_image : tf.Tensor,combination_frames : list,masks: list, blend_weight : float =0.5,temporal_loss_after_n_passes : int = 3,config : dict = {}):
     if not isinstance(n_pass,int):
         print(f"Error: n_pass is not an int ({type(n_pass)}).")
     if not isinstance(style_image,tf.Tensor):
         print(f"Error: style_image is not a tensor ({type(style_image)}).")  
-    tick = time()
+    start = time()
     pass_time = []
     stylize_frames = combination_frames.copy()
     neg_blend_weight = 1 - blend_weight
@@ -131,13 +131,13 @@ def multi_pass(n_pass : int,flows,style_image : tf.Tensor,frames,combination_fra
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
         pass_tick = time()
         direction = "f" if j % 2 == 0 else "b"
-        pass_range = get_pass_range(direction,frames)
+        pass_range = get_pass_range(direction,combination_frames)
         prev_img = None
         is_temporal_loss : bool = temporal_loss_after_n_passes >= 3
         config["video_mode"] = is_temporal_loss
         for i in pass_range:
             index_d = i - 1 if direction == "f" else i + 1
-            if direction == "f" and i == 0 or direction == "b" and i - 1 == len(frames):
+            if direction == "f" and i == 0 or direction == "b" and i - 1 == len(combination_frames):
                 prev_img = combination_frames[i]
                 stylize_frames[i] = prev_img
                 
@@ -151,15 +151,15 @@ def multi_pass(n_pass : int,flows,style_image : tf.Tensor,frames,combination_fra
                 neg_prev_mask = tf.subtract(ones_res, prev_img) 
                 second_mul = (neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask) * prev_img
                 final_result = tf.add(first_mul,second_mul)
-                prev_img = frames[i]
+                prev_img = combination_frames[i]
                 config["combination_frame"] = final_result
-                generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=frames[i],  style_path=style_image,config=config,)
+                generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config,)
                 stylize_frames[i] = best_frame
         pass_end = time()
         duration = pass_end - pass_tick
         pass_time.append(duration)
-           
     end = time()
-    print(f"Multi-pass process ({end - tick:.2f}) seconds")
+    total_pass_duration = end - start
+    print(f"Multi-pass process ({total_pass_duration :.2f}) seconds")
     return stylize_frames
 
