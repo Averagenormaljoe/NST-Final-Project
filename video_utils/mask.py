@@ -174,7 +174,7 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
                     if not generated_frames or not best_frame or not log_data:
                         print("Error: optimization loop failed. Skipping")
                         stylize_frames[i] = final_result
-                        prev_img = stylize_frames[i]
+                        prev_img = stylize_frames[i] 
                         continue
                     stylize_frames[i] = best_frame.get_image()
                     prev_img = stylize_frames[i]

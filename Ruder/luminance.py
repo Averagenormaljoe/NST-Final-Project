@@ -49,8 +49,8 @@ def temporal_relative_luminance_f1(prev_warped_img,curr_img, prev_warped_stylize
         final_diff = color_stylize_diff - luminance_diff
     
         sum += square_and_sum(curr_stylize_img, final_diff, mask)
-    mean = tf.reduce_mean(sum)
-    return  mean
+
+    return final_sum
 
 
 
@@ -71,13 +71,18 @@ def temporal_relative_luminance_f2(prev_warped_img,curr_img, prev_warped_stylize
     xy_diff_l2 = square_or_l2(xy_diff,True)
     added_diff = final_diff_l2 + xy_diff_l2
     final_sum = apply_mask_and_sum(curr_stylize_img,added_diff,mask)
-    mean = tf.reduce_mean(final_sum)
-    return  mean
+    return  final_sum
 
 def wrap_images_prior_luminance(prev_img,curr_img,prev_stylize_img,curr_stylize_img,mask,flow,func = "f1"):
-    if curr_img is None:
+    if curr_img is None or prev_img or prev_stylize_img or curr_stylize_img:
         print("Error: current image is not provided as a parameter. Returning zero.")
         return tf.constant(0.0)
+    if flow is None:
+        raise TypeError("Error: flow is None.")
+    if mask is None:
+        raise TypeError("Error: mask is None.")
+    if isinstance(func,str):
+        raise TypeError(f"Error: the func parameter is not a string: {type(func)}")
     prev_warped_stylize_img = warp_flow(prev_stylize_img, flow)
     prev_warped_img = warp_flow(prev_img, flow)
     if func == "f2":
@@ -94,8 +99,7 @@ def no_luminance(prev_warped_stylize_img,curr_stylize_img,mask):
     color_stylize_diff = stylize_diff * r * g * b
     final_diff_l2 += square_or_l2(color_stylize_diff,True)
     final_sum = apply_mask_and_sum(curr_stylize_img,color_stylize_diff,mask)
-    mean = tf.reduce_mean(final_sum)
-    return  mean
+    return final_sum 
 
 
 
