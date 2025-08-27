@@ -137,7 +137,7 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
         direction : str = "f" if j % 2 == 0 else "b"
         pass_range : range = get_pass_range(direction,frames_length)
         prev_img = None
-        is_temporal_loss : bool = temporal_loss_after_n_passes >= 3
+        is_temporal_loss : bool = temporal_loss_after_n_passes >= j
         config["video_mode"] = is_temporal_loss
         for i in pass_range:
             index_d : int = i - 1 if direction == "f" else i + 1
@@ -152,7 +152,7 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
                 warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
                 first_mul = blend_weight * warp_mask * warp_img
                 ones_res = tf.ones_like(warp_mask)
-                neg_prev_mask = tf.subtract(ones_res, prev_img) 
+                neg_prev_mask = tf.subtract(ones_res, warp_mask) 
                 second_mul = (neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask) * prev_img
                 final_result = tf.add(first_mul,second_mul)
                 prev_img = combination_frames[i]
