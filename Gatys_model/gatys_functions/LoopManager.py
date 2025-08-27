@@ -39,7 +39,8 @@ class LoopManager(ConfigManager):
         lr = config.get("learning_rate", self.lr)
         optimizer.learning_rate = lr
         return optimizer
-        
+    
+    
     def training_loop(self,content_path, style_path,content_name : str = "",style_name: str = "",config : dict={},device_config : dict = {}):
         if not os.path.exists(content_path) and not os.path.exists(style_path):
             raise FileNotFoundError("Both of the paths for the style and content images are invalid.")
@@ -47,10 +48,29 @@ class LoopManager(ConfigManager):
             raise FileNotFoundError(f"Content image path does not exist.")
         if not os.path.exists(style_path):
             raise FileNotFoundError(f"Style image path does not exist.")
+        if config is None:
+            raise ValueError("Error: config cannot be none.")
+        if device_config is None:
+            raise ValueError("Error: device config cannot be none.")
+        if type(content_name) != str or type(style_name) != str:
+            raise ValueError(f"Error: The provided 'content_name' and 'style_name' are not strings but type: {(type(content_name))} and {type(style_name)} respectively.")
         self.unpack_config(config)
-        base_image, style_image, combination_image = preprocess_NST_images(
-                    content_path, style_path,config,device_config)
-        generated_images = []
+        combination_frame = config.get("combination_frame",None)
+        if combination_frame:
+            if isinstance(content_path,tf.Tensor) and isinstance(style_image,tf.Tensor): 
+                base_image = content_path
+                style_image = style_path
+                combination_image = combination_frame
+            else:
+                raise ValueError("Error: despite providing combination_frame as a tensor, style and content images are str paths not tensors.")
+            
+        
+        else:  
+            base_image, style_image, combination_image = preprocess_NST_images(
+                        content_path, style_path,config,device_config)
+            generated_images = []
+        
+        
         optimizer = self.get_optimizer(self.string_optimizer)
         optimizer = self.update_optimizer(optimizer, config)
         if optimizer is None or self.invalid_iterations():
