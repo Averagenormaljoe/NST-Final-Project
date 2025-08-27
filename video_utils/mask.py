@@ -153,12 +153,14 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
                 first_mul = blend_weight * warp_mask * warp_img
                 ones_res = tf.ones_like(warp_mask)
                 neg_prev_mask = tf.subtract(ones_res, warp_mask) 
-                second_mul = (neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask) * prev_img
+                second_mul = ((neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask)) * prev_img
                 final_result = tf.add(first_mul,second_mul)
                 config["combination_frame"] = final_result
-                generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config,)
+                generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config)
                 if not generated_frames or not best_frame or not log_data:
                     print("Error: optimization loop failed. Skipping")
+                    stylize_frames[i] = final_result
+                    prev_img = stylize_frames[i]
                     continue
                 stylize_frames[i] = best_frame.get_image()
                 prev_img = stylize_frames[i]
