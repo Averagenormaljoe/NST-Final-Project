@@ -74,15 +74,16 @@ def save_output_video(config, video_details):
     style_img_name = get_base_name(style_path)
     output_extension = config.get('output_extension', 'mp4')
     file_name : str = f"nst-{content_video_name}-{style_img_name}-final.{output_extension}"
-    pass_name : str = f"pass-video-{file_name}"
+    
     frames_dir, transferred_dir,pass_dir = get_frame_dir()
     transformed_prefix = config.get('transformed_prefix', 'transferred_frame')
-    pass_prefix = config.get('pass_prefix', 'pass_frame')
     output_fps = config.get('fps') if config.get('fps') is not None else content_fps
     is_multi_pass = config.get("is_multi_pass",False)
     frames_limit = get_frame_limit(config, total_frames)
     process_video(file_name,output_dir,transformed_prefix,transferred_dir,frames_limit,output_fps,config)
     if is_multi_pass:
+        pass_name : str = f"pass-video-{file_name}"
+        pass_prefix = config.get('pass_prefix', 'pass_frame')
         process_video(pass_name,output_dir,pass_prefix,pass_dir,frames_limit,output_fps,config)
         
 
