@@ -64,7 +64,6 @@ class LoopManager(ConfigManager):
             else:
                 raise ValueError("Error: despite providing combination_frame as a tensor, style and content images are str paths not tensors.")
             
-        
         else:  
             base_image, style_image, combination_image = preprocess_NST_images(
                         content_path, style_path,config,device_config)

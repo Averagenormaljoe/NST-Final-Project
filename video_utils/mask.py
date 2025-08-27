@@ -2,6 +2,7 @@ from time import time
 import cv2
 import tensorflow as tf
 from tqdm import trange
+from Gatys_model.gatys_functions.LoopManager import LoopManager
 from shared_utils.losses import temporal_loss
 import tensorflow_hub as hub
 import numpy as np
@@ -119,22 +120,25 @@ def get_pass_range(direction,frames):
     initial_range = range(len(frames))
     range_fn = initial_range if direction == "f" else reversed(initial_range)
     return range_fn
-def multi_pass(n_pass,flows,frames,combination_frames,masks, blend_weight=0.5,temporal_loss_after_n_passes= 3,config = {}):
+def multi_pass(n_pass : int,flows,style_image,frames,combination_frames,masks, blend_weight : float =0.5,temporal_loss_after_n_passes= 3,config = {}):
     tick = time()
     pass_time = []
     stylize_frames = combination_frames.copy()
     neg_blend_weight = 1 - blend_weight
+    loop_manager = LoopManager(config)
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
         pass_tick = time()
         direction = "f" if j % 2 == 0 else "b"
         pass_range = get_pass_range(direction,frames)
         prev_img = None
-        is_temporal_loss : bool = temporal_loss_after_n_passes > 3
+        is_temporal_loss : bool = temporal_loss_after_n_passes >= 3
+        config["is_temporal_loss"] = is_temporal_loss
         for i in pass_range:
             index_d = i - 1 if direction == "f" else i + 1
             if direction == "f" and i == 0 or direction == "b" and i - 1 == len(frames):
                 prev_img = combination_frames[i]
                 stylize_frames[i] = prev_img
+                
             else:
                 warp_mask = masks[index_d]
                 next_img = combination_frames[index_d]
@@ -146,7 +150,9 @@ def multi_pass(n_pass,flows,frames,combination_frames,masks, blend_weight=0.5,te
                 second_mul = (neg_blend_weight * ones_tensor) + (blend_weight * neg_prev_mask) * prev_img
                 final_result = tf.add(first_mul,second_mul)
                 prev_img = frames[i]
-                stylize_frames[i] = final_result
+                config["combination_frame"] = final_result
+                generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=frames[i],  style_path=style_image,config=config,)
+                stylize_frames[i] = best_frame
         pass_end = time()
         duration = pass_end - pass_tick
         pass_time.append(duration)
