@@ -114,8 +114,8 @@ def long_term_temporal_loss_non_warp(curr_stylized_frame, mask=None,previous_war
         twe = temporal_loss(prev_frame, curr_stylized_frame, mask=mask)
         loss += twe
     return loss
-def get_pass_range(direction,frames):
-    initial_range = range(len(frames))
+def get_pass_range(direction : str,frames_length : int):
+    initial_range = range(frames_length)
     range_fn = initial_range if direction == "f" else reversed(initial_range)
     return range_fn
 # multi pass algorithm adapted from 'https://arxiv.org/abs/1604.08610' paper by Ruder et al.
@@ -124,21 +124,22 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,combination_fra
         print(f"Error: n_pass is not an int ({type(n_pass)}).")
     if not isinstance(style_image,tf.Tensor):
         print(f"Error: style_image is not a tensor ({type(style_image)}).")  
-    start = time()
-    pass_time = []
+    start : float = time()
+    pass_time : list = []
     stylize_frames = combination_frames.copy()
+    frames_length = len(combination_frames)
     neg_blend_weight = 1 - blend_weight
     loop_manager = LoopManager(config)
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
-        pass_tick = time()
-        direction = "f" if j % 2 == 0 else "b"
-        pass_range = get_pass_range(direction,combination_frames)
+        pass_tick : float = time()
+        direction : str = "f" if j % 2 == 0 else "b"
+        pass_range : range = get_pass_range(direction,frames_length)
         prev_img = None
         is_temporal_loss : bool = temporal_loss_after_n_passes >= 3
         config["video_mode"] = is_temporal_loss
         for i in pass_range:
-            index_d = i - 1 if direction == "f" else i + 1
-            if direction == "f" and i == 0 or direction == "b" and i - 1 == len(combination_frames):
+            index_d : int = i - 1 if direction == "f" else i + 1
+            if direction == "f" and i == 0 or direction == "b" and i - 1 == frames_length:
                 prev_img = combination_frames[i]
                 stylize_frames[i] = prev_img
                 
@@ -155,12 +156,15 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,combination_fra
                 prev_img = combination_frames[i]
                 config["combination_frame"] = final_result
                 generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config,)
-                stylize_frames[i] = best_frame
-        pass_end = time()
-        duration = pass_end - pass_tick
+                if not generated_frames or not best_frame or not log_data:
+                    print("Error: optimization loop failed. Skipping"):
+                    continue
+                stylize_frames[i] = best_frame.get_image()
+        pass_end : float = time()
+        duration : float = pass_end - pass_tick
         pass_time.append(duration)
-    end = time()
-    total_pass_duration = end - start
+    end : float = time()
+    total_pass_duration : float = end - start
     print(f"Multi-pass process ({total_pass_duration :.2f}) seconds")
     return stylize_frames
 
