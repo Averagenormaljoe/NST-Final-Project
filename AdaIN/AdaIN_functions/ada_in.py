@@ -39,7 +39,7 @@ def hw_flatten(x : tf.Tensor):
 
 def self_attention(x : tf.Tensor,size : tf.Tensor ):
 
-    tensor_shape = tf.shape(x)
+    tensor_shape = x.shape
     channels = tensor_shape[-1]
     floor_C = channels // 2
     f = layers.Conv2D(floor_C, kernel_size=1, padding='same')(x)  # [bs, h, w, c']
@@ -51,8 +51,8 @@ def self_attention(x : tf.Tensor,size : tf.Tensor ):
     h_flat = hw_flatten(h)  
     
     s = tf.matmul(g_flat, f_flat, transpose_b=True) 
-    axes = -1
-    beta = tf.nn.softmax(s, axes=axes) 
+    axis = -1
+    beta = tf.nn.softmax(s, axis=axis) 
 
     o = tf.matmul(beta, h_flat)  # [bs, N, C]
     reshape_o = tf.reshape(o, shape=size)  # [bs, h, w, C]
