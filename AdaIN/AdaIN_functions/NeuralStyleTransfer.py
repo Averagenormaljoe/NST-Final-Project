@@ -8,7 +8,7 @@ from AdaIN_functions.ada_in import ada_in, get_mean_std
 import lpips
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
-    def __init__(self, encoder, decoder, loss_net, style_weight, **kwargs):
+    def __init__(self, encoder, decoder, loss_net, style_weight,channels, **kwargs):
         super(NeuralStyleTransfer, self).__init__(**kwargs)
         self.encoder = encoder
         self.decoder = decoder
@@ -18,6 +18,11 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.include_custom_metrics = True
         self.hardwareLogger = TFHardwareLogger()
         self.lpips_loss_fn = lpips.LPIPS(net='vgg')
+        self.channels = channels
+        floor_C = channels // 2
+        self.f_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same',name="f_conv")
+        self.g_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same', name="g_conv")
+        self.h_layer = keras.layers.Conv2D(channels, kernel_size=1, padding='same', name="h_conv")
     def train_start(self):
         if self.is_log:
             self.hardwareLogger.train_start()
@@ -42,7 +47,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         style_encoded = self.encoder(style)
         content_encoded = self.encoder(content)
         # Compute the AdaIN target feature maps.
-        t = ada_in(style=style_encoded, content=content_encoded)
+        t = self.layers_ada_in(style=style_encoded, content=content_encoded)
         # Generate the neural style transferred image.
         reconstructed_image = self.decoder(t)
         return reconstructed_image,t
@@ -147,7 +152,7 @@ class NeuralStyleTransfer(tf.keras.Model):
             # Compute the total variation loss.
             total_loss = self.compute_total_loss(loss_content, loss_style, tv_loss)
             # Compute custom metrics.
-            psnr, ssim,ms_ssim,lpips = self.compute_custom_loss(content, reconstructed_image)
+            psnr, ssim,ms_ssim,lpips = 0,0,0,0
 
         # Compute gradients and optimize the decoder.
         gradients = self.compute_gradients(total_loss, tape)
@@ -187,15 +192,20 @@ class NeuralStyleTransfer(tf.keras.Model):
         content = inputs[1]
         style_encoded = self.encoder(style)
         content_encoded = self.encoder(content)
-        t = ada_in(style=style_encoded, content=content_encoded)
+        t = self.layers_ada_in(style=style_encoded, content=content_encoded)
         reconstructed_image = self.decoder(t)
         return reconstructed_image
+    
+    def layers_ada_in(self, style, content, att: bool = True):
+        layers = (self.f_layer, self.g_layer, self.h_layer)
+        t = ada_in(style, content,layers, att)
+        return t
  
     def avg_multi_NST(self, style_images, content_encoded):
         stylized_image = content_encoded
         for s in style_images:
             style_encoded = self.encoder(s)
-            features = ada_in(style=style_encoded, content=stylized_image)
+            features = self.layers_ada_in(style=style_encoded, content=stylized_image)
             stylized_image = features
         
         reconstructed_image = self.decoder(stylized_image)
@@ -212,6 +222,7 @@ class NeuralStyleTransfer(tf.keras.Model):
             "decoder": keras.saving.serialize_keras_object(self.decoder),
             "loss_net": keras.saving.serialize_keras_object(self.loss_net),
             "style_weight": self.style_weight,
+            "channels": self.channels
         })
         return config
 
@@ -222,12 +233,13 @@ class NeuralStyleTransfer(tf.keras.Model):
         decoder_config = config.pop("decoder")
         loss_net_config = config.pop("loss_net")
         style_weight = config.pop("style_weight")
+        channels = config.pop("channels")
 
         encoder = keras.saving.deserialize_keras_object(encoder_config)
         decoder = keras.saving.deserialize_keras_object(decoder_config)
         loss_net = keras.saving.deserialize_keras_object(loss_net_config)
 
-        return cls(encoder=encoder, decoder=decoder, loss_net=loss_net, style_weight=style_weight, **config)
+        return cls(encoder=encoder, decoder=decoder, loss_net=loss_net, style_weight=style_weight, channels=channels, **config)
     @property
     def metrics(self):
         return [
