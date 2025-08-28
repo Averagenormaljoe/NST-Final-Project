@@ -15,3 +15,9 @@ def load_url_image(url, dim=None, resize=False):
             img.thumbnail(dim)
     img = img.convert("RGB")
     return np.array(img)
+
+
+def get_url_image(url : str):
+    style_image = load_url_image(url, dim=(input_shape[0], input_shape[1]), resize=True)
+    normalize_style_image = style_image / 255.0
+    return normalize_style_image
