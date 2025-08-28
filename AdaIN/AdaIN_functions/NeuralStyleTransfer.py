@@ -5,6 +5,7 @@ import keras
 import tensorflow as tf
 from video_utils.mask import temporal_warping_error
 from AdaIN_functions.ada_in import ada_in, get_mean_std
+import lpips
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
     def __init__(self, encoder, decoder, loss_net, style_weight, **kwargs):
@@ -16,6 +17,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.is_log = False
         self.include_custom_metrics = True
         self.hardwareLogger = TFHardwareLogger()
+        self.lpips_loss_fn = lpips.LPIPS(net='vgg')
     def train_start(self):
         if self.is_log:
             self.hardwareLogger.train_start()
@@ -50,7 +52,7 @@ class NeuralStyleTransfer(tf.keras.Model):
             psnr = psnr_loss(content, reconstructed_image, val_range=1.0)
             ssim = ssim_loss(content, reconstructed_image, val_range=1.0)
             ms_ssim = ms_ssim_loss(content, reconstructed_image)
-            lpips = get_lpips_loss(content, reconstructed_image, loss_net='vgg')
+            lpips = get_lpips_loss(content, reconstructed_image, loss_fn=self.lpips_loss_fn)
             return psnr, ssim,ms_ssim, lpips, 
     
 
