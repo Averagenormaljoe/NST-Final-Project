@@ -35,7 +35,8 @@ def ada_in(style : tf.Tensor, content : tf.Tensor, att : bool =True):
     return t
 
 def hw_flatten(x : tf.Tensor):
-    return tf.reshape(x, shape=[x.shape[0], -1, x.shape[-1]])
+    shape = tf.shape(x)
+    return tf.reshape(x, shape=[shape[0], -1, shape[-1]])
 
 def self_attention(x : tf.Tensor,size : tf.Tensor ):
 
