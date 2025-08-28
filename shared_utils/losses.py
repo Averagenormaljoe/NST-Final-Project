@@ -37,7 +37,7 @@ def get_lpips_loss(base_image, combination_image, loss_fn = None):
     lpips = calculate_lpips_loss(base_image_pt, combination_image_pt, loss_fn)
     return lpips    
 
-def get_fidelity(base_image, combination_image,includes = []) -> dict:
+def get_fidelity(base_dir, combination_dir,includes = []) -> dict:
     if includes is None:
         return {}
     metrics = {
@@ -45,13 +45,9 @@ def get_fidelity(base_image, combination_image,includes = []) -> dict:
         "isc": "isc" in includes,
         "kid": "kid" in includes,
     }
-    if not any(metrics.values()):
-        return {}
-    base_tmp = save_tmp_img(base_image.numpy(), "base")
-    combination_tmp = save_tmp_img(combination_image.numpy(), "combination")
     results = calculate_metrics(
-                input1=base_tmp,
-                input2=combination_tmp,
+                input1=base_dir,
+                input2=combination_dir,
                 cuda=True,
                 kid_subset_size=1,
                 fid=metrics["fid"],
@@ -66,12 +62,10 @@ def get_fidelity(base_image, combination_image,includes = []) -> dict:
             output[k] = results[v]
     return output
 
-def get_artfid_loss(base_image, combination_image):
-    includes = ["fid"]
-    fid_loss = get_fidelity(base_image, combination_image,includes)["fid"]
-    distance = get_lpips_loss(base_image, combination_image)
-    artfid_value = (distance + 1) * (fid_loss + 1)
-    return artfid_value
+def get_artfid_loss(base_dir : str, style_dir : str,combination_dir : str):
+    command = f"CUDA_VISIBLE_DEVICES=0 python -m art_fid --style_images {style_dir} --content_images {base_dir} --stylized_images {combination_dir}"
+
+    return 0
 
 
 def square_or_l2(x, square: bool = True):
