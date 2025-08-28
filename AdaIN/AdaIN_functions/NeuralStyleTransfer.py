@@ -58,18 +58,13 @@ class NeuralStyleTransfer(tf.keras.Model):
         }
 
 
-    def all_update_state(self, style_loss : float, content_loss : float, total_loss : float, tv_loss : float, psnr, ssim : float, ms_ssim, lpips_loss : float):
+    def all_update_state(self, style_loss : float, content_loss : float, total_loss : float, tv_loss : float):
         # Update the trackers.
         self.style_loss_tracker.update_state(style_loss)
         self.content_loss_tracker.update_state(content_loss)
         self.total_loss_tracker.update_state(total_loss)
         # new metrics
         self.tv_loss_tracker.update_state(tv_loss)
-        self.psnr_tracker.update_state(psnr)
-        self.ssim_tracker.update_state(ssim)
-        self.lpips_tracker.update_state(lpips_loss)
-        self.ms_ssim_tracker.update_state(ms_ssim)
-
     def apply_optimizer(self, gradients,trainable_vars):
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
     def compute_gradients(self,total_loss, tape):
@@ -184,10 +179,11 @@ class NeuralStyleTransfer(tf.keras.Model):
         stylized_images = []
         for s in style_images:
             style_encoded = self.encoder(s)
-            features = self.layers_ada_in(style=style_encoded, content=stylized_image)
-            stylized_images.append(features)
+            res = self.layers_ada_in(style=style_encoded, content=content_encoded)
+            stylized_images.append(res)
         
-        reconstructed_image = self.decoder(stylized_image)
+        blend = None
+        reconstructed_image = self.decoder(blend)
         return reconstructed_image
     def call(self, content_image, style_image):
         reconstructed_image = self.execute_stylization([style_image, content_image])
