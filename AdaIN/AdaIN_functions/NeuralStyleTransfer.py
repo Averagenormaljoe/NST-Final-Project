@@ -1,11 +1,9 @@
 from keras.saving import register_keras_serializable
-from shared_utils.losses import ssim_loss, psnr_loss,get_lpips_loss, ms_ssim_loss
 from shared_utils.HardwareLogger import TFHardwareLogger
 import keras
 import tensorflow as tf
 from video_utils.mask import temporal_warping_error
 from AdaIN_functions.ada_in import ada_in, get_mean_std
-import lpips
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
     def __init__(self, encoder, decoder, loss_net, style_weight,channels, **kwargs):
@@ -17,7 +15,6 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.is_log = False
         self.include_custom_metrics = True
         self.hardwareLogger = TFHardwareLogger()
-        self.lpips_loss_fn = lpips.LPIPS(net='vgg')
         self.channels = channels
         floor_C = channels // 2
         self.f_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same',name="f_conv")
@@ -37,10 +34,6 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.style_loss_tracker = keras.metrics.Mean(name="style_loss")
         self.content_loss_tracker = keras.metrics.Mean(name="content_loss")
         self.total_loss_tracker = keras.metrics.Mean(name="total_loss")
-        self.psnr_tracker = keras.metrics.Mean(name="psnr")
-        self.ssim_tracker = keras.metrics.Mean(name="ssim")
-        self.ms_ssim_tracker = keras.metrics.Mean(name="ms_ssim")
-        self.lpips_tracker = keras.metrics.Mean(name="lpips")
         self.tv_loss_tracker = keras.metrics.Mean(name="tv_loss")
     def reconstruct_image(self, style, content):
         # Encode the style and content image.
@@ -52,14 +45,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         reconstructed_image = self.decoder(t)
         return reconstructed_image,t
 
-    def compute_custom_loss(self, content,reconstructed_image):
 
-            psnr = psnr_loss(content, reconstructed_image, val_range=1.0)
-            ssim = ssim_loss(content, reconstructed_image, val_range=1.0)
-            ms_ssim = ms_ssim_loss(content, reconstructed_image)
-            lpips = get_lpips_loss(content, reconstructed_image, loss_fn=self.lpips_loss_fn)
-            return psnr, ssim,ms_ssim, lpips, 
-    
 
     def get_results(self):
         return {
@@ -67,10 +53,7 @@ class NeuralStyleTransfer(tf.keras.Model):
             "content_loss": self.content_loss_tracker.result(),
             "total_loss": self.total_loss_tracker.result(),
             "tv_loss": self.tv_loss_tracker.result(),
-            "psnr": self.psnr_tracker.result(),
-            "ssim": self.ssim_tracker.result(),
-            "lpips" : self.lpips_tracker.result(),
-            "ms_ssim": self.ms_ssim_tracker.result()
+    
 
         }
 
@@ -151,13 +134,11 @@ class NeuralStyleTransfer(tf.keras.Model):
             tv_loss = self.compute_total_variation(reconstructed_image)
             # Compute the total variation loss.
             total_loss = self.compute_total_loss(loss_content, loss_style, tv_loss)
-            # Compute custom metrics.
-            psnr, ssim,ms_ssim,lpips = 0,0,0,0
 
         # Compute gradients and optimize the decoder.
         gradients = self.compute_gradients(total_loss, tape)
         # Update the trackers.
-        self.all_update_state(loss_style, loss_content, total_loss, tv_loss, psnr, ssim,ms_ssim,lpips)
+        self.all_update_state(loss_style, loss_content, total_loss, tv_loss)
 
         # metrics
 
@@ -173,12 +154,10 @@ class NeuralStyleTransfer(tf.keras.Model):
         loss_content, loss_style = self.compute_losses(style, t, reconstructed_image)
         # Compute the total variation loss and other metrics
         tv_loss = self.compute_total_variation(reconstructed_image)
-        # Compute custom metrics.
-        psnr,ssim,ms_ssim,lpips = self.compute_custom_loss(content, reconstructed_image)
         # Compute the total loss.
         total_loss = self.compute_total_loss(loss_content, loss_style, tv_loss)
         # Update the trackers.
-        self.all_update_state(loss_style, loss_content, total_loss, tv_loss, psnr, ssim, ms_ssim,lpips)
+        self.all_update_state(loss_style, loss_content, total_loss, tv_loss,)
         return self.get_results()
     def get_resource_stats(self):
         return {
@@ -202,11 +181,11 @@ class NeuralStyleTransfer(tf.keras.Model):
         return t
  
     def avg_multi_NST(self, style_images, content_encoded):
-        stylized_image = content_encoded
+        stylized_images = []
         for s in style_images:
             style_encoded = self.encoder(s)
             features = self.layers_ada_in(style=style_encoded, content=stylized_image)
-            stylized_image = features
+            stylized_images.append(features)
         
         reconstructed_image = self.decoder(stylized_image)
         return reconstructed_image
@@ -247,8 +226,5 @@ class NeuralStyleTransfer(tf.keras.Model):
             self.content_loss_tracker,
             self.total_loss_tracker,
             self.tv_loss_tracker,
-            self.psnr_tracker,
-            self.ssim_tracker,
-            self.lpips_tracker,
-            self.ms_ssim_tracker
+
         ]
