@@ -4,7 +4,7 @@ import os
 
 import keras
 import tensorflow as tf
-from helper_functions.training_helper import result_save
+from Gatys_model.helper_functions.training_helper import result_save
 from tqdm import trange
 
 from gatys_functions.apply_style_transfer_step import apply_style_transfer_step

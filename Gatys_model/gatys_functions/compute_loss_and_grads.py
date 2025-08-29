@@ -1,6 +1,6 @@
 import tensorflow as tf
 from gatys_functions.compute_loss import compute_loss
-from helper_functions.device_helper import get_device
+from Gatys_model.helper_functions.device_helper import get_device
 from video_utils.compute import compute_temporal_loss
 
 @tf.function

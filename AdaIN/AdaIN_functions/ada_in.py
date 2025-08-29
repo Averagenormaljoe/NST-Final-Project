@@ -40,12 +40,12 @@ def hw_flatten(x : tf.Tensor):
 
 def self_attention(x : tf.Tensor,layers ):
 
-    bs, height, weight, c = x.shape
+
     f_layer,g_layer,h_layer = layers
     f = f_layer(x)  # [bs, h, w, c']
     g = g_layer(x)  # [bs, h, w, c']
     h = h_layer(x)    # [bs, h, w, c]
-    
+    h_shape = tf.shape(h)
     f_flat = hw_flatten(f) 
     g_flat = hw_flatten(g)  
     h_flat = hw_flatten(h)  
@@ -55,5 +55,5 @@ def self_attention(x : tf.Tensor,layers ):
     beta = tf.nn.softmax(s, axis=axis) 
 
     o = tf.matmul(beta, h_flat)  # [bs, N, C]
-    reshape_o = tf.reshape(o, shape=[bs, height, weight, c])  # [bs, h, w, C]
+    reshape_o = tf.reshape(o, shape=h_shape )  # [bs, h, w, C]
     return reshape_o
