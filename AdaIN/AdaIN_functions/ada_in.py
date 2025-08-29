@@ -17,7 +17,7 @@ def get_att(content : tf.Tensor, style : tf.Tensor,layers, att=True):
         self_style = style
     return self_style, self_content
 
-def ada_in(style : tf.Tensor, content : tf.Tensor,layers, att : bool =True):
+def ada_in(style : tf.Tensor, content : tf.Tensor,layers, att : bool =False):
     """Computes the AdaIn feature map.
 
     Args:
@@ -28,6 +28,7 @@ def ada_in(style : tf.Tensor, content : tf.Tensor,layers, att : bool =True):
         The AdaIN feature map.
     """
     self_content, self_style = get_att(content, style,layers, att)
+    assert self_content.shape == self_style.shape
     content_mean, content_std = get_mean_std(self_content)
     style_mean, style_std = get_mean_std(self_style)
     cal = (self_content - content_mean) / (content_std + style_mean)
@@ -45,7 +46,7 @@ def self_attention(x : tf.Tensor,layers ):
     f = f_layer(x)  # [bs, h, w, c']
     g = g_layer(x)  # [bs, h, w, c']
     h = h_layer(x)    # [bs, h, w, c]
-    h_shape = tf.shape(h)
+    h_shape = h.shape
     f_flat = hw_flatten(f) 
     g_flat = hw_flatten(g)  
     h_flat = hw_flatten(h)  

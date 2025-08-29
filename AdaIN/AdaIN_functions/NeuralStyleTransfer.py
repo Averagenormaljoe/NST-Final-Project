@@ -186,38 +186,13 @@ class NeuralStyleTransfer(tf.keras.Model):
         blend = None
         reconstructed_image = self.decoder(blend)
         return reconstructed_image
-    def call(self, content_image, style_image):
-        reconstructed_image = self.execute_stylization([style_image, content_image])
+    def call(self, inputs):
+        style_image = inputs[0]
+        content_image = inputs[1]
+        reconstructed_image = self.execute_stylization(inputs=(style_image, content_image))
         return reconstructed_image
     
     
-    def get_config(self):
-        config = super().get_config()
-        config.update({
-            "encoder": keras.saving.serialize_keras_object(self.encoder),
-            "decoder": keras.saving.serialize_keras_object(self.decoder),
-            "loss_net": keras.saving.serialize_keras_object(self.loss_net),
-            "style_weight": self.style_weight,
-            "channels": self.channels,
-            "att": self.att
-        })
-        return config
-
-    @classmethod
-    def from_config(cls, config):
-
-        encoder_config = config.pop("encoder")
-        decoder_config = config.pop("decoder")
-        loss_net_config = config.pop("loss_net")
-        style_weight = config.pop("style_weight")
-        channels = config.pop("channels")
-        att = config.pop("att")
-
-        encoder = keras.saving.deserialize_keras_object(encoder_config)
-        decoder = keras.saving.deserialize_keras_object(decoder_config)
-        loss_net = keras.saving.deserialize_keras_object(loss_net_config)
-
-        return cls(encoder=encoder, decoder=decoder, loss_net=loss_net, style_weight=style_weight, channels=channels,att=att, **config)
     @property
     def metrics(self):
         return [
