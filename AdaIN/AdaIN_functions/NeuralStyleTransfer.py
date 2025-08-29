@@ -6,7 +6,7 @@ from video_utils.mask import temporal_warping_error
 from AdaIN_functions.ada_in import ada_in, get_mean_std
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
-    def __init__(self, encoder, decoder, loss_net, style_weight,channels, **kwargs):
+    def __init__(self, encoder, decoder, loss_net, style_weight,channels, att = True, **kwargs):
         super(NeuralStyleTransfer, self).__init__(**kwargs)
         self.encoder = encoder
         self.decoder = decoder
@@ -16,6 +16,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.include_custom_metrics = True
         self.hardwareLogger = TFHardwareLogger()
         self.channels = channels
+        self.att = att
         floor_C = channels // 2
         self.f_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same',name="f_conv")
         self.g_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same', name="g_conv")
@@ -170,9 +171,9 @@ class NeuralStyleTransfer(tf.keras.Model):
         reconstructed_image = self.decoder(t)
         return reconstructed_image
     
-    def layers_ada_in(self, style, content, att: bool = True):
+    def layers_ada_in(self, style, content):
         layers = (self.f_layer, self.g_layer, self.h_layer)
-        t = ada_in(style, content,layers, att)
+        t = ada_in(style, content,layers, self.att)
         return t
  
     def avg_multi_NST(self, style_images, content_encoded):
@@ -197,7 +198,8 @@ class NeuralStyleTransfer(tf.keras.Model):
             "decoder": keras.saving.serialize_keras_object(self.decoder),
             "loss_net": keras.saving.serialize_keras_object(self.loss_net),
             "style_weight": self.style_weight,
-            "channels": self.channels
+            "channels": self.channels,
+            "att": self.att
         })
         return config
 
@@ -209,12 +211,13 @@ class NeuralStyleTransfer(tf.keras.Model):
         loss_net_config = config.pop("loss_net")
         style_weight = config.pop("style_weight")
         channels = config.pop("channels")
+        att = config.pop("att")
 
         encoder = keras.saving.deserialize_keras_object(encoder_config)
         decoder = keras.saving.deserialize_keras_object(decoder_config)
         loss_net = keras.saving.deserialize_keras_object(loss_net_config)
 
-        return cls(encoder=encoder, decoder=decoder, loss_net=loss_net, style_weight=style_weight, channels=channels, **config)
+        return cls(encoder=encoder, decoder=decoder, loss_net=loss_net, style_weight=style_weight, channels=channels,att=att, **config)
     @property
     def metrics(self):
         return [
