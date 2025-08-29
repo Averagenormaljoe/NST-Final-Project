@@ -21,6 +21,7 @@ include = [
     "forward_feed.model_functions",
     "forward_feed.model_components",
     "forward_feed.image_helper",
+    "forward_feed.table_saver",
     "AdaIN.AdaIN_functions",
     "AdaIN.functions",
     "AdaIN",
