@@ -38,8 +38,10 @@ def compute_loss(combination_image, base_image, style_reference_image, config = 
 
     loss += s_loss
     metrics_dict["style"] =  float(s_loss)
-    # calculate the total variation loss
-    t_loss = total_variation_weight * total_variation_loss(combination_image,tv_type=tv_type, size=size)
-    loss += t_loss
-    metrics_dict["total_variation"] = float(t_loss)
+    is_tv = config.get("is_tv", True)
+    if is_tv:
+      # calculate the total variation loss
+      t_loss = total_variation_weight * total_variation_loss(combination_image,tv_type=tv_type, size=size)
+      loss += t_loss
+      metrics_dict["total_variation"] = float(t_loss)
     return loss, metrics_dict
