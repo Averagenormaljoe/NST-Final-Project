@@ -191,6 +191,8 @@ class NeuralStyleTransfer(tf.keras.Model):
         content_image = inputs[1]
         reconstructed_image = self.execute_stylization(inputs=(style_image, content_image))
         return reconstructed_image
+    def build(self, input_shape):
+        pass
     
     
     @property

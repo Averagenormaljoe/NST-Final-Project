@@ -2,7 +2,7 @@ from time import time
 import cv2
 import tensorflow as tf
 from tqdm import trange
-from Gatys_model.gatys_functions.LoopManager import LoopManager
+from gatys_model.gatys_functions.LoopManager import LoopManager
 from shared_utils.losses import temporal_loss
 import numpy as np
 import keras_hub
