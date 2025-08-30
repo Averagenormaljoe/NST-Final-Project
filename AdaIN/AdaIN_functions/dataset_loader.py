@@ -33,21 +33,21 @@ def load_val_test_datasets(dataset_use: str, val_style, test_style, batch_size: 
     val_style_ds = (
         tf.data.Dataset.from_tensor_slices(val_style)
         .map(decode_and_resize, num_parallel_calls=num_parallel_calls)
-        .repeat()
+    
     )
     val_content_ds = (
-        tfds.load(dataset_use, split="validation").map(extract_image_from_voc).repeat()
+        tfds.load(dataset_use, split="validation").map(extract_image_from_voc)
     )
 
     test_style_ds = (
         tf.data.Dataset.from_tensor_slices(test_style)
         .map(decode_and_resize, num_parallel_calls=num_parallel_calls)
-        .repeat()
+
     )
     test_content_ds = (
         tfds.load(dataset_use, split="test")
         .map(extract_image_from_voc, num_parallel_calls=num_parallel_calls)
-        .repeat()
+
     )
 
     val_ds = (
