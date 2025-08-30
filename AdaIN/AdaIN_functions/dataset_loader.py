@@ -3,7 +3,6 @@ import tensorflow as tf
 from AdaIN_functions.helper import decode_and_resize,extract_image_from_voc
 import tensorflow_datasets as tfds
 # Defining the global variables.
-BATCH_SIZE = 64
 AUTOTUNE = tf.data.AUTOTUNE
 def load_train_dataset(base_dir,dataset_use: str,train_style, batch_size : int,num_parallel_calls : int):
     train_style_ds = (
@@ -15,14 +14,14 @@ def load_train_dataset(base_dir,dataset_use: str,train_style, batch_size : int,n
     return train_style_ds, train_content_ds
 
 
-def save_train_dataset(base_dir : str,dataset_path : str,dataset_use: str, train_style, should_save: bool = True,load : bool = False):
+def save_train_dataset(base_dir : str,dataset_path : str,dataset_use: str, train_style,batch_size, should_save: bool = True,load : bool = False):
     train_path = f"{dataset_path}/train_style_ds"
     content_path = f"{dataset_path}/train_content_ds"
     if os.path.exists(dataset_path) and load:
         train_style_ds = tf.data.Dataset.load(train_path)
         train_content_ds = tf.data.Dataset.load(content_path)
     else:
-        train_style_ds,train_content_ds = load_train_dataset(base_dir, dataset_use, train_style,BATCH_SIZE,AUTOTUNE)
+        train_style_ds,train_content_ds = load_train_dataset(base_dir, dataset_use, train_style,batch_size,AUTOTUNE)
         if should_save:
             train_style_ds.save(train_path)
             train_content_ds.save(content_path)

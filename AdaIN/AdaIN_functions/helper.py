@@ -1,7 +1,6 @@
 import tensorflow as tf
 from shared_utils.image_utils import tf_decode_jpeg
-IMAGE_SIZE = (224, 224)
-def decode_and_resize(image_path : str):
+def decode_and_resize(image_path : str, IMAGE_SIZE : tuple):
     """Decodes and resizes an image from the image file path.
 
     Args:
@@ -16,7 +15,7 @@ def decode_and_resize(image_path : str):
     return image
 
 
-def extract_image_from_voc(element):
+def extract_image_from_voc(element, IMAGE_SIZE : tuple):
     """Extracts image from the PascalVOC dataset.
 
     Args:
