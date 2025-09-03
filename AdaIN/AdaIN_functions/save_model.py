@@ -3,21 +3,20 @@ from typing import Optional
 import tensorflow as tf
 import zipfile
 
-def save_model(model):
-    # save each part of the model in the '.keras' format.
-    model.encoder.save("encoder.keras")
-    model.decoder.save("decoder.keras")
-    model.loss_net.save("loss_net.keras")
-    model.save("model.keras")
+def save_model(model,save_path):
+    model.encoder.save(f"{save_path}/encoder.keras")
+    model.decoder.save(f"{save_path}/decoder.keras")
+    model.loss_net.save(f"{save_path}/loss_net.keras")
+    model.save(f"{save_path}/model.keras")
 
 
-def save_pb_model(model):
+def save_pb_model(model,save_path):
     # model path
-    model_dir = "saved_model_pb"
+    model_dir = f"{save_path}/saved_model_pb"
     # save the model in the '.pb' format
     tf.saved_model.save(model, model_dir)
     # save the weights
-    model.save_weights('adaptive_weights')
+    model.save_weights(f'{save_path}/adaptive_weights')
     
 def legacy_save_model(model):
     # save each part of the model in the '.h5' format.
@@ -26,10 +25,10 @@ def legacy_save_model(model):
     model.loss_net.save_weights("loss_net.h5")
     model.save_weights("model.h5")
     
-def zip_model_files(file_paths : Optional[list[str]] = None):
+def zip_model_files(file_paths : Optional[list[str]] = None,save_path : str = ""):
     if file_paths is None:
         file_paths = ['encoder.keras', 'decoder.keras', 'loss_net.keras', 'model.keras']
-    with zipfile.ZipFile('model.zip', 'w') as zipf:
+    with zipfile.ZipFile(f'{save_path}/model.zip', 'w') as zipf:
         for file in file_paths:
             if os.path.exists(file):
                 zipf.write(file)

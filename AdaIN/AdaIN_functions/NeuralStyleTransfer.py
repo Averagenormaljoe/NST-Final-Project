@@ -183,7 +183,7 @@ class NeuralStyleTransfer(tf.keras.Model):
             res = self.layers_ada_in(style=style_encoded, content=content_encoded)
             stylized_images.append(res)
         
-        blend = None
+        blend = tf.reduce_mean(stylized_images)
         reconstructed_image = self.decoder(blend)
         return reconstructed_image
     def call(self, inputs):
