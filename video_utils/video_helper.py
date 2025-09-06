@@ -52,5 +52,6 @@ def video_end(start_time: float):
     print(f"Processing completed in {processing_duration:.2f} seconds.")
 def resize_frame(frame, target_size):
     if frame.shape[:2] != target_size:
-        return cv2.resize(frame, target_size)
+        resized_frame = tf.image.resize(frame, target_size)
+        return resized_frame
     return frame
