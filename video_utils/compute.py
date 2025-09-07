@@ -4,7 +4,7 @@ from ruder.luminance import  no_luminance, wrap_images_prior_luminance
 def compute_temporal_loss(combination_image, config = {}):
     long_term = config.get("long_term", False)
     is_flow = bool(config.get("is_flow", True))
-    is_mask =  config.get("mask", True) 
+    is_mask =  bool(config.get("is_mask", True) )
     frames = config.get("warp_frames", []) if is_flow else config.get("frames",[])
     flow = config.get("flow", None) if is_flow else None
     mask = config.get("mask", None) if is_mask else None
