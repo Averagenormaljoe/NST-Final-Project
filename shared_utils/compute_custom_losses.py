@@ -30,8 +30,10 @@ class CustomLosses:
             lpips_loss = get_lpips_loss(base_image, combination_image, loss_fn)
             losses_dict["lpips"] =  float(lpips_loss)
         self.get_loss("artfid", base_image, combination_image, includes, get_artfid_loss, losses_dict)
-        fidelity_metrics = get_fidelity_losses(base_image, combination_image, includes)
-        losses_dict.update(fidelity_metrics)
+        fidelity_list = ["fid", "isc", "kid"]
+        if any(item in includes for item in fidelity_list):
+            fidelity_metrics = get_fidelity_losses(base_image, combination_image, includes)
+            losses_dict.update(fidelity_metrics)
         return losses_dict 
 
 def get_fidelity_losses(base_image, combination_image, includes = ["fid", "isc", "kid"]):
