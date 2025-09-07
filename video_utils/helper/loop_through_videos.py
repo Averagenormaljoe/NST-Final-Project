@@ -13,6 +13,7 @@ def get_default_config(output_dir, video_content_path, video_style_path):
             "size": (244,244),
             "verbose": 0,
             "frames_limit": 5,
+            "video_mode" : True
 
         }
        return config
