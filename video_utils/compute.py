@@ -3,14 +3,14 @@ from video_utils.mask import long_term_temporal_loss_non_warp,temporal_loss, get
 from ruder.luminance import  no_luminance, wrap_images_prior_luminance
 def compute_temporal_loss(combination_image, config = {}):
     long_term = config.get("long_term", False)
-    is_flow = config.get("flow", True)
+    is_flow = bool(config.get("is_flow", True))
     is_mask =  config.get("mask", True) 
     frames = config.get("warp_frames", []) if is_flow else config.get("frames",[])
     flow = config.get("flow", None) if is_flow else None
     mask = config.get("mask", None) if is_mask else None
     temporal_weight =  config.get("temporal_weight", 1.0)
     is_luminance = config.get("is_luminance ",False)
-    luminance_version = config.get("is_luminance ",1)
+    luminance_version = config.get("luminance_version",1)
     loss = tf.constant(0.0, dtype=tf.float32)
     if config is None:
         raise ValueError("Error: config cannot be none.")
