@@ -14,7 +14,7 @@ def compute_temporal_loss(combination_image, config = {}):
     loss = tf.constant(0.0, dtype=tf.float32)
     if config is None:
         raise ValueError("Error: config cannot be none.")
-    if isinstance(config,dict):
+    if not isinstance(config,dict):
         raise ValueError(f"Error: config is not a dictionary instead ({type(config)}).")
     if flow is None:
         print("ERROR: flow is None, returning zero loss")

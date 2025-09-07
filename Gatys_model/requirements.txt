@@ -168,6 +168,7 @@ tensorboard-data-server==0.7.2
 tensorflow==2.19.0
 tensorflow-hub==0.16.1
 tensorflow-probability==0.25.0
+tensorflow-io
 tensorflow-text==2.19.0
 termcolor==3.1.0
 terminado==0.18.1
