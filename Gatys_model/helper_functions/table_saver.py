@@ -7,9 +7,6 @@ from shared_utils.file_nav import get_base_name
 
 def save_and_show_all(image_data_logs, image_paths):
     save_data_logs(image_data_logs, image_paths)
-    plot_losses(image_data_logs,image_paths)
-    plot_NST_losses(image_data_logs, image_paths)
-
 
 def save_data_logs(image_data_logs, image_paths,folder = "csv_hardware"):
 

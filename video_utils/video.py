@@ -4,7 +4,7 @@ import keras
 from shared_utils.file_nav import get_base_name
 from tqdm import trange
 from shared_utils.helper import create_dir
-from video_utils.mask import multi_pass
+from video_utils.multi_pass import multi_pass
 from video_utils.video_helper import get_video_details
 def get_video_paths(config):
 
