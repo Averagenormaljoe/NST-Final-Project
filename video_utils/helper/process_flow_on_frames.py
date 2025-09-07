@@ -3,7 +3,8 @@ import tensorflow as tf
 from video_utils.mask import get_optimal_flow
 def process_flow_on_frames(config,combination_image):
        frames = config.get("frames", [])
-       if len(frames) > 0:
+       video_mode = config.get("video_mode",False)
+       if len(frames) > 0 and video_mode:
             prev_frame = frames[-1]
             if hasattr(combination_image, 'numpy'):
                numpy_combination_image = np.squeeze(combination_image.numpy())
