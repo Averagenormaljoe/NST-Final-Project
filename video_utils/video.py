@@ -203,7 +203,7 @@ def video_style_transfer(config,video_details,style_func):
     
     is_multi_pass = config.get("is_multi_pass",False)
     # perform image style transfer with each content frame and style image
-    prepare_transferred_frames(style_func,output_dir)
+    prepare_transferred_frames(style_func,output_dir,total_frames,style_path,config)
 
     if is_multi_pass:
         apply_multi_pass(config,style_path,pass_frames_dir,total_frames,style_path,config)
