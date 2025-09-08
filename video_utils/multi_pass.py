@@ -1,9 +1,9 @@
 # multi pass algorithm adapted from 'https://arxiv.org/abs/1604.08610' paper by Ruder et al.
 from time import time
 import tensorflow as tf
-from gatys_model.gatys_functions.LoopManager import LoopManager
-from gatys_model.gatys_functions.get_layers import get_layers
-from gatys_model.gatys_functions.get_model import get_model
+from gatys_functions.LoopManager import LoopManager
+from gatys_functions.get_layers import get_layers
+from gatys_functions.get_model import get_model
 from video_utils.mask import warp_flow
 from tqdm import trange
 
