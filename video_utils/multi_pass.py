@@ -43,7 +43,7 @@ def setup_loop_manager(config : dict,combination_frames : list ):
     
     return loop_manager, config
 
-def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, blend_weight : float =0.5,temporal_loss_after_n_passes : int = 3,config : dict = {}):
+def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_weight : float =0.5,temporal_loss_after_n_passes : int = 3,config : dict = {}):
     combination_frames = config.get("frames",[])
 
 
@@ -55,9 +55,16 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
         print(f"Error: n_pass is not an int ({type(n_pass)}).")
     if n_pass <= 0:
             raise ValueError(f"n_pass is not a positive integer ({n_pass}).")
-    if not isinstance(style_image,tf.Tensor):
-       raise TypeError(f"Error: style_image is not a tensor ({type(style_image)}).")  
+    if not isinstance(style_image,str):
+       raise TypeError(f"Error: style_image is not a str ({type(style_image)}).")  
     frames_length = len(combination_frames)
+    flow_length = len(flows)
+    mask_length = len(masks)
+    if flow_length != frames_length - 1:
+        raise ValueError(f"Number of flows is incorrect. Flow length: {flow_length}, Frames length: {frames_length}")
+    if mask_length != frames_length - 1:
+        raise ValueError(f"Number of masks is incorrect. Mask length: {mask_length}, Frames length: {frames_length}")
+        
     if frames_length == 0:
         print("Error: frames length is zero.")
         raise ValueError("Error: frames list is empty")
@@ -79,23 +86,36 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
         config["video_mode"] = is_temporal_loss
         for i in pass_range:
             try:
-                index_d : int = i - 1 if direction == "f" else i + 1
                 if (direction == "f" and i == 0) or (direction == "b" and i == frames_length - 1):
                     prev_img = stylize_frames[i]
                     stylize_frames[i] = prev_img
-                    
                 else:
+                    index_d : int = i - 1 if direction == "f" else i + 1 
+                    if index_d < 0 or index_d >= frames_length:
+                        print(f"index_d ({index_d}) is invalid. Failed to access frames. Length: {frames_length}")
+                        continue
                     warp_mask = masks[index_d]
                     next_img = combination_frames[index_d]
                     reverse_flow = True if direction == "b" else False
-                    warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
+                    try:
+                        warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
+                    except Exception as e:
+                        prev_img = stylize_frames[i]
+    
+                        print(f"Error while warping flow {index_d} for pass {j}, Flow length: {flow_length} Message: {e}")
                     first_mul = blend_weight * warp_mask * warp_img
                     ones_res = tf.ones_like(warp_mask)
                     neg_prev_mask = tf.subtract(ones_res, warp_mask) 
                     second_mul = ((neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask)) * prev_img
                     final_result = tf.add(first_mul,second_mul)
                     config["combination_frame"] = final_result
-                    generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config)
+                    try:
+                        generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config)
+                    except Exception as e:
+                        print(f"Error during optimization loop for frame {i} for pass {j}, Message: {e}")
+                        stylize_frames[i] = final_result
+                        prev_img = stylize_frames[i] 
+                        continue
                     if not generated_frames or not best_frame or not log_data:
                         print("Error: optimization loop failed. Skipping")
                         stylize_frames[i] = final_result
@@ -104,7 +124,7 @@ def multi_pass(n_pass : int,flows : list,style_image : tf.Tensor,masks: list, bl
                     stylize_frames[i] = best_frame.get_image()
                     prev_img = stylize_frames[i]
             except Exception as e:
-                print(f"Error: during frame {i} for pass {j}: {e}")
+                print(f"Error: during frame {i} for pass {j}, Length: {frames_length} Message: {e}")
                 prev_img = stylize_frames[i]
         pass_end : float = time()
         duration : float = pass_end - pass_tick

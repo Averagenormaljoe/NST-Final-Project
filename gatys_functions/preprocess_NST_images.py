@@ -20,3 +20,9 @@ def preprocess_NST_images(base_image_path : str, style_reference_image_path : st
         else:
             combination_image = tf.Variable(preprocess_image(base_image_path,w,h))
     return base_image, style_reference_images, combination_image
+
+
+def process_and_return(image_path,config):
+    size = config.get("size",(400,400))
+    w,h = size
+    return preprocess_image(image_path,w,h)

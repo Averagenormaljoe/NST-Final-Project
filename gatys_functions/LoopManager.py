@@ -8,7 +8,7 @@ from helper_functions.training_helper import result_save
 from tqdm import trange
 
 from gatys_functions.apply_style_transfer_step import apply_style_transfer_step
-from gatys_functions.preprocess_NST_images import preprocess_NST_images
+from gatys_functions.preprocess_NST_images import preprocess_NST_images, process_and_return
 from helper_functions.ConfigManager import ConfigManager
 from helper_functions.bestImage import BestImage
 from helper_functions.helper import deprocess_image
@@ -41,7 +41,7 @@ class LoopManager(ConfigManager):
         return optimizer
     
     
-    def training_loop(self,content_path, style_path,content_name : str = "",style_name: str = "",config : dict={},device_config : dict = {}):
+    def training_loop(self,content_path : str | tf.Tensor, style_path : str,content_name : str = "",style_name: str = "",config : dict={},device_config : dict = {}):
         if not os.path.exists(content_path) and not os.path.exists(style_path):
             raise FileNotFoundError("Both of the paths for the style and content images are invalid.")
         if not os.path.exists(content_path):
@@ -52,14 +52,14 @@ class LoopManager(ConfigManager):
             raise ValueError("Error: config cannot be none.")
         if device_config is None:
             raise ValueError("Error: device config cannot be none.")
-        if type(content_name) != str or type(style_name) != str:
+        if (type(content_name) != str and not isinstance(content_path,tf.Tensor)) or type(style_name) != str:
             raise ValueError(f"Error: The provided 'content_name' and 'style_name' are not strings but type: {(type(content_name))} and {type(style_name)} respectively.")
         self.unpack_config(config)
         combination_frame = config.get("combination_frame",None)
         if combination_frame:
-            if isinstance(content_path,tf.Tensor) and isinstance(style_image,tf.Tensor): 
+            if isinstance(content_path,tf.Tensor): 
                 base_image = content_path
-                style_image = style_path
+                style_image = process_and_return(style_image,config)
                 combination_image = combination_frame
             else:
                 raise ValueError("Error: despite providing combination_frame as a tensor, style and content images are str paths not tensors.")
