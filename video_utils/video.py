@@ -181,7 +181,10 @@ def apply_multi_pass(config,style_path,pass_frames_dir):
         frame_i = f"{i+1:08d}"
         output_frame_path = os.path.join(pass_frames_dir, f"{pass_prefix}-{frame_i}.{extension}")
         next_image =  multi_pass_frames[i]
-        save_frame(output_frame_path,next_image)
+        try:
+            save_frame(output_frame_path,next_image)
+        except Exception as e:
+            print(f"Failed to save frame during multi-pass. {e}")
     if verbose:
         print("Finished multi pass step of the codebase.")
           
