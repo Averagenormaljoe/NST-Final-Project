@@ -53,22 +53,34 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
         raise TypeError(f"masks is not a list({type(masks)}).")
     if not isinstance(n_pass,int):
         print(f"Error: n_pass is not an int ({type(n_pass)}).")
+    if not isinstance(temporal_loss_after_n_passes,int):
+        print(f"Error: temporal_loss_after_n_passes is not an int ({type(temporal_loss_after_n_passes)}).")
+    if not isinstance(blend_weight,float):
+        raise TypeError(f"Error: blend_weight is not a float ({type(blend_weight)}).")
     if n_pass <= 0:
             raise ValueError(f"n_pass is not a positive integer ({n_pass}).")
+    if temporal_loss_after_n_passes <= 0:
+            raise ValueError(f"temporal_loss_after_n_passes is not a positive integer ({n_pass}).")    
     if not isinstance(style_image,str):
        raise TypeError(f"Error: style_image is not a str ({type(style_image)}).")  
     frames_length = len(combination_frames)
     flow_length = len(flows)
     mask_length = len(masks)
     if flow_length != frames_length - 1:
-        raise ValueError(f"Number of flows is incorrect. Flow length: {flow_length}, Frames length: {frames_length}")
+        raise ValueError(f"Length of the  flows is incorrect. Flow length: {flow_length}, Frames length: {frames_length}")
     if mask_length != frames_length - 1:
-        raise ValueError(f"Number of masks is incorrect. Mask length: {mask_length}, Frames length: {frames_length}")
+        raise ValueError(f"Length of the masks is incorrect. Mask length: {mask_length}, Frames length: {frames_length}")
         
     if frames_length == 0:
         print("Error: frames length is zero.")
-        raise ValueError("Error: frames list is empty")
-    if not  blend_weight <= 1 and not blend_weight >= 0:
+        raise ValueError("Error: frame list is empty")
+    if flow_length == 0:
+        print("Error: flow length is zero.")
+        raise ValueError("Error: flow list is empty")
+    if mask_length == 0:
+        print("Error: mask length is zero.")
+        raise ValueError("Error: mask list is empty")
+    if not blend_weight <= 1 and not blend_weight >= 0:
             raise ValueError(f"Error: blend_weight is not between 0 and 1 ({blend_weight}).")
     start : float = time()
     pass_time : list = []
@@ -101,8 +113,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                         warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
                     except Exception as e:
                         prev_img = stylize_frames[i]
-    
-                        print(f"Error while warping flow {index_d} for pass {j}, Flow length: {flow_length} Message: {e}")
+                        print(f"Error with warp_flow. {index_d} for pass {j}, Flow length: {flow_length} Message: {e}")
                     first_mul = blend_weight * warp_mask * warp_img
                     ones_res = tf.ones_like(warp_mask)
                     neg_prev_mask = tf.subtract(ones_res, warp_mask) 
