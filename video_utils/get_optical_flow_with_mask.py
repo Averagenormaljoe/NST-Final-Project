@@ -1,5 +1,8 @@
+from shared_utils.exception_checks import none_check
 from video_utils.helper.get_flow_and_wrap import get_flow_and_wrap, prepare_mask
-def get_flow_and_mask(config, combination_image):
+def get_optical_flow_with_mask(config, combination_image):
+    none_check(config, "config")
+    none_check(combination_image, "combination_image")
     config = get_flow_and_wrap(config)
     flow = config.get("flow", None)
     verbose = config.get("verbose", 0)
