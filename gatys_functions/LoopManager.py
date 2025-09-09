@@ -54,6 +54,11 @@ class LoopManager(ConfigManager):
             raise ValueError("Error: content name cannot be none.")
         if style_name is None:
             raise ValueError("Error: style name cannot be none.")
+
+        if content_path is None:
+            raise ValueError("Error: content_path cannot be none.")
+        if style_path is None:
+            raise ValueError("Error: style_path  cannot be none.")
     
         if device_config is None:
             raise ValueError("Error: device config cannot be none.")
