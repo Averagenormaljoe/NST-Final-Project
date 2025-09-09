@@ -1,5 +1,6 @@
 import cv2
 import tensorflow as tf
+from shared_utils.exception_checks import none_check
 from shared_utils.losses import temporal_loss
 import numpy as np
 import keras_hub
@@ -93,6 +94,8 @@ def temporal_warping_error(prev_stylized_frame, curr_stylized_frame, flow, mask=
     twe = temporal_loss(warped_prev, curr_stylized_frame, mask=mask)
     return twe
 def warp_previous_frames(previous_stylized_frames, flow):
+    none_check(previous_stylized_frames, "previous_stylized_frames")
+    none_check(flow, "flow")
     warped_frames = []
     for prev_frame in previous_stylized_frames:
         warped_frame = warp_flow(prev_frame, flow)

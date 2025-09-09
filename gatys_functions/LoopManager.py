@@ -55,6 +55,7 @@ class LoopManager(ConfigManager):
         none_check(style_path, "style_path")
         none_check(style_name, "style_name")
         none_check(device_config, "device_config")
+        none_check(config, "config")
         
         if (type(content_name) != str and not isinstance(content_path,tf.Tensor)) or type(style_name) != str:
             raise ValueError(f"Error: The provided 'content_name' and 'style_name' are not strings but type: {(type(content_name))} and {type(style_name)} respectively.")

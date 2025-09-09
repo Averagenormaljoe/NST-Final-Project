@@ -7,6 +7,7 @@ def get_flow_and_wrap(config):
         config["warp_frames"] = warp_frames
     return config                        
 def prepare_mask(config, combination_image):
+    none_check(combination_image, "combination_image")
     flow = config.get("flow", None)
     if flow is not None:
         mask = get_simple_mask(combination_image, flow, reverse=False)
