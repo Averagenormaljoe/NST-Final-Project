@@ -13,6 +13,7 @@ from helper_functions.ConfigManager import ConfigManager
 from helper_functions.bestImage import BestImage
 from helper_functions.helper import deprocess_image
 from helper_functions.log_funcs import create_log_dir
+from shared_utils.exception_checks import none_check
 from shared_utils.optimizer import get_optimizer
 from video_utils.helper.process_flow_on_frames import process_flow_on_frames
 class LoopManager(ConfigManager):
@@ -48,20 +49,13 @@ class LoopManager(ConfigManager):
             raise FileNotFoundError(f"Content image path does not exist.")
         if not os.path.exists(style_path):
             raise FileNotFoundError(f"Style image path does not exist.")
-        if config is None:
-            raise ValueError("Error: config cannot be none.")
-        if content_name is None:
-            raise ValueError("Error: content name cannot be none.")
-        if style_name is None:
-            raise ValueError("Error: style name cannot be none.")
-
-        if content_path is None:
-            raise ValueError("Error: content_path cannot be none.")
-        if style_path is None:
-            raise ValueError("Error: style_path  cannot be none.")
-    
-        if device_config is None:
-            raise ValueError("Error: device config cannot be none.")
+        none_check(content_path, "content_path")
+        none_check(content_name, "content_name")
+        none_check(style_image, "style_image")
+        none_check(style_path, "style_path")
+        none_check(style_name, "style_name")
+        none_check(device_config, "device_config")
+        
         if (type(content_name) != str and not isinstance(content_path,tf.Tensor)) or type(style_name) != str:
             raise ValueError(f"Error: The provided 'content_name' and 'style_name' are not strings but type: {(type(content_name))} and {type(style_name)} respectively.")
         self.unpack_config(config)

@@ -1,14 +1,18 @@
 import tensorflow as tf
 from gatys_functions.compute_loss import compute_loss
 from helper_functions.device_helper import get_device
+from shared_utils.exception_checks import none_check
 from video_utils.compute import compute_temporal_loss
 
+
 @tf.function
-def compute_loss_and_grads(combination_image, base_image, style_images, config= {},device_config = {}):
-    if config is None:
-        raise ValueError("Error: config cannot be none.")
-    if config is None:
-        raise ValueError("Error: device_config cannot be none.")
+def compute_loss_and_grads(combination_image, base_image, style_images, config : dict= {},device_config : dict = {}):
+    none_check(combination_image, "combination_image")
+    none_check(base_image, "base_image")
+    none_check(style_images, "style_images")
+    none_check(config, "config")
+    none_check(device_config, "device_config")
+    
     verbose = config.get("verbose", 0)
     if verbose > 0:
         tf.print("combination_image == tf.Variable", isinstance(combination_image, tf.Variable))
