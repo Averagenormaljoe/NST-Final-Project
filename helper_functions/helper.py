@@ -8,13 +8,7 @@ def preprocess_image(image_path : str, img_width: int,img_height: int):
     img = convert_image(img)
     return img
 
-def preprocess_style_image(style_reference_image_paths, size : tuple[int,int]):
-    images = []
-    w,h = size
-    for path in style_reference_image_paths:
-        img = preprocess_image(path,w,h)
-        images.append(img)
-    return tf.concat(images, axis=0)
+
   
 def convert_image(img):
     img = keras.utils.img_to_array(img)

@@ -3,6 +3,7 @@ import math
 import os
 
 import keras
+import numpy as np
 import tensorflow as tf
 from helper_functions.training_helper import result_save
 from tqdm import trange
@@ -64,12 +65,9 @@ class LoopManager(ConfigManager):
         self.unpack_config(config)
         combination_frame = config.get("combination_frame",None)
         if combination_frame is not None:
-            if isinstance(content_path,tf.Tensor): 
-                base_image = content_path
-                style_image = process_and_return(style_image,config)
-                combination_image = combination_frame
-            else:
-                raise ValueError("Error: despite providing combination_frame as a tensor, style and content images are str paths not tensors.")
+            base_image = content_path
+            style_image = process_and_return(style_image,config)
+            combination_image = combination_frame
             
         else:  
             base_image, style_image, combination_image = preprocess_NST_images(
