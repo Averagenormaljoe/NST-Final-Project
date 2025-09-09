@@ -122,21 +122,9 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                     second_mul = ((neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask)) * prev_img
                     final_result = first_mul + second_mul
                     config["combination_frame"] = final_result
-                    try:
-                        generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config)
-                    except Exception as e:
-                        print(f"Error during optimization loop for frame {i} for pass {j}, Message: {e}")
-                        traceback.print_exc()
-                        stylize_frames[i] = final_result
-                        prev_img = stylize_frames[i] 
-                        continue
-                    if not generated_frames or not best_frame or not log_data:
-                        print("Error: optimization loop failed. Skipping")
-                        stylize_frames[i] = final_result
-                        prev_img = stylize_frames[i] 
-                        continue
-                    stylize_frames[i] = best_frame.get_image()
-                    prev_img = stylize_frames[i]
+           
+                    stylize_frames[i] = final_result
+                    prev_img = stylize_frames[i] 
             except Exception as e:
                 traceback.print_exc()
                 print(f"Error: during frame {i} for pass {j}, Length: {frames_length} Message: {e}")

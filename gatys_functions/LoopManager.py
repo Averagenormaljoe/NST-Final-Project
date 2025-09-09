@@ -66,7 +66,7 @@ class LoopManager(ConfigManager):
         combination_frame = config.get("combination_frame",None)
         if combination_frame is not None:
             base_image = content_path
-            style_image = process_and_return(style_image,config)
+            style_image = process_and_return(style_path,config)
             combination_image = combination_frame
             
         else:  
