@@ -1,5 +1,6 @@
 # multi pass algorithm adapted from 'https://arxiv.org/abs/1604.08610' paper by Ruder et al.
 from time import time
+import numpy as np
 import tensorflow as tf
 from gatys_functions.LoopManager import LoopManager
 from gatys_functions.get_layers import get_layers
@@ -80,7 +81,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
     if mask_length == 0:
         print("Error: mask length is zero.")
         raise ValueError("Error: mask list is empty")
-    if not blend_weight <= 1 and not blend_weight >= 0:
+    if not blend_weight <= 1 or not blend_weight >= 0:
             raise ValueError(f"Error: blend_weight is not between 0 and 1 ({blend_weight}).")
     start : float = time()
     pass_time : list = []
@@ -116,10 +117,10 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                         traceback.format_exc()
                         print(f"Error with warp_flow. {index_d} for pass {j}, Flow length: {flow_length} Message: {e}")
                     first_mul = blend_weight * warp_mask * warp_img
-                    ones_res = tf.ones_like(warp_mask)
-                    neg_prev_mask = tf.subtract(ones_res, warp_mask) 
+                    ones_res = np.ones_like(warp_mask, dtype=np.float32)
+                    neg_prev_mask = ones_res - warp_mask
                     second_mul = ((neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask)) * prev_img
-                    final_result = tf.add(first_mul,second_mul)
+                    final_result = first_mul + second_mul
                     config["combination_frame"] = final_result
                     try:
                         generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config)
