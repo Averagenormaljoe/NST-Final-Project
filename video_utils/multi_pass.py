@@ -49,7 +49,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
 
     if not isinstance(flows, list):
         raise TypeError(f"flows is not a list ({type(flows)}).")
-    if not isinstance(masks, list) or not all(isinstance(m, tf.Tensor) for m in masks):
+    if not isinstance(masks, list):
         raise TypeError(f"masks is not a list({type(masks)}).")
     if not isinstance(n_pass,int):
         print(f"Error: n_pass is not an int ({type(n_pass)}).")

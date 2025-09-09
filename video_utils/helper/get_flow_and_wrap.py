@@ -1,5 +1,7 @@
+from shared_utils.exception_checks import none_check
 from video_utils.mask import  get_simple_mask, warp_previous_frames
 def get_flow_and_wrap(config):
+    none_check(config, "config")
     flow = config.get("flow", None)
     if flow is not None:
         frames = config.get("frames", [])
@@ -7,6 +9,7 @@ def get_flow_and_wrap(config):
         config["warp_frames"] = warp_frames
     return config                        
 def prepare_mask(config, combination_image):
+    none_check(config, "config")
     none_check(combination_image, "combination_image")
     flow = config.get("flow", None)
     if flow is not None:

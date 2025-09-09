@@ -1,6 +1,6 @@
 from helper_functions.device_helper import get_device
 from gatys_functions.compute_loss_and_grads import compute_loss_and_grads
-from video_utils.get_flow_and_mask import get_flow_and_mask
+from video_utils.get_optical_flow_with_mask import get_flow_and_mask
 from video_utils.helper.reset_warp_frames import reset_warp_frames
 from shared_utils.exception_checks import none_check
 def apply_style_transfer_step(combination_image, base_image, style_image, optimizer, config : dict = {},device_config : dict = {}):
