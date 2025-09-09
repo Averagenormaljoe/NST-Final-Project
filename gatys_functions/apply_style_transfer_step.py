@@ -1,6 +1,6 @@
 from helper_functions.device_helper import get_device
 from gatys_functions.compute_loss_and_grads import compute_loss_and_grads
-from video_utils.get_optical_flow_with_mask import get_flow_and_mask
+from video_utils.get_optical_flow_with_mask import get_optical_flow_with_mask
 from video_utils.helper.reset_warp_frames import reset_warp_frames
 from shared_utils.exception_checks import none_check
 def apply_style_transfer_step(combination_image, base_image, style_image, optimizer, config : dict = {},device_config : dict = {}):
@@ -11,7 +11,7 @@ def apply_style_transfer_step(combination_image, base_image, style_image, optimi
     none_check(device_config, "device_config")
     video_mode = config.get("video_mode",True)
     if video_mode:
-        config = get_flow_and_mask(config, combination_image)
+        config = get_optical_flow_with_mask(config, combination_image)
     GPU_in_use = device_config.get("gpu", 0)
     CPU_in_use = device_config.get("cpu", 0)
     with get_device(GPU_in_use, CPU_in_use):
