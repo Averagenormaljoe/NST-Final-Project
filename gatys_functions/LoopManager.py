@@ -43,15 +43,17 @@ class LoopManager(ConfigManager):
     
     
     def training_loop(self,content_path : str | tf.Tensor, style_path : str,content_name : str = "",style_name: str = "",config : dict={},device_config : dict = {}):
-        if not os.path.exists(content_path) and not os.path.exists(style_path):
-            raise FileNotFoundError("Both of the paths for the style and content images are invalid.")
-        if not os.path.exists(content_path):
-            raise FileNotFoundError(f"Content image path does not exist.")
-        if not os.path.exists(style_path):
-            raise FileNotFoundError(f"Style image path does not exist.")
+        if type(content_path) == str and type(style_path) == str:
+            if not os.path.exists(content_path) and not os.path.exists(style_path):
+                raise FileNotFoundError("Both of the paths for the style and content images are invalid.")
+        if type(content_path) == str:
+            if not os.path.exists(content_path):
+                raise FileNotFoundError(f"Content image path does not exist.")
+        if type(style_path) == str:
+            if not os.path.exists(style_path):
+                raise FileNotFoundError(f"Style image path does not exist.")
         none_check(content_path, "content_path")
         none_check(content_name, "content_name")
-        none_check(style_image, "style_image")
         none_check(style_path, "style_path")
         none_check(style_name, "style_name")
         none_check(device_config, "device_config")
@@ -61,7 +63,7 @@ class LoopManager(ConfigManager):
             raise ValueError(f"Error: The provided 'content_name' and 'style_name' are not strings but type: {(type(content_name))} and {type(style_name)} respectively.")
         self.unpack_config(config)
         combination_frame = config.get("combination_frame",None)
-        if combination_frame:
+        if combination_frame is not None:
             if isinstance(content_path,tf.Tensor): 
                 base_image = content_path
                 style_image = process_and_return(style_image,config)

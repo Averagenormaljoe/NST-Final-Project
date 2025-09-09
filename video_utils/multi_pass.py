@@ -114,7 +114,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                         warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
                     except Exception as e:
                         prev_img = stylize_frames[i]
-                        traceback.format_exc()
+                        traceback.print_exc()
                         print(f"Error with warp_flow. {index_d} for pass {j}, Flow length: {flow_length} Message: {e}")
                     first_mul = blend_weight * warp_mask * warp_img
                     ones_res = np.ones_like(warp_mask, dtype=np.float32)
@@ -126,7 +126,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                         generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config)
                     except Exception as e:
                         print(f"Error during optimization loop for frame {i} for pass {j}, Message: {e}")
-                        traceback.format_exc()
+                        traceback.print_exc()
                         stylize_frames[i] = final_result
                         prev_img = stylize_frames[i] 
                         continue
@@ -138,7 +138,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                     stylize_frames[i] = best_frame.get_image()
                     prev_img = stylize_frames[i]
             except Exception as e:
-                traceback.format_exc()
+                traceback.print_exc()
                 print(f"Error: during frame {i} for pass {j}, Length: {frames_length} Message: {e}")
                 prev_img = stylize_frames[i]
         pass_end : float = time()
