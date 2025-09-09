@@ -6,7 +6,7 @@ from gatys_functions.get_layers import get_layers
 from gatys_functions.get_model import get_model
 from video_utils.mask import warp_flow
 from tqdm import trange
-
+import traceback
 def get_pass_range(direction : str,frames_length : int):
     initial_range = range(frames_length)
     range_fn = initial_range if direction == "f" else reversed(initial_range)
@@ -113,6 +113,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                         warp_img = warp_flow(next_img,flows[index_d],reverse_flow)
                     except Exception as e:
                         prev_img = stylize_frames[i]
+                        traceback.format_exc()
                         print(f"Error with warp_flow. {index_d} for pass {j}, Flow length: {flow_length} Message: {e}")
                     first_mul = blend_weight * warp_mask * warp_img
                     ones_res = tf.ones_like(warp_mask)
@@ -124,6 +125,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                         generated_frames, best_frame, log_data = loop_manager.training_loop(content_path=combination_frames[i],  style_path=style_image,config=config)
                     except Exception as e:
                         print(f"Error during optimization loop for frame {i} for pass {j}, Message: {e}")
+                        traceback.format_exc()
                         stylize_frames[i] = final_result
                         prev_img = stylize_frames[i] 
                         continue
@@ -135,6 +137,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                     stylize_frames[i] = best_frame.get_image()
                     prev_img = stylize_frames[i]
             except Exception as e:
+                traceback.format_exc()
                 print(f"Error: during frame {i} for pass {j}, Length: {frames_length} Message: {e}")
                 prev_img = stylize_frames[i]
         pass_end : float = time()
