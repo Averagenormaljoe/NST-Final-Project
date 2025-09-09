@@ -1,10 +1,6 @@
 # multi pass algorithm adapted from 'https://arxiv.org/abs/1604.08610' paper by Ruder et al.
 from time import time
 import numpy as np
-import tensorflow as tf
-from gatys_functions.LoopManager import LoopManager
-from gatys_functions.get_layers import get_layers
-from gatys_functions.get_model import get_model
 from video_utils.mask import warp_flow
 from tqdm import trange
 import traceback
@@ -13,36 +9,6 @@ def get_pass_range(direction : str,frames_length : int):
     range_fn = initial_range if direction == "f" else reversed(initial_range)
     return range_fn
 
-def setup_loop_manager(config : dict,combination_frames : list ):
-    loss_network = "vgg19"
-    first_frame = combination_frames[0]
-    height, width = first_frame.shape[:2]
-    total_variation_weight = 1e-6
-    single_style_weight = 1e-6
-    single_content_weight = 2.5e-8
-    results = get_layers(False,loss_network)
-    style_layer_names, content_layer_names, style_weights, content_weights = results
-    config_layers = {
-    "style" : style_layer_names,
-    "content" : content_layer_names
-    }
-    feature_extractor = get_model(loss_network,width,height, config_layers=config_layers)
-    pass_config = {
-        "optimizer": "adam",
-        "ln": "vgg19",
-        "lr": 1.0,
-        "size": (width,height),
-        "content_layer_names": content_layer_names,
-        "style_layer_names": style_layer_names,
-        "feature" : feature_extractor,
-        "c_weight": single_content_weight,
-        "s_weight": single_style_weight,
-        "tv_weight": total_variation_weight,
-    }
-    config.update(pass_config)
-    loop_manager = LoopManager(config)
-    
-    return loop_manager, config
 
 def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_weight : float =0.5,temporal_loss_after_n_passes : int = 3,config : dict = {}):
     combination_frames = config.get("frames",[])
@@ -92,22 +58,22 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
         pass_tick : float = time()
         direction : str = "f" if j % 2 == 0 else "b"
-        pass_range : range = get_pass_range(direction,frames_length)
+        pass_range : range = get_pass_range(direction,flow_length)
         prev_img = None
         is_temporal_loss : bool = j >= temporal_loss_after_n_passes
         config["video_mode"] = is_temporal_loss
         for i in pass_range:
             try:
-                if (direction == "f" and i == 0) or (direction == "b" and i == frames_length - 1):
+                if (direction == "f" and i == 0) or (direction == "b" and i == mask_length - 1):
                     prev_img = stylize_frames[i]
                     stylize_frames[i] = prev_img
                 else:
                     index_d : int = i - 1 if direction == "f" else i + 1 
-                    if index_d < 0 or index_d >= frames_length:
-                        print(f"index_d ({index_d}) is invalid. Failed to access frames. Length: {frames_length}")
+                    if index_d < 0 or index_d >= mask_length:
+                        print(f"index_d ({index_d}) is invalid. Failed to access frames. Length: {mask_length}")
                         continue
-                    if index_d == 0 or index_d == frames_length:
-                        index_d = i
+                    print(index_d)
+                    print(len(masks))
                     warp_mask = masks[index_d]
                     next_img = combination_frames[index_d]
                     reverse_flow = True if direction == "b" else False
@@ -126,7 +92,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                     prev_img = stylize_frames[i] 
             except Exception as e:
                 traceback.print_exc()
-                print(f"Error: during frame {i} for pass {j}, Length: {frames_length} Message: {e}")
+                print(f"Error: during frame {i} for pass {j}, Length: {mask_length} Message: {e}")
                 prev_img = stylize_frames[i]
         pass_end : float = time()
         duration : float = pass_end - pass_tick
