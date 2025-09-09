@@ -42,21 +42,16 @@ def get_fidelity(base_dir, combination_dir,includes = []) -> dict:
         return {}
     metrics = {
         "fid": "fid" in includes,
-        "isc": "isc" in includes,
-        "kid": "kid" in includes,
+
     }
     results = calculate_metrics(
                 input1=base_dir,
                 input2=combination_dir,
                 cuda=True,
                 kid_subset_size=1,
-                fid=metrics["fid"],
-                isc=metrics["isc"],
-                 kid=metrics["kid"])
+                fid=metrics["fid"],)
     output = {}
-    collect_result = {"fid" : "frechet_inception_distance",
-                      "isc" : "inception_score_mean",
-                      "kid" : "kernel_inception_distance_mean"}
+    collect_result = {"fid" : "frechet_inception_distance"}
     for k, v in collect_result.items():
         if metrics[k]:
             output[k] = results[v]
