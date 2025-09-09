@@ -88,8 +88,7 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
     stylize_frames = combination_frames.copy()
 
     neg_blend_weight = 1 - blend_weight
-    
-    loop_manager, config = setup_loop_manager(config,combination_frames)
+
     for j in trange(0, n_pass, desc=f"Processing passes in multi pass algorithm"):
         pass_tick : float = time()
         direction : str = "f" if j % 2 == 0 else "b"
@@ -107,6 +106,8 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                     if index_d < 0 or index_d >= frames_length:
                         print(f"index_d ({index_d}) is invalid. Failed to access frames. Length: {frames_length}")
                         continue
+                    if index_d == 0 or index_d == frames_length:
+                        index_d = i
                     warp_mask = masks[index_d]
                     next_img = combination_frames[index_d]
                     reverse_flow = True if direction == "b" else False
@@ -121,8 +122,6 @@ def multi_pass(n_pass : int,flows : list,style_image : str,masks: list, blend_we
                     neg_prev_mask = ones_res - warp_mask
                     second_mul = ((neg_blend_weight * ones_res) + (blend_weight * neg_prev_mask)) * prev_img
                     final_result = first_mul + second_mul
-                    config["combination_frame"] = final_result
-           
                     stylize_frames[i] = final_result
                     prev_img = stylize_frames[i] 
             except Exception as e:
