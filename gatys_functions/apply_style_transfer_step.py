@@ -3,6 +3,8 @@ from gatys_functions.compute_loss_and_grads import compute_loss_and_grads
 from video_utils.get_flow_and_mask import get_flow_and_mask
 from video_utils.helper.reset_warp_frames import reset_warp_frames
 def apply_style_transfer_step(combination_image, base_image, style_image, optimizer, config : dict = {},device_config : dict = {}):
+    if config is None:
+        raise ValueError("Error: config cannot be none.")
     video_mode = config.get("video_mode",True)
     if video_mode:
         config = get_flow_and_mask(config, combination_image)

@@ -5,6 +5,10 @@ from video_utils.compute import compute_temporal_loss
 
 @tf.function
 def compute_loss_and_grads(combination_image, base_image, style_images, config= {},device_config = {}):
+    if config is None:
+        raise ValueError("Error: config cannot be none.")
+    if config is None:
+        raise ValueError("Error: device_config cannot be none.")
     verbose = config.get("verbose", 0)
     if verbose > 0:
         tf.print("combination_image == tf.Variable", isinstance(combination_image, tf.Variable))

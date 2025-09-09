@@ -2,6 +2,7 @@ import tensorflow as tf
 from video_utils.mask import long_term_temporal_loss_non_warp,temporal_loss, get_optimal_flow, warp_previous_frames
 from ruder.luminance import  no_luminance, wrap_images_prior_luminance
 def compute_temporal_loss(combination_image, config = {}):
+    
     long_term = config.get("long_term", False)
     is_flow = bool(config.get("is_flow", True))
     is_mask =  bool(config.get("is_mask", True) )

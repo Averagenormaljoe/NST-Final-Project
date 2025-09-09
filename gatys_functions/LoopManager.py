@@ -50,6 +50,11 @@ class LoopManager(ConfigManager):
             raise FileNotFoundError(f"Style image path does not exist.")
         if config is None:
             raise ValueError("Error: config cannot be none.")
+        if content_name is None:
+            raise ValueError("Error: content name cannot be none.")
+        if style_name is None:
+            raise ValueError("Error: style name cannot be none.")
+    
         if device_config is None:
             raise ValueError("Error: device config cannot be none.")
         if (type(content_name) != str and not isinstance(content_path,tf.Tensor)) or type(style_name) != str:
