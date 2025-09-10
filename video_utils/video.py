@@ -1,4 +1,5 @@
 import os
+import shutil
 import cv2
 import keras
 from shared_utils.file_nav import get_base_name
@@ -65,6 +66,72 @@ def write_frames(config):
     
     return total_frames, h, w, content_fps
 
+def load_frames_from_dir(config):
+    verbose = config.get('verbose', False)
+    frames_dir, transferred_dir, pass_dir = get_frame_dir()
+    content_prefix = config.get('content_prefix', 'frame')
+    extension = config.get('extension', 'jpg')
+    content_video_path, style_path, output_dir = get_video_paths(config)
+    target_dir = config.get("target_dir", "")
+    content_frames_dir = os.path.join(output_dir, frames_dir)
+    create_dir(content_frames_dir)
+    if verbose:
+        print("Loading frames...")
+    
+    if not os.path.exists(target_dir):
+        print(f"ERROR: the target directory does not exist ({target_dir})")
+        raise FileNotFoundError(f"Target directory does not exist: {target_dir}")
+    
+ 
+    content_images_path = os.listdir(target_dir)
+    content_images : list = [os.path.join(target_dir, path) for path in content_images_path if path.endswith(extension)]
+    total_frames = len(content_images)
+    
+    if total_frames == 0:
+        print(f"ERROR: could not retrieve frames from target directory at path: '{target_dir}'.")
+        return
+    if verbose:
+        print(f"Number of frames ({total_frames}) in target directory ({target_dir}).")
+    
+
+    first_input_frame_path = content_images[0]
+    first_input_frame = cv2.imread(first_input_frame_path)
+    
+    if first_input_frame is None:
+        print(f"ERROR: First output frame not found at {first_input_frame_path}'")
+        return None
+    h, w,_ = first_input_frame.shape
+    content_fps = config.get('fps', 30) 
+    
+
+    frames_limit = get_frame_limit(config, total_frames)
+    
+    
+
+    for i in trange(frames_limit, desc="Saving frames from target directory", disable=not verbose):
+         
+        frame_i : str = f"{i+1:08d}"
+        original_path : str = content_images[i]
+        save_path : str = os.path.join(content_frames_dir, f"{content_prefix}-{frame_i}.{extension}")
+        if content_images[i]:
+            try:
+                shutil.copy2(original_path, save_path)
+                if not os.path.exists(save_path):
+                    print(f'ERROR: failed to copy the image to {save_path}')
+                return None
+            except Exception as e:
+                print(f'ERROR: {save_path} failed to copied: {e}')
+                return None
+        else:
+            print(F'ERROR: {save_path} failed to copied.')
+            return
+    
+    if verbose:
+        print("Frames successfully extracted from target directory.")
+        print()
+        print("Performing image style transfer for each frame...")
+    
+    return total_frames, h, w, content_fps
 
 def save_output_video(config, video_details):
     verbose = config.get('verbose', False)
@@ -217,10 +284,11 @@ def video_style_transfer(config,video_details,style_func):
     
 def execute_video_style_transfer(config, style_func):
     verbose = config.get('verbose', False)
+    target_dir = config.get("target_dir", "")
     if verbose:
         print("Starting video style transfer...")
-    
-    video_details = write_frames(config)
+
+    video_details = load_frames_from_dir if target_dir else write_frames(config) 
     if video_details is None:
         print("Failed to write frames. Exiting...")
         return
