@@ -22,7 +22,7 @@ def compute_loss_and_grads(combination_image : tf.Tensor,  base_image : tf.Tenso
     # get the device for computation
     all_metrics : list = []
     # for storing losses that are not style or content
-    metrics_dict = {}
+    metrics_dict : dict = {}
     GPU_in_use : int = device_config.get("gpu", 0)
     CPU_in_use : int = device_config.get("cpu", 0)
     video_mode : bool = config.get("video_mode",True)

@@ -15,10 +15,10 @@ def compute_loss(combination_image : tf.Tensor, base_image : tf.Tensor, style_re
     input_tensor = tf.concat(
     [base_image, style_reference_image, combination_image], axis=0)
     features = feature_extractor(input_tensor)
-    loss = tf.zeros(shape=())
+    loss : tf.Tensor = tf.zeros(shape=())
     w,h = size
     content_weight_per_layer : float = content_weight / len(content_names)
-    c_loss = tf.zeros(shape=())
+    c_loss : tf.Tensor = tf.zeros(shape=())
     # content layer iteration
     for layer_name in content_names:
       base_features, combination_features = get_features(features, layer_name, base_index=0, combination_index=2)
@@ -27,7 +27,7 @@ def compute_loss(combination_image : tf.Tensor, base_image : tf.Tensor, style_re
       )
     loss += c_loss
     metrics_dict["content"] =  float(c_loss)
-    s_loss = tf.zeros(shape=())
+    s_loss : tf.Tensor = tf.zeros(shape=())
     style_weight_per_layer : float = style_weight / len(style_names)
     # style layer iteration
     for layer_name in style_names:
@@ -38,7 +38,7 @@ def compute_loss(combination_image : tf.Tensor, base_image : tf.Tensor, style_re
 
     loss += s_loss
     metrics_dict["style"] =  float(s_loss)
-    is_tv = config.get("is_tv", True)
+    is_tv : bool = config.get("is_tv", True)
     if is_tv:
       # calculate the total variation loss
       t_loss = total_variation_weight * total_variation_loss(combination_image,tv_type=tv_type, size=size)

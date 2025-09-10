@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from video_utils.convert_to_numpy import convert_to_numpy
-def save_video_logs_table(logs, save_path, prefix = "logs_video"):
+def save_video_logs_table(logs : list, save_path : str, prefix : str = "logs_video") -> None:
     if not os.path.exists(save_path):
         os.makedirs(save_path, exist_ok=True)
     enumerate_logs = enumerate(logs)
