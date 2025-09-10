@@ -8,7 +8,6 @@ def get_default_config(output_dir, video_content_path, video_style_path):
             "style_path": video_style_path,
             "string_optimizer": "adam",
             "verbose": 0,
-            "frames_limit": 5,
             "video_mode" : True
             
 
