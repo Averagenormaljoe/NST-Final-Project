@@ -17,10 +17,11 @@ class NeuralStyleTransfer(tf.keras.Model):
         self.hardwareLogger = TFHardwareLogger()
         self.channels = channels
         self.att = att
-        floor_C = channels // 2
-        self.f_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same',name="f_conv")
-        self.g_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same', name="g_conv")
-        self.h_layer = keras.layers.Conv2D(channels, kernel_size=1, padding='same', name="h_conv")
+        initializer = tf.keras.initializers.GlorotUniform()
+        floor_C = channels // 8
+        self.f_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same',kernel_initializer=initializer,activation='relu',name="f_conv")
+        self.g_layer = keras.layers.Conv2D(floor_C, kernel_size=1, padding='same',kernel_initializer=initializer,activation='relu', name="g_conv")
+        self.h_layer = keras.layers.Conv2D(channels, kernel_size=1, padding='same',kernel_initializer=initializer, name="h_conv")
     def train_start(self):
         if self.is_log:
             self.hardwareLogger.train_start()
