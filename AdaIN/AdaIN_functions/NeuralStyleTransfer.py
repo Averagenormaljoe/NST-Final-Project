@@ -6,7 +6,7 @@ from video_utils.mask import temporal_warping_error
 from AdaIN_functions.ada_in import ada_in, get_mean_std
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
-    def __init__(self, encoder, decoder, loss_net, style_weight,channels, att = True, **kwargs):
+    def __init__(self, encoder, decoder, loss_net, style_weight,content_weight= 1.0, tv_weight = 1.0,channels = 512, att = True, **kwargs):
         super(NeuralStyleTransfer, self).__init__(**kwargs)
         self.encoder = encoder
         self.decoder = decoder
@@ -80,7 +80,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         loss_style = self.loss_fn(mean_inp, mean_out) + self.loss_fn(std_inp, std_out)
         return loss_style
     def compute_total_variation(self,reconstructed_image):
-        total_variation_loss = tf.reduce_mean(tf.image.total_variation(reconstructed_image))
+        total_variation_loss = tf.reduce_mean(tf.image.total_variation(reconstructed_image)) * tv_weight
         return total_variation_loss
     def compute_total_loss(self, loss_content : float,loss_style : float, tv_loss : float) -> float:
         total_loss = loss_content + loss_style + 1e-6 * tv_loss
@@ -99,7 +99,7 @@ class NeuralStyleTransfer(tf.keras.Model):
         # Compute the losses.
         recons_vgg_features = self.loss_net(reconstructed_image)
         style_vgg_features = self.loss_net(style)
-        loss_content = self.loss_fn(t, recons_vgg_features[-1])
+        loss_content = self.loss_fn(t, recons_vgg_features[-1]) * content_weight
         loss_style = self.compute_loss_style(style_vgg_features, recons_vgg_features)
         loss_style = self.style_weight * loss_style
         return loss_content,loss_style
