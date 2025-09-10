@@ -4,7 +4,7 @@ class ConfigManager(LoopLogger):
         super().__init__(config)
         self.unpack_config(config)
         self.update_settings(config)
-    def unpack_config(self, config: dict):
+    def unpack_config(self, config: dict) -> None:
         self.start_step = config.get("start_step", 1)
         self.iterations = config.get("iterations", 500)
         self.save_step = config.get("save_step", 100)
@@ -15,6 +15,6 @@ class ConfigManager(LoopLogger):
         self.lr = config.get("lr", 1.0)
         self.w, self.h = config.get("size", (400, 400))
         self.output_path = config.get("output_path", None)
-    def update_settings(self, config: dict):
+    def update_settings(self, config: dict) -> None:
         self.verbose = config.get("verbose", 0)
         self.include_checkpoints = config.get("include_checkpoints", False)

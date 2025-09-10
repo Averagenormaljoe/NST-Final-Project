@@ -2,10 +2,10 @@ import tensorflow as tf
 from gatys_functions.weights import get_loss_layers, get_weights
 from shared_utils.loss_functions import content_loss, style_loss, total_variation_loss
 from gatys_functions.get_features import get_features
-def compute_loss(combination_image, base_image, style_reference_image, config = {}):
-    metrics_dict = {}
-    tv_type = config.get("tv_type", "gatys")
-    size = config.get("size", (400, 400))
+def compute_loss(combination_image : tf.Tensor, base_image : tf.Tensor, style_reference_image : tf.Tensor, config : dict = {}) -> tuple[tf.Tensor,dict]:
+    metrics_dict : dict = {}
+    tv_type : str = config.get("tv_type", "gatys")
+    size : tuple[int,int] = config.get("size", (400, 400))
     feature_extractor = config.get("feature", None)
     content_weight, style_weight, total_variation_weight = get_weights(config)
     if feature_extractor is None:

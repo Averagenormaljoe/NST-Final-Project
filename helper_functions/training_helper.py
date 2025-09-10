@@ -2,9 +2,9 @@ from datetime import datetime
 import keras
 import numpy as np
 import os
-def result_save(content_name : str,style_name: str,iterations : int, img: np.ndarray,verbose: int = 0):
+def result_save(content_name : str,style_name: str,iterations : int, img: np.ndarray,verbose: int = 0) -> None:
     now = datetime.now()
-    time_format = "%Y%m%d_%H%M%S"
+    time_format : str = "%Y%m%d_%H%M%S"
     now = now.strftime(time_format)
     output_dir = "output_images"
     os.makedirs(output_dir, exist_ok=True)

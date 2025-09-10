@@ -1,7 +1,7 @@
 import os
 from video_utils.video import execute_video_style_transfer
 from shared_utils.file_nav import get_base_name
-def get_default_config(output_dir, video_content_path, video_style_path):
+def get_default_config(output_dir : str, video_content_path : str, video_style_path : str) -> dict:
        config = {
             "output_dir": output_dir,
             "content_path": video_content_path,
@@ -14,7 +14,7 @@ def get_default_config(output_dir, video_content_path, video_style_path):
         }
        return config
 
-def loop_through_videos(apply_model,style_paths, video_content_path="demo_video/man_at_sea_sliced.mp4",prefix = "model", config= {}):
+def loop_through_videos(apply_model,style_paths : list[str], video_content_path : str ="demo_video/man_at_sea_sliced.mp4",prefix : str = "model", config : dict = {}) -> list:
     total_logs = []
     if not os.path.exists(video_content_path):
         print(f"Video content path does not exist: {video_content_path}. Stopping processing.")

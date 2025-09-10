@@ -6,7 +6,7 @@ from video_utils.compute import compute_temporal_loss
 
 
 @tf.function
-def compute_loss_and_grads(combination_image, base_image, style_images, config : dict= {},device_config : dict = {}):
+def compute_loss_and_grads(combination_image : tf.Tensor,  base_image : tf.Tensor, style_images : tf.Tensor | list, config : dict= {},device_config : dict = {}):
     none_check(combination_image, "combination_image")
     none_check(base_image, "base_image")
     none_check(style_images, "style_images")
@@ -17,15 +17,15 @@ def compute_loss_and_grads(combination_image, base_image, style_images, config :
     if verbose > 0:
         tf.print("combination_image == tf.Variable", isinstance(combination_image, tf.Variable))
     # ensures that 'style_images' is a list
-    type_style_images = style_images if isinstance(style_images,list) else [style_images]
-    style_weight = config.get("s_weight", 1e-6)
+    type_style_images : list = style_images if isinstance(style_images,list) else [style_images]
+    style_weight : float = config.get("s_weight", 1e-6)
     # get the device for computation
-    all_metrics = []
+    all_metrics : list = []
     # for storing losses that are not style or content
     metrics_dict = {}
-    GPU_in_use = device_config.get("gpu", 0)
-    CPU_in_use = device_config.get("cpu", 0)
-    video_mode = config.get("video_mode",True)
+    GPU_in_use : int = device_config.get("gpu", 0)
+    CPU_in_use : int = device_config.get("cpu", 0)
+    video_mode : bool = config.get("video_mode",True)
 
     with get_device(GPU_in_use, CPU_in_use):  
         with tf.GradientTape() as tape:
