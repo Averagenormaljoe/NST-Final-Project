@@ -21,7 +21,7 @@ def get_model(model_name : str = "vgg19",img_width : int = 224,img_height : int 
      model_outputs = dict([(layer.name, layer.output) for layer in vgg.layers])
   else:
     style_layer_names = config_layers.get("style", get_style_layer_names(model_name))
-    content_layer_names = config_layers.get("content", get_content_layer_names(model_name)) 
+    content_layer_names = config_layers.get("Content", get_content_layer_names(model_name)) 
     style_outputs = {name: vgg.get_layer(name).output for name in style_layer_names}
     content_outputs = {name: vgg.get_layer(name).output for name in content_layer_names}
     model_outputs = {**style_outputs, **content_outputs}

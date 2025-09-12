@@ -26,7 +26,7 @@ def compute_loss(combination_image : tf.Tensor, base_image : tf.Tensor, style_re
           base_features, combination_features
       )
     loss += c_loss
-    metrics_dict["content"] =  float(c_loss)
+    metrics_dict["Content"] =  float(c_loss)
     s_loss : tf.Tensor = tf.zeros(shape=())
     style_weight_per_layer : float = style_weight / len(style_names)
     # style layer iteration

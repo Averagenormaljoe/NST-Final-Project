@@ -28,4 +28,4 @@ class LossModel:
         style_dict = {
             name: value for name, value in zip(self.style_layers, style_output)
         }
-        return {"content": content_dict, "style": style_dict}
+        return {"Content": content_dict, "style": style_dict}

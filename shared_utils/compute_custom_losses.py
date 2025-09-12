@@ -18,17 +18,17 @@ class CustomLosses:
             return loss
         return 0
  
-    def compute_custom_losses(self,base_image,combination_image, includes : list[str] = ["ssim", "psnr", "lpips", "ms_ssim"]) ->  dict:
+    def compute_custom_losses(self,base_image,combination_image, includes : list[str] = ["SSIM", "psnr", "LPIPS", "MS_SSIM"]) ->  dict:
         losses_dict = {}
         if includes is None or len(includes) == 0:
             return losses_dict
-        self.get_loss("ssim", base_image, combination_image, includes, ssim_loss, losses_dict)
+        self.get_loss("SSIM", base_image, combination_image, includes, ssim_loss, losses_dict)
         self.get_loss("psnr", base_image, combination_image, includes, psnr_loss, losses_dict)
-        self.get_loss("ms_ssim", base_image, combination_image, includes, ms_ssim_loss, losses_dict)
-        if "lpips" in includes:
+        self.get_loss("MS_SSIM", base_image, combination_image, includes, ms_ssim_loss, losses_dict)
+        if "LPIPS" in includes:
             loss_fn = self.get_loss_fn_lpips()
             lpips_loss = get_lpips_loss(base_image, combination_image, loss_fn)
-            losses_dict["lpips"] =  float(lpips_loss)
+            losses_dict["LPIPS"] =  float(lpips_loss)
         self.get_loss("artfid", base_image, combination_image, includes, get_artfid_loss, losses_dict)
         fidelity_list = ["fid", "isc", "kid"]
         if any(item in includes for item in fidelity_list):

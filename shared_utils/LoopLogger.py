@@ -24,7 +24,7 @@ class LoopLogger():
         return dict_sum
     def get_custom_metrics(self,base_image, combination_image) -> dict:
         metrics_dict = {}
-        includes : list[str] = ["ssim", "psnr", "ms_ssim", "lpips"]
+        includes : list[str] = ["SSIM", "psnr", "MS_SSIM", "LPIPS"]
         # compute additional losses if specified
         custom_metrics = self.custom_losses.compute_custom_losses(base_image,combination_image,includes=includes)
         metrics_dict.update(custom_metrics)
