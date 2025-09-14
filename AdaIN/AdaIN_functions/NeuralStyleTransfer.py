@@ -57,6 +57,7 @@ class NeuralStyleTransfer(tf.keras.Model):
             "content_loss": self.content_loss_tracker.result(),
             "total_loss": self.total_loss_tracker.result(),
             "tv_loss": self.tv_loss_tracker.result(),
+            "val_loss": self.total_loss_tracker.result(),
     
 
         }
@@ -164,8 +165,8 @@ class NeuralStyleTransfer(tf.keras.Model):
             "disk": self.hardwareLogger.get_name_log("disk")
         }
     def execute_stylization(self,inputs):
-        style = inputs[0]
         content = inputs[1]
+        style = inputs[0]
         style_encoded = self.encoder(style)
         content_encoded = self.encoder(content)
         t = self.layers_ada_in(style=style_encoded, content=content_encoded)

@@ -25,11 +25,8 @@ def self_attention(x : tf.Tensor,layers,add_tensor : bool = True ):
     g_flat = hw_flatten(g)  
     h_flat = hw_flatten(h)  
     # added attention scores
-    f_shape = tf.shape(f_flat)
-    f_channels = f_shape[-1] 
-    dim_key = tf.cast(f_channels, tf.float32)
-    scaling = tf.sqrt(dim_key)
-    s = tf.matmul(g_flat, f_flat, transpose_b=True) / scaling
+
+    s = tf.matmul(g_flat, f_flat, transpose_b=True)
 
     axis = -1
     beta = tf.nn.softmax(s, axis=axis) 

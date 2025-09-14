@@ -1,4 +1,5 @@
 import os
+import traceback
 from video_utils.video import execute_video_style_transfer
 from shared_utils.file_nav import get_base_name
 def get_default_config(output_dir : str, video_content_path : str, video_style_path : str) -> dict:
@@ -15,25 +16,31 @@ def get_default_config(output_dir : str, video_content_path : str, video_style_p
        return config
 
 def loop_through_videos(apply_model,style_paths : list[str], video_content_path : str ="demo_video/man_at_sea_sliced.mp4",prefix : str = "model", config : dict = {}) -> list:
-    total_logs = []
-    if not os.path.exists(video_content_path):
-        print(f"Video content path does not exist: {video_content_path}. Stopping processing.")
+    try:
+        total_logs = []
+        if not os.path.exists(video_content_path):
+            print(f"Video content path does not exist: {video_content_path}. Stopping processing.")
+            return total_logs
+        for video_style_path in style_paths:
+            if not os.path.exists(video_style_path):
+                print(f"Style video path does not exist: {video_style_path}. Skipping ...")
+                continue
+            video_name = get_base_name(video_content_path)
+            video_style_name = get_base_name(video_style_path)
+            name = f"({video_name})_({video_style_name})"
+            output_dir = f"../{prefix}_demo_images_{name}/video_output"
+            default_config = get_default_config(output_dir, video_content_path, video_style_path)
+            config.update(default_config)
+            execute_video_style_transfer(config,apply_model)
+            logs = config.get("logs", [])
+            if logs:
+                total_logs.append(logs)
+            else:
+                print(f"No metrics logs found for 'loop_through_videos'. Path: {video_style_path}")
         return total_logs
-    for video_style_path in style_paths:
-        if not os.path.exists(video_style_path):
-            print(f"Style video path does not exist: {video_style_path}. Skipping ...")
-            continue
-        video_name = get_base_name(video_content_path)
-        video_style_name = get_base_name(video_style_path)
-        name = f"({video_name})_({video_style_name})"
-        output_dir = f"../{prefix}_demo_images_{name}/video_output"
-        default_config = get_default_config(output_dir, video_content_path, video_style_path)
-        config.update(default_config)
-        execute_video_style_transfer(config,apply_model)
-        logs = config.get("logs", [])
-        if logs:
-            total_logs.append(logs)
-        else:
-            print(f"No metrics logs found for 'loop_through_videos'. Path: {video_style_path}")
-    return total_logs
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'video_validation': {e}"
+        print(mes)  
+    return config     
 
