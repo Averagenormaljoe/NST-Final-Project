@@ -5,38 +5,8 @@ def get_mean_std(x : tf.Tensor, epsilon : float =1e-5):
 
     # Compute the mean and standard deviation of a tensor.
     mean, variance = tf.nn.moments(x, axes=axes, keepdims=True)
-    standard_deviation = tf.math.sqrt(tf.maximum(variance  + epsilon, 0.0))
+    standard_deviation = tf.math.sqrt(tf.maximum(variance + epsilon, 0.0))
     return mean, standard_deviation
-
-
-def hw_flatten(x : tf.Tensor):
-    shape = tf.shape(x)
-    return tf.reshape(x, shape=[shape[0], -1, shape[-1]])
-
-def self_attention(x : tf.Tensor,layers,add_tensor : bool = True ):
-
-
-    f_layer,g_layer,h_layer = layers
-    f = f_layer(x)  # [bs, h, w, c']
-    g = g_layer(x)  # [bs, h, w, c']
-    h = h_layer(x)    # [bs, h, w, c]
-    h_shape = tf.shape(h)
-    f_flat = hw_flatten(f) 
-    g_flat = hw_flatten(g)  
-    h_flat = hw_flatten(h)  
-    # added attention scores
-
-    s = tf.matmul(g_flat, f_flat, transpose_b=True)
-
-    axis = -1
-    beta = tf.nn.softmax(s, axis=axis) 
-
-    o = tf.matmul(beta, h_flat)  # [bs, N, C]
-    reshape_o = tf.reshape(o, shape=h_shape )  # [bs, h, w, C]
-    if add_tensor:
-        return reshape_o + x
-    return reshape_o
-
 
 def get_att(style : tf.Tensor,content : tf.Tensor,layers, att=True):
     if att:
@@ -63,3 +33,38 @@ def ada_in(style : tf.Tensor, content : tf.Tensor,layers, att : bool =False, eps
     style_mean, style_std = get_mean_std(self_style,epsilon)
     t = style_std * (self_content - content_mean) / (content_std + epsilon) + style_mean
     return t
+
+
+def hw_flatten(x : tf.Tensor):
+    shape = tf.shape(x)
+    return tf.reshape(x, shape=[shape[0], -1, shape[-1]])
+
+def get_attention_scores(f_flat, g_flat):
+    axis = -1    
+    f_channels = tf.shape(f_flat)[-1] 
+    d_k = tf.cast(f_channels, tf.float32)
+    scaling = tf.math.sqrt(d_k)
+    s = tf.matmul(g_flat, f_flat, transpose_b=True) / scaling
+    beta = tf.nn.softmax(s, axis=axis) 
+    return beta
+    
+
+def self_attention(x : tf.Tensor,layers, use_residual: bool = True ):
+
+
+    f_layer,g_layer,h_layer = layers
+    f = f_layer(x)  # [bs, h, w, c']
+    g = g_layer(x)  # [bs, h, w, c']
+    h = h_layer(x)    # [bs, h, w, c]
+    f_flat = hw_flatten(f) 
+    g_flat = hw_flatten(g)  
+    h_flat = hw_flatten(h)  
+    h_shape = tf.shape(h) 
+    beta = get_attention_scores(f_flat, g_flat)
+    o = tf.matmul(beta, h_flat)  # [bs, N, C]
+    reshape_o = tf.reshape(o, [h_shape[0], h_shape[1], h_shape[2], h_shape[3]])
+    
+    # Add residual connection
+    if use_residual:
+        reshape_o = reshape_o + x
+    return reshape_o
