@@ -1,9 +1,9 @@
 from keras.saving import register_keras_serializable
+from AdaIN.AdaIN_functions.ada_in import ada_in, get_mean_std
 from shared_utils.HardwareLogger import TFHardwareLogger
 import keras
 import tensorflow as tf
 from video_utils.mask import temporal_warping_error
-from AdaIN_functions.ada_in import ada_in, get_mean_std
 @register_keras_serializable()
 class NeuralStyleTransfer(tf.keras.Model):
     def __init__(self, encoder, decoder, loss_net, style_weight,content_weight= 1.0, tv_weight = 1.0,channels = 512, att = True, **kwargs):
@@ -164,19 +164,6 @@ class NeuralStyleTransfer(tf.keras.Model):
             "ram" : self.hardwareLogger.get_name_log("ram"),
             "disk": self.hardwareLogger.get_name_log("disk")
         }
-    def execute_stylization(self,inputs):
-        content = inputs[1]
-        style = inputs[0]
-        style_encoded = self.encoder(style)
-        content_encoded = self.encoder(content)
-        t = self.layers_ada_in(style=style_encoded, content=content_encoded)
-        reconstructed_image = self.decoder(t)
-        return reconstructed_image
-    
-    def layers_ada_in(self, style, content):
-        layers = (self.f_layer, self.g_layer, self.h_layer)
-        t = ada_in(style, content,layers, self.att)
-        return t
  
     def avg_multi_NST(self, style_images, content_encoded):
         stylized_images = []
@@ -188,14 +175,30 @@ class NeuralStyleTransfer(tf.keras.Model):
         blend = tf.reduce_mean(stylized_images)
         reconstructed_image = self.decoder(blend)
         return reconstructed_image
+    def layers_ada_in(self, style, content):
+        layers = (self.f_layer, self.g_layer, self.h_layer)
+        t = ada_in(style, content,layers, self.att)
+        return t
+
+    def get_t_and_image(self,inputs):
+        style = inputs[0]
+        content = inputs[1]
+        style_encoded = self.encoder(style)
+        content_encoded = self.encoder(content)
+        t = self.layers_ada_in(style=style_encoded, content=content_encoded)
+        reconstructed_image = self.decoder(t)
+        return t,reconstructed_image
+    
+    def execute_stylization(self,inputs):
+        _,reconstructed_image = self.get_t_and_image(inputs)
+        return reconstructed_image
+    
+    
     def call(self, inputs):
         style_image = inputs[0]
         content_image = inputs[1]
         reconstructed_image = self.execute_stylization(inputs=(style_image, content_image))
         return reconstructed_image
-    def build(self, input_shape):
-        pass
-    
     
     @property
     def metrics(self):
