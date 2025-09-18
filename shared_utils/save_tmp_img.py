@@ -21,10 +21,6 @@ def save_img_format(image, path, save_tensor=False):
         save_in_numpy(image, path)
     
 
-def destroy_tmp_img(path):
-    if os.path.exists(path):
-        shutil.rmtree(path)
-            
 def save_in_numpy(image, img_path):
     numpy_image = image.squeeze()
     int8_image = numpy_image.astype("uint8")
