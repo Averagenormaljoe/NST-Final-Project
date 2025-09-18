@@ -1,6 +1,7 @@
 
 import math
 import os
+from typing import Union
 
 import keras
 import numpy as np
@@ -43,7 +44,7 @@ class LoopManager(ConfigManager):
         return optimizer
     
     
-    def training_loop(self,content_path : str | tf.Tensor, style_path : str,content_name : str = "",style_name: str = "",config : dict={},device_config : dict = {}):
+    def training_loop(self,content_path : Union[str, tf.Tensor], style_path : str,content_name : str = "",style_name: str = "",config : dict={},device_config : dict = {}):
         if type(content_path) == str and type(style_path) == str:
             if not os.path.exists(content_path) and not os.path.exists(style_path):
                 raise FileNotFoundError("Both of the paths for the style and content images are invalid.")
@@ -63,16 +64,11 @@ class LoopManager(ConfigManager):
         if (type(content_name) != str and not isinstance(content_path,tf.Tensor)) or type(style_name) != str:
             raise ValueError(f"Error: The provided 'content_name' and 'style_name' are not strings but type: {(type(content_name))} and {type(style_name)} respectively.")
         self.unpack_config(config)
-        combination_frame = config.get("combination_frame",None)
-        if combination_frame is not None:
-            base_image = content_path
-            style_image = process_and_return(style_path,config)
-            combination_image = combination_frame
-            
-        else:  
-            base_image, style_image, combination_image = preprocess_NST_images(
+      
+        base_image, style_image, combination_image = preprocess_NST_images(
                         content_path, style_path,config,device_config)
-            generated_images = []
+        
+        generated_images = []
         # this is for the luminance function, in the temporal loss section of the code
         config["base_img"] = base_image
         optimizer = self.get_optimizer(self.string_optimizer)

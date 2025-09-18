@@ -4,14 +4,6 @@ from shared_utils.exception_checks import none_check
 from shared_utils.losses import temporal_loss
 import numpy as np
 import keras_hub
-def generate_mask(img,segmenter):
-  
-    mask = segmenter.predict(img)
-    return mask
-def get_mask(img):
-    segmenter = get_segmenter()
-    mask = generate_mask(img, segmenter)
-    return mask
 
 def get_simple_mask(img, flow, reverse=False):
     img_shape = img.shape
@@ -20,13 +12,12 @@ def get_simple_mask(img, flow, reverse=False):
     filter_value = 0.9999
     filtered_mask = (warped_mask > filter_value)
     float_mask = filtered_mask.astype(np.float32)
+    if len(img.shape) == 4:
+        float_mask = tf.expand_dims(float_mask, axis=0)
+        float_mask = tf.expand_dims(float_mask, axis=-1)
     return float_mask        
     
-def get_segmenter(url =  "deeplab_v3_plus_resnet50_pascalvoc"):
-    segmenter = keras_hub.models.DeepLabV3ImageSegmenter.from_preset(
-        url,  num_classes=2
-        )
-    return segmenter
+
 
 def convert_to_numpy(img):
     if hasattr(img, 'numpy'):

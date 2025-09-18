@@ -1,3 +1,5 @@
+import tensorflow as tf
+from shared_utils.loss_functions import content_loss, style_loss
 from shared_utils.losses import get_fidelity, get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss, ms_ssim_loss
 import lpips
 class CustomLosses:
@@ -31,9 +33,16 @@ class CustomLosses:
             losses_dict["LPIPS"] =  float(lpips_loss)
         self.get_loss("artfid", base_image, combination_image, includes, get_artfid_loss, losses_dict)
         fidelity_list = ["fid", "isc", "kid"]
-        if any(item in includes for item in fidelity_list):
-            fidelity_metrics = get_fidelity_losses(base_image, combination_image, includes)
-            losses_dict.update(fidelity_metrics)
+        if "content" in includes:
+            c = content_loss(base_image, combination_image)
+            losses_dict["content"] = float(c)
+        if "style" in includes:
+            _, w, h = base_image.shape
+            s  = style_loss(base_image, combination_image,w,h)
+            losses_dict["style"] = float(s)
+        if "tv":
+            total_variation_loss = tf.reduce_mean(tf.image.total_variation(combination_image))
+            losses_dict["tv"] = float(total_variation_loss)
         return losses_dict 
 
 def get_fidelity_losses(base_image, combination_image, includes = ["fid", "isc", "kid"]):
