@@ -4,12 +4,6 @@ def content_loss(base_img, combination_img):
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
 
-def mean_style_loss(style_img, combination_img):
-    axes = [1, 2]
-    style_mean = tf.reduce_mean(style_img, axis=axes)
-    combination_mean = tf.reduce_mean(combination_img, axis=axes)
-    return tf.reduce_mean(tf.square(style_mean - combination_mean))
-
 def gram_matrix(x):
  x = tf.transpose(x, (2, 0, 1))
  features = tf.reshape(x, (tf.shape(x)[0], -1))
