@@ -31,13 +31,6 @@ def style_loss(style_img, combination_img,img_width : int,img_height: int):
  return sum_norm 
 
 
-def compute_style_loss_with_consine_similarity(x, y):
-    x_flat = tf.reshape(x, [x.shape[0], -1])
-    y_flat = tf.reshape(y, [y.shape[0], -1])
-    cos = tf.keras.losses.cosine_similarity(x_flat, y_flat)
-    sim = tf.reduce_mean(1 - cos)
-    return sim
-
 def extract_image_info(x,img_width,img_height):
     a = tf.square(
     x[:, : img_height - 1, : img_width - 1, :] - x[:, 1:, : img_width - 1, :]
