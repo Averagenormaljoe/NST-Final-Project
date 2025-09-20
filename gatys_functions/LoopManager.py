@@ -16,7 +16,6 @@ from helper_functions.bestImage import BestImage
 from helper_functions.helper import deprocess_image
 from helper_functions.log_funcs import create_log_dir
 from shared_utils.exception_checks import none_check
-from shared_utils.optimizer import get_optimizer
 from video_utils.helper.process_flow_on_frames import process_flow_on_frames
 class LoopManager(ConfigManager):
     def __init__(self, config: dict):
