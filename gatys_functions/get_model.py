@@ -13,7 +13,10 @@ def get_model(model_name : str = "vgg19",img_width : int = 224,img_height : int 
       content intermediate layers. 
   """
   # Load our model. We load pretrained VGG, trained on imagenet data (weights=’imagenet’)
-  vgg = get_model_for_loss_net(model_name,image_size=(img_height,img_width))
+  image_size = (img_height, img_width)
+  vgg =  keras.applications.VGG19(
+        include_top=False, weights="imagenet", input_shape=(*image_size, 3)
+        )
   vgg.trainable = False
   
   # Get output layers corresponding to style and content layers 
