@@ -1,8 +1,4 @@
 # Now define the style and content layers for the project along with the weights for each layer.
-from shared_utils.gatys_network import get_content_layer_names, get_style_layer_names, get_style_weights, get_content_weights
-
-
-
 
 def get_default_NST_layers() -> tuple[list[str], list[str], dict, dict]:
     # style layers
