@@ -1,7 +1,7 @@
 import os
 def create_dir(folder_path: str):
      if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
+        os.makedirs(folder_path,exist_ok=True)
 
 def get_save_path(top_folder_name = "scream", model_save_path = "../content/drive/MyDrive/Models", enable_versions = False,resume = 1):
     os.makedirs(model_save_path, exist_ok=True)
