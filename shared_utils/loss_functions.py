@@ -3,8 +3,6 @@ def content_loss(base_img, combination_img):
  assert base_img.shape == combination_img.shape
  return tf.reduce_sum(tf.square(combination_img - base_img))
 
-def mse_loss(base_img, combination_img):
-    return tf.reduce_mean(tf.square(combination_img - base_img))
 
 def mean_style_loss(style_img, combination_img):
     axes = [1, 2]
