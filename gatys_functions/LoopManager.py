@@ -29,13 +29,6 @@ class LoopManager(ConfigManager):
             return True
     def return_error(self):
         return [], BestImage(-1,-1,-1),{}
-    def get_optimizer(self,string_optimizer):
-        if isinstance(string_optimizer, str):
-            optimizer = get_optimizer(string_optimizer, learning_rate=self.lr)
-            return optimizer
-        else:
-            print(f"Invalid passed in optimizer type: {type(self.string_optimizer)}. Should be a string.\n")
-            return None
     def update_optimizer(self, optimizer, config):
         if optimizer is None:
             return None
@@ -71,7 +64,7 @@ class LoopManager(ConfigManager):
         generated_images = []
         # this is for the luminance function, in the temporal loss section of the code
         config["base_img"] = base_image
-        optimizer = self.get_optimizer(self.string_optimizer)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=self.lr)
         optimizer = self.update_optimizer(optimizer, config)
         if optimizer is None or self.invalid_iterations():
             return self.return_error()
