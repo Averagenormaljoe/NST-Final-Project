@@ -9,13 +9,6 @@ def mean_style_loss(style_img, combination_img):
     style_mean = tf.reduce_mean(style_img, axis=axes)
     combination_mean = tf.reduce_mean(combination_img, axis=axes)
     return tf.reduce_mean(tf.square(style_mean - combination_mean))
-def covariance_matrix(features):
-    mean = tf.reduce_mean(features, axis=0, keepdims=True)
-    x_centered = features - mean
-    n = tf.cast(tf.shape(x_centered)[0] - 1, tf.float32)
-    mx = tf.matmul(tf.transpose(x_centered), x_centered)
-    cov_matrix = mx / n
-    return cov_matrix
 
 def gram_matrix(x):
  x = tf.transpose(x, (2, 0, 1))
