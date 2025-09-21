@@ -44,7 +44,3 @@ class CustomLosses:
             total_variation_loss = tf.reduce_mean(tf.image.total_variation(combination_image))
             losses_dict["tv"] = float(total_variation_loss)
         return losses_dict 
-
-def get_fidelity_losses(base_image, combination_image, includes = ["fid", "isc", "kid"]):
-    metrics = get_fidelity(base_image, combination_image, includes)
-    return metrics
