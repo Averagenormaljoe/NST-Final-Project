@@ -17,6 +17,7 @@ def get_default_config(output_dir : str, video_content_path : str, video_style_p
 
 def loop_through_videos(apply_model,style_paths : list[str], video_content_path : str ="demo_video/man_at_sea_sliced.mp4",prefix : str = "model", config : dict = {}) -> list:
     try:
+        old_config = config.copy()
         total_logs = []
         if not os.path.exists(video_content_path):
             print(f"Video content path does not exist: {video_content_path}. Stopping processing.")
@@ -37,6 +38,7 @@ def loop_through_videos(apply_model,style_paths : list[str], video_content_path 
                 total_logs.append(logs)
             else:
                 print(f"No metrics logs found for 'loop_through_videos'. Path: {video_style_path}")
+            config = old_config.copy()
         return total_logs
     except Exception as e:
         traceback.print_exc()
