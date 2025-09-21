@@ -14,6 +14,11 @@ def get_video_details(cap):
 
 ImageType = Union[np.ndarray, tf.Tensor]
 
+# Code from https://medium.com/@sanansuleyman/style-video-with-neural-style-transfer-d10a35cf0e3
+# Website: Medium
+# Title: Style Video with Neural Style Transfer
+# Author: Sanan Suleymanov
+# Date: Jan 28, 2023
 def image_read(image : ImageType) -> tf.Tensor:
   max_dim=512
   image= tf.convert_to_tensor(image, dtype = tf.float32)
@@ -26,7 +31,7 @@ def image_read(image : ImageType) -> tf.Tensor:
   new_image = new_image[tf.newaxis, :]
   
   return new_image
-
+# End of code adaption
 def get_cam(video_path: str,camera_mode = True):
     if camera_mode == True:
         cam = cv2.VideoCapture(0) 
