@@ -7,6 +7,11 @@ from tqdm import trange
 from shared_utils.helper import create_dir
 from video_utils.multi_pass import multi_pass
 from video_utils.video_helper import get_video_details
+# Code adapted from https://github.com/elenaliao1002/neural-style-transfer/blob/main/video_style_transfer.py
+# Website: GitHub
+# Author: Wan-Chun(Elena) LIAO
+# GitHub Profile: elenaliao1002
+# Date: Jun 23, 2023
 def get_video_paths(config):
 
     output_dir = config.get('output_dir')
@@ -182,7 +187,7 @@ def normalize_output_size(output_size):
         resized_output_size = tuple(output_size) if len(output_size) > 1 else output_size[0]
         return resized_output_size
     return None
-
+# end of adapted code
 def save_frame(output_frame_path,img):
      if output_frame_path is not None and img is not None:
             keras.utils.save_img(output_frame_path, img) 
