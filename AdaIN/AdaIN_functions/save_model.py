@@ -25,10 +25,3 @@ def legacy_save_model(model):
     model.loss_net.save_weights("loss_net.h5")
     model.save_weights("model.h5")
     
-def zip_model_files(file_paths : Optional[list[str]] = None,save_path : str = ""):
-    if file_paths is None:
-        file_paths = ['encoder.keras', 'decoder.keras', 'loss_net.keras', 'model.keras']
-    with zipfile.ZipFile(f'{save_path}/model.zip', 'w') as zipf:
-        for file in file_paths:
-            if os.path.exists(file):
-                zipf.write(file)
