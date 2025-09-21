@@ -37,25 +37,6 @@ def get_lpips_loss(base_image, combination_image, loss_fn = None):
     lpips = calculate_lpips_loss(base_image_pt, combination_image_pt, loss_fn)
     return lpips    
 
-def get_fidelity(base_dir, combination_dir,includes = []) -> dict:
-    if includes is None:
-        return {}
-    metrics = {
-        "fid": "fid" in includes,
-
-    }
-    results = calculate_metrics(
-                input1=base_dir,
-                input2=combination_dir,
-                cuda=True,
-                kid_subset_size=1,
-                fid=metrics["fid"],)
-    output = {}
-    collect_result = {"fid" : "frechet_inception_distance"}
-    for k, v in collect_result.items():
-        if metrics[k]:
-            output[k] = results[v]
-    return output
 
 def get_artfid_loss(base_dir : str, style_dir : str,combination_dir : str):
     command = f"CUDA_VISIBLE_DEVICES=0 python -m art_fid --style_images {style_dir} --content_images {base_dir} --stylized_images {combination_dir}"
@@ -97,6 +78,11 @@ def square_and_sum(img,diff, mask=None):
     l2_diff = square_or_l2(diff,True)
     tl = apply_mask_and_sum(img, l2_diff, mask)
     return tl
+# Code adapted from https://github.com/cysmith/neural-style-tf/blob/a2c374f9ee2938f0022e1e0b720f4eb28cf7d0a8/neural_style.py#L436
+# Author: Cameron
+# GitHub Profile: cysmith
+# Website: GitHub
+# Title: neural-style-tf
 
 def temporal_loss_v2(x, w, c):
   expand_c = tf.expand_dims(c, axis=0)
@@ -104,4 +90,4 @@ def temporal_loss_v2(x, w, c):
   loss = (1. / D) * tf.reduce_sum(expand_c * tf.nn.l2_loss(x - w))
   float_loss = tf.cast(loss, tf.float32)
   return float_loss
-
+# end of code adaption
