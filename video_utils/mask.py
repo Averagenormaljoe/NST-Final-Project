@@ -39,8 +39,14 @@ def convert_to_grayscale(img):
     return img   
     
 def load_optical_flow(prev_numpy_img, curr_numpy_img, config): 
+    verbose = config.get("verbose", 0)
+    if verbose:
+        print("prev_img, curr_img shape before grayscale:", f"{prev_numpy_img.shape}, {curr_numpy_img.shape}")
+
     prev_img = convert_to_grayscale(prev_numpy_img)
     curr_img = convert_to_grayscale(curr_numpy_img)
+    if verbose:
+        print("prev_img, curr_img shape after grayscale:", f"{prev_img.shape}, {curr_img.shape}")
     flow_type = config.get("flow_type", "farneback")
     save_flow = config.get("save_flow", False)
     output_path = config.get("flow_output_path", "optical_flow.flo")
