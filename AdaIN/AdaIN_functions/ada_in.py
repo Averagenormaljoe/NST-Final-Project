@@ -16,7 +16,7 @@ def get_att(style : tf.Tensor,content : tf.Tensor,layers, att=True):
         self_content = content
         self_style = style
     return self_style, self_content
-
+#
 def ada_in(style : tf.Tensor, content : tf.Tensor,layers, att : bool =False, epsilon: float = 1e-5):
     """Computes the AdaIn feature map.
 
@@ -35,10 +35,22 @@ def ada_in(style : tf.Tensor, content : tf.Tensor,layers, att : bool =False, eps
     return t
 
 
+# Code adapted from https://github.com/JianqiangRen/AAMS/blob/master/net/utils.py
+# Website: Github
+# Title: AAMS, utils.py
+# Author: Jianqiang Ren
+# GitHub Profile: JianqiangRen
+# Date: Feb 27, 2019
 def hw_flatten(x : tf.Tensor):
     shape = tf.shape(x)
     return tf.reshape(x, shape=[shape[0], -1, shape[-1]])
-
+# end of code adaption
+# Code adapted from https://github.com/JianqiangRen/AAMS/blob/master/net/aams.py
+# Website: Github
+# Title: AAMS
+# Author: Jianqiang Ren
+# GitHub Profile: JianqiangRen
+# Date: Feb 27, 2019
 def get_attention_scores(f_flat, g_flat):
     axis = -1    
     f_channels = tf.shape(f_flat)[-1] 
@@ -48,7 +60,6 @@ def get_attention_scores(f_flat, g_flat):
     beta = tf.nn.softmax(s, axis=axis) 
     return beta
     
-
 def self_attention(x : tf.Tensor,layers, use_residual: bool = True ):
 
 
@@ -68,3 +79,4 @@ def self_attention(x : tf.Tensor,layers, use_residual: bool = True ):
     if use_residual:
         reshape_o = reshape_o + x
     return reshape_o
+# end of code adaption
