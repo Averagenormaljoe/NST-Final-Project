@@ -84,10 +84,6 @@ def warp_flow(img, flow,reverse=False):
     return res
 # end of code adaption
 
-def feature_map_temporal_loss(prev_feature_map, curr_feature_map,flow, mask=None):
-    optimal_flow = warp_flow(prev_feature_map,flow) 
-    tl = temporal_loss(optimal_flow, curr_feature_map, mask=mask)
-    return tl
 
 def temporal_warping_error(prev_stylized_frame, curr_stylized_frame, flow, mask=None):
     warped_prev = warp_flow(prev_stylized_frame, flow)
