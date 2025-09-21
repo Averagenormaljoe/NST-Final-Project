@@ -15,3 +15,4 @@
    Website: GitHub
    The notebook: https://github.com/tarun-bisht/fast-style-transfer/blob/master/notebooks/Fast_Style_Transfer_Colab.ipynb
 6. Attention mechanism code was adapted from 'https://github.com/JianqiangRen'.
+7. Code for 'video_utils/video.py' was adapted from 'https://github.com/elenaliao1002/neural-style-transfer/commits?author=elenaliao1002'.

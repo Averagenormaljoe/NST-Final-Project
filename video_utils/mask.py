@@ -66,7 +66,12 @@ def load_optical_flow(prev_numpy_img, curr_numpy_img, config):
     if save_flow:
         cv2.optflow.writeOpticalFlow(output_path, flow)
     return flow
-
+# Code adapted from 'https://github.com/opencv/opencv/issues/11068'
+# Website: GitHub
+# Title: Warp image with optical flow to produce a new image #11068
+# Author: Júlio Hoffimann
+# GitHub Profile: juliohm
+# Mar 13, 2018
 def warp_flow(img, flow,reverse=False):
     cast_flow = flow.astype(np.float32)
     h, w = cast_flow.shape[:2]
@@ -77,7 +82,7 @@ def warp_flow(img, flow,reverse=False):
     cast_flow_copy[:,:,1] += np.arange(h)[:,np.newaxis]
     res = cv2.remap(img, cast_flow_copy, None, cv2.INTER_LINEAR)
     return res
-
+# end of code adaption
 
 def feature_map_temporal_loss(prev_feature_map, curr_feature_map,flow, mask=None):
     optimal_flow = warp_flow(prev_feature_map,flow) 
