@@ -1,6 +1,6 @@
 import tensorflow as tf
 from shared_utils.loss_functions import content_loss, style_loss
-from shared_utils.losses import get_fidelity, get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss, ms_ssim_loss
+from shared_utils.losses import get_lpips_loss,get_artfid_loss,ssim_loss, psnr_loss, ms_ssim_loss
 import lpips
 class CustomLosses:
     def __init__(self, loss_fn="vgg"):
