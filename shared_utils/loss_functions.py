@@ -10,9 +10,6 @@ def gram_matrix(x):
  gram = tf.matmul(features, tf.transpose(features))
  return gram
 
-def equal_blends(gram_matrices):
-    return sum(gram_matrices) / len(gram_matrices)
-
 def style_loss(style_img, combination_img,img_width : int,img_height: int):
  assert style_img.shape == combination_img.shape
  S = gram_matrix(style_img)
