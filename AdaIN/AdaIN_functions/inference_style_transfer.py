@@ -36,17 +36,3 @@ def inference_style_transfer(model, dataset,stylize_func, num_samples=10,output_
         plt.close(fig)
         plt.show()
         metrics_list.append(metrics)
-    zip_dir(output_dir)
-    save_df(metrics_list, output_dir)
-
-def save_df(metrics_list, output_dir):
-    metrics_df = pd.DataFrame(metrics_list)
-    curr_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    df_name = f"{curr_time}_metrics.csv"
-    output_df_path = os.path.join(output_dir, df_name)
-    metrics_df.to_csv(output_df_path, index=False)
-  
-    
-def zip_dir(output_dir : str):
-    
-    shutil.make_archive(output_dir, 'zip', output_dir)
