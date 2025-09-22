@@ -8,7 +8,9 @@ __pycache__/
 
 # C extensions
 *.so
-
+*johnson_prototype.ipynb
+*gatys_prototype.ipynb
+*original_adain_with_attention_updated (3).ipynb
 # Distribution / packaging
 .Python
 build/
